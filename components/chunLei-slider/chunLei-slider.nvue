@@ -1,0 +1,126 @@
+<template>
+	<div class="slider" @touchend.stop="sliderTouch">
+		<div class="slider-left" :style="{ width: `${leftWidth-16}px` }">
+			
+		</div>
+		<div class="block" @click.stop="" @touchmove="blockTouchMove" @touchend.stop="blockTouchEnd" @touchstart="blockTouchStart"></div>
+		<div class="slider-right">
+			
+		</div>
+	</div>
+</template>
+
+<script>
+	export default{
+		props:{
+			min:{
+				type:Number,
+				default:0
+			},
+			max:{
+				type:Number,
+				default:0
+			},
+			value:{
+				type:Number,
+				default:0
+			},
+			width:{
+				type:Number,
+				default:0
+			}
+		},
+		data(){
+			return{
+				oldToucesX:0,
+				leftWidth:0,
+				oldLeftWidth:0,
+				touch:false
+			}
+		},
+		methods:{
+			sliderTouch(e){
+				
+				this.leftWidth = (e.changedTouches[0].screenX - 60)/300*this.width
+				this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth
+				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
+				this.blockTouchEnd()
+			},
+			// 触摸开始
+			blockTouchStart(e) {
+				this.touch = true
+				this.oldLeftWidth = this.leftWidth
+				//兼容h5平台及某版本微信
+				// if (e.hasOwnProperty('changedTouches')) {
+				// 	this.oldToucesX = e.changedTouches[0].pageX;
+				// } else {
+				// 	this.oldToucesX = e.pageX;
+				// }
+				this.oldToucesX = e.changedTouches[0].screenX;
+			},
+			// 计算方向
+			blockTouchMove(e) {
+				let newToucesX
+				console.log(e)
+				//兼容h5平台及某版本微信
+				// if (e.hasOwnProperty('changedTouches')) {
+				// 	newToucesX= e.changedTouches[0].pageX;
+				// } else {
+				// 	newToucesX = e.pageX;
+				// }
+				newToucesX= e.changedTouches[0].screenX;
+				this.leftWidth = (newToucesX - this.oldToucesX)/300*this.width + this.oldLeftWidth
+				this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth
+				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
+				
+			},
+			// 结束触摸
+			blockTouchEnd(e) {
+				let current = this.leftWidth / this.width *this.max
+				const event = {detail:{value:current}}
+				this.$emit('change',event)
+				this.touch = false
+			},
+		},
+		watch:{
+			value:{
+				immediate:true,
+				handler(newVal,oldVal){
+					if(this.touch) return
+					
+					this.leftWidth = newVal/this.max * this.width
+					this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth
+				}
+			}
+			
+		}
+	}
+</script>
+
+<style>
+	.slider{
+		
+		flex-direction: row;
+		
+		
+		height: 40px;
+		align-items: center;
+	}
+	.slider-left{
+		height: 3px;
+		background-color: #007AFF;
+	}
+	.slider-right{
+		height: 3px;
+		background-color: #e9e9e9;
+		flex: 1;
+	}
+	.block{
+		
+		height: 16px;
+		width: 16px;
+		border-radius: 8px;
+		background-color: #fff;
+		
+	}
+</style>
