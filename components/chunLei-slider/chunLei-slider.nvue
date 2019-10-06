@@ -48,11 +48,11 @@
 		},
 		mounted() {
 			
-			console.log(this.direction)
+			
 		},
 		methods:{
 			sliderTouch(e){
-				console.log(11)
+			
 				let touches = e.changedTouches[0]
 				this.leftWidth = (touches[this.direction] - 60)*this.ratio
 				this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth

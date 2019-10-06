@@ -129,14 +129,11 @@
 			title:{ //视频标题
 				type:String,
 				default:''
-			},
-			duration:{ //总时长（单位：s）
-				type:Number,
-				default:0
 			}
 		},
 		data(){
 			return{
+				duration:0, //总时长
 				controls:false,
 				videoCtx:'',//视频上下文
 				current: 0, //video进度
@@ -195,6 +192,7 @@
 		},
 		methods:{
 			timeupdate(event){
+				this.duration = event.detail.duration
 				if(this.current>=this.duration) {
 					this.play = false
 					return
@@ -250,7 +248,7 @@
 			},
 			//下一集
 			playNext(){
-				console.log('下一集')
+				
 			},
 			clickLock(){
 				
@@ -331,7 +329,7 @@
 					if(this.platform=='ios'&&this.fullScreen){
 						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)/250*this.duration*2 + this.oldValue[touchType]*1
 					}
-					console.log(this.oldValue[touchType])
+					
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent
 					this.touchCurrent = this.touchCurrent < 0? 0 : this.touchCurrent
 				}

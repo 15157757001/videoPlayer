@@ -1,7 +1,7 @@
 <template>
 	<div class="content">
 		
-		<chunlei-video :title="title" :src="src" class="video" :duration="883" ref="video" >
+		<chunlei-video :title="title" :src="src" class="video" ref="video" >
 				
 		</chunlei-video>
 		
