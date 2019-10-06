@@ -116,7 +116,7 @@
 </template>
 
 <script>
-	import chunLeiSlider from '../chunLei-slider/chunLei-slider.nvue'
+	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue'
 	export default{ 
 		components:{
 			chunLeiSlider
