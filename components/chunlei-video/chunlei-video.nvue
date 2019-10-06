@@ -16,8 +16,8 @@
 				
 				<text class="ios-title">{{currentDuration}}</text>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${200}px`}" :width="200" @change="changeCurrent"></chunLei-slider>
-				<text class="ios-title" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsHeigt-230}px`}" :width="`${fullControlsHeigt-230}`" @change="changeCurrent"></chunLei-slider>
+				<text class="ios-title" :style="{marginLeft:`20px`}">{{lastDuration}}</text>
 				<text class="ios-icon" @click="tapFullScreen">&#xe651;</text>
 			</cover-view>
 			<!-- 滑动video时显示 -->
@@ -96,7 +96,7 @@
 				<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe74f;</text>
 				<!-- <text class="android-icon" @click="playNext">&#xe615;</text> -->
 				<text :class="`${platform}-title`">{{currentDuration}}</text>
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-200}px`}" :width="fullControlsWidth-200" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'"></chunLei-slider>
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-250}px`}" :width="fullControlsWidth-250" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'"></chunLei-slider>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
 				<text :class="`${platform}-title`" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
 			</cover-view>
@@ -129,11 +129,15 @@
 			title:{ //视频标题
 				type:String,
 				default:''
-			}
+			},
+			gDuration:{ //大概总时长
+				type:Number,
+				default:0
+			}, 
 		},
 		data(){
 			return{
-				duration:0, //总时长
+				duration:0, //精确总时长
 				controls:false,
 				videoCtx:'',//视频上下文
 				current: 0, //video进度
@@ -198,11 +202,6 @@
 					return
 				}
 				this.current = event.detail.currentTime
-				// if(this.platform=='ios'){
-				// 	this.current = event.detail.currentTime
-				// }else{
-				// 	this.current = this.current + 0.25*this.rate
-				// }
 				
 			},
 			//拖动滑块
@@ -437,7 +436,12 @@
 			}
 		},
 		watch:{
-			
+			gDuration:{
+				immediate:true,
+				handler(newVal,oldVal){
+					this.duration = newVal
+				}
+			}
 		},
 		computed:{
 			lastDuration(){
@@ -641,7 +645,7 @@
 		bottom: 0;
 		flex-direction: row;
 		align-items: center;
-		padding: 0 10rpx;
+		padding: 0 20px;
 		
 	}
 	.fullControls-view{

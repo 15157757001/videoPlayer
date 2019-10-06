@@ -1,6 +1,6 @@
 <template>
 	<div class="slider" id="slider">
-		<div class="slider-left" :style="{ width: `${leftWidth-16}px` }" @touchend.stop="sliderTouch">
+		<div class="slider-left" :style="{ width: `${leftWidth-20}px` }" @touchend.stop="sliderTouch">
 			<div class="left"></div>
 		</div>
 		<div class="block" @click.stop="" @touchmove.stop.prevent="blockTouchMove" @touchend="blockTouchEnd" @touchstart="blockTouchStart"></div>
