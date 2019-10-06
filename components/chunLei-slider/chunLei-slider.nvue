@@ -1,11 +1,11 @@
 <template>
-	<div class="slider" @touchend.stop="sliderTouch">
-		<div class="slider-left" :style="{ width: `${leftWidth-16}px` }">
-			
+	<div class="slider" id="slider">
+		<div class="slider-left" :style="{ width: `${leftWidth-16}px` }" @touchend.stop="sliderTouch">
+			<div class="left"></div>
 		</div>
-		<div class="block" @click.stop="" @touchmove="blockTouchMove" @touchend.stop="blockTouchEnd" @touchstart="blockTouchStart"></div>
-		<div class="slider-right">
-			
+		<div class="block" @click.stop="" @touchmove.stop.prevent="blockTouchMove" @touchend="blockTouchEnd" @touchstart="blockTouchStart"></div>
+		<div class="slider-right" @touchend.stop="sliderTouch">
+			<div class="right"></div>
 		</div>
 	</div>
 </template>
@@ -28,6 +28,14 @@
 			width:{
 				type:Number,
 				default:0
+			},
+			ratio:{
+				type:Number,
+				default:1
+			},
+			direction:{
+				type:String,
+				default:'screenX'
 			}
 		},
 		data(){
@@ -38,38 +46,32 @@
 				touch:false
 			}
 		},
+		mounted() {
+			
+			console.log(this.direction)
+		},
 		methods:{
 			sliderTouch(e){
-				
-				this.leftWidth = (e.changedTouches[0].screenX - 60)/300*this.width
+				console.log(11)
+				let touches = e.changedTouches[0]
+				this.leftWidth = (touches[this.direction] - 60)*this.ratio
 				this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth
 				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
 				this.blockTouchEnd()
+				
 			},
 			// 触摸开始
 			blockTouchStart(e) {
 				this.touch = true
 				this.oldLeftWidth = this.leftWidth
-				//兼容h5平台及某版本微信
-				// if (e.hasOwnProperty('changedTouches')) {
-				// 	this.oldToucesX = e.changedTouches[0].pageX;
-				// } else {
-				// 	this.oldToucesX = e.pageX;
-				// }
-				this.oldToucesX = e.changedTouches[0].screenX;
+				this.oldToucesX = e.changedTouches[0][this.direction];
 			},
 			// 计算方向
 			blockTouchMove(e) {
 				let newToucesX
-				console.log(e)
-				//兼容h5平台及某版本微信
-				// if (e.hasOwnProperty('changedTouches')) {
-				// 	newToucesX= e.changedTouches[0].pageX;
-				// } else {
-				// 	newToucesX = e.pageX;
-				// }
-				newToucesX= e.changedTouches[0].screenX;
-				this.leftWidth = (newToucesX - this.oldToucesX)/300*this.width + this.oldLeftWidth
+				console.log(this.direction)
+				newToucesX= e.changedTouches[0][this.direction];
+				this.leftWidth = (newToucesX - this.oldToucesX)*this.ratio+ this.oldLeftWidth
 				this.leftWidth = this.leftWidth > this.width? this.width : this.leftWidth
 				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
 				
@@ -97,7 +99,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
 	.slider{
 		
 		flex-direction: row;
@@ -107,19 +109,31 @@
 		align-items: center;
 	}
 	.slider-left{
+		height: 40px;
+		flex-direction: row;
+		align-items: center;
+	}
+	.left{
+		flex: 1;
 		height: 3px;
 		background-color: #007AFF;
 	}
 	.slider-right{
+		flex: 1;
+		height: 40px;
+		flex-direction: row;
+		align-items: center;
+	}
+	.right{
 		height: 3px;
 		background-color: #e9e9e9;
 		flex: 1;
 	}
 	.block{
 		
-		height: 16px;
-		width: 16px;
-		border-radius: 8px;
+		height: 20px;
+		width: 20px;
+		border-radius: 10px;
 		background-color: #fff;
 		
 	}

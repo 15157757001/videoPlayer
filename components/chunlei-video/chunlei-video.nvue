@@ -1,7 +1,7 @@
 <template>
 	<view class="video-box">
 		<video :controls="false" :show-center-play-btn="false" :show-fullscreen-btn="false" :show-progress="false"
-			:objectFit="objectFit" :direction="direction" :src="src" 
+			:objectFit="objectFit" :direction="direction" :src="src" :enable-progress-gesture="false"
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" 
 			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
@@ -11,18 +11,19 @@
 				<div  class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 			</cover-view>
 			<cover-view class="controls-view" v-if="!fullScreen&&showControls" @click.stop="">
-				<text class="list-icon" @click.stop="videoPlay" v-if="play">&#xe503;</text>
-				<text class="list-icon" @click.stop="videoPlay" v-if="!play">&#xe74f;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe503;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe74f;</text>
 				
-				<text class="list-title">{{currentDuration}}</text>
-				<slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider>
-				<text class="list-title">{{lastDuration}}</text>
-				<text class="list-icon" @click="tapFullScreen">&#xe651;</text>
+				<text class="ios-title">{{currentDuration}}</text>
+				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${200}px`}" :width="200" @change="changeCurrent"></chunLei-slider>
+				<text class="ios-title" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
+				<text class="ios-icon" @click="tapFullScreen">&#xe651;</text>
 			</cover-view>
 			<!-- 滑动video时显示 -->
 			<cover-view class="current-view" v-if="!fullScreen&&touchType=='current'">
 				<div class="current-top">
-					<text class="list-title" style="marginRight:0;">{{touchCurrentDuration}}/{{lastDuration}}</text>
+					<text class="ios-title" style="marginRight:0;">{{touchCurrentDuration}}/{{lastDuration}}</text>
 					
 				</div>
 				<div class="current-bottom">
@@ -31,16 +32,16 @@
 				
 			</cover-view>
 			<cover-view class="rate-view" @click.stop="" v-if="!rateView&&!fullScreen">
-				<text class="list-title" @click="rateView=true">{{rate}}x</text>
+				<text class="ios-title" @click="rateView=true">{{rate}}x</text>
 			</cover-view>
 			<cover-view class="rate" @click.stop="" v-if="rateView&&!fullScreen">
 				<div class="rate"  @click.stop="rateView=false" :style="{paddingTop: '40px'}">
 					<div>
-						<text class="list-title">倍速播放</text>
+						<text class="ios-title">倍速播放</text>
 					</div>
 					
 					<div class="rate-list">
-						<text class="list-title" @click.stop="tapRate(item)" v-for="item in rateList" :key="item">{{item}}x</text>
+						<text class="ios-title" @click.stop="tapRate(item)" v-for="item in rateList" :key="item">{{item}}x</text>
 					</div>
 				</div>
 			</cover-view>
@@ -49,18 +50,18 @@
 			<!-- 全屏 -->
 			<cover-view class="controls-top" :style="{ width: `${fullControlsWidth}px`,transform: `translateY(${-controlsY}px)` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="top-left">
-					<text class="full-icon" @click="tapFullScreen">&#xe60a;</text>
-					<text class="full-title">{{title}}</text>
+					<text :class="`${platform}-icon`" @click="tapFullScreen">&#xe60a;</text>
+					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
-					<text class="full-icon">&#xe642;</text>
-					<text class="full-icon">{{nowTime}}</text>
+					<text :class="`${platform}-icon`">&#xe642;</text>
+					<text :class="`${platform}-title`">{{nowTime}}</text>
 				</div>
 			</cover-view>
 			<!-- 滑动video时显示 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='current'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text class="full-title" style="marginRight:0;">{{touchCurrentDuration}}/{{lastDuration}}</text>
+					<text :class="`${platform}-title`" style="marginRight:0;">{{touchCurrentDuration}}/{{lastDuration}}</text>
 					
 				</div>
 				<div class="fullCurrent-bottom">
@@ -69,9 +70,9 @@
 				
 			</cover-view>
 			<!-- 滑动video时显示音量 -->
-			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='volume'" :style="{ left: `${fullControlsWidth/2-75}px`}">
+			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='volume'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text class="full-title" style="marginRight:0;">音量</text>
+					<text :class="`${platform}-title`" style="marginRight:0;">音量</text>
 					
 				</div>
 				<div class="fullCurrent-bottom">
@@ -80,9 +81,9 @@
 				
 			</cover-view>
 			<!-- 滑动video时显示亮度 -->
-			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='bright'" :style="{ left: `${fullControlsWidth/2-75}px`}">
+			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='bright'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text class="full-title" style="marginRight:0;">亮度</text>
+					<text :class="`${platform}-title`" style="marginRight:0;">亮度</text>
 					
 				</div>
 				<div class="fullCurrent-bottom">
@@ -90,20 +91,20 @@
 				</div>
 				
 			</cover-view>
-			<cover-view class="fullControls-view" :style="{ width: `${fullControlsWidth}px`,transform: `translateY(${controlsY}px)` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
-				<text class="full-icon" @click="videoPlay" v-if="play">&#xe503;</text>
-				<text class="full-icon" @click="videoPlay" v-if="!play">&#xe74f;</text>
-				<!-- <text class="full-icon" @click="playNext">&#xe615;</text> -->
-				<text class="full-title">{{currentDuration}}</text>
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-200}px`}" :width="fullControlsWidth-200" @change="changeCurrent"></chunLei-slider>
+			<cover-view class="fullControls-view" :style="{ width: `${fullControlsWidth}px`,transform: platform=='ios'?`translateY(${controlsY*2}px)`:`translateY(${controlsY}px)`,paddingBottom: platform!='ios'?'0':'40px',height:platform!='ios'?'40px':'80px' }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
+				<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe503;</text>
+				<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe74f;</text>
+				<!-- <text class="android-icon" @click="playNext">&#xe615;</text> -->
+				<text :class="`${platform}-title`">{{currentDuration}}</text>
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-200}px`}" :width="fullControlsWidth-200" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'"></chunLei-slider>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
-				<text class="full-title" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
+				<text :class="`${platform}-title`" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
 			</cover-view>
 			
 					
-			<cover-view class="lock-view" @click.stop="" v-if="fullScreen&&showControls" :style="{ top:`${fullControlsHeigt/2}px` }">
-				<text class="full-icon" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
-				<text class="full-icon" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: platform=='ios'?`${fullControlsHeigt/2-30}px`:`${fullControlsHeigt/2}px` }">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
 			</cover-view>
 			
 			
@@ -158,7 +159,8 @@
 				rateList:['0.5','0.8','1.0','1.25','1.5'],//倍数
 				touchCurrent:0,
 				touchBright:0,
-				touchVolume:0
+				touchVolume:0,
+				ratio:1, //滚动条比例系数
 			}
 		},
 		beforeCreate() {
@@ -169,17 +171,20 @@
 				'src': "url('../../static/text-icon.ttf')"
 			});
 			// #endif
+		},
+		created() {
+			this.fullControlsWidth = uni.getSystemInfoSync().screenHeight
+			this.fullControlsHeigt = uni.getSystemInfoSync().screenWidth
+			this.ratio = this.fullControlsWidth / this.fullControlsHeigt
+			
 			uni.getSystemInfo({
 				success: (e) => {
 					// #ifndef MP
 					this.platform = e.platform
+					
 					// #endif
 				}
 			})
-		},
-		created() {
-			this.fullControlsWidth  = uni.getSystemInfoSync().screenHeight
-			this.fullControlsHeigt = uni.getSystemInfoSync().screenWidth
 		},
 		mounted() {
 			this.videoCtx = uni.createVideoContext('chunleiVideo',this);
@@ -190,12 +195,17 @@
 		},
 		methods:{
 			timeupdate(event){
-				
 				if(this.current>=this.duration) {
 					this.play = false
 					return
 				}
-				this.current = this.current + 0.25*this.rate
+				this.current = event.detail.currentTime
+				// if(this.platform=='ios'){
+				// 	this.current = event.detail.currentTime
+				// }else{
+				// 	this.current = this.current + 0.25*this.rate
+				// }
+				
 			},
 			//拖动滑块
 			changeCurrent(e){
@@ -295,7 +305,7 @@
 					this.touchType = Math.abs( newTouces.pageX - oldTouces.pageX ) > 20 ? 'current' : null
 					//全屏下支持音量和亮度
 					
-					if(this.fullScreen&&!this.touchType){
+					if(this.fullScreen&&!this.touchType&&this.platform=='android'){
 						//#ifdef APP-PLUS-NVUE
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX<=200 ? 'volume' : this.touchType
 						//#endif
@@ -303,6 +313,10 @@
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX>200 ? 'bright' : this.touchType
 						//#endif
 					}
+					if(this.fullScreen&&this.platform=='ios'){
+						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 ? 'current' : null
+					}
+					
 				}else if(this.touchType=='volume'){
 					this.touchVolume = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchVolume = this.touchVolume > 1? 1 : this.touchVolume
@@ -312,7 +326,12 @@
 					this.touchBright = this.touchBright > 1? 1 : this.touchBright
 					this.touchBright = this.touchBright < 0? 0 : this.touchBright
 				}else if(this.touchType=='current'){
-					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)/250*this.duration*2 + this.oldValue[touchType]
+					
+					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)/250*this.duration*2 + this.oldValue[touchType]*1
+					if(this.platform=='ios'&&this.fullScreen){
+						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)/250*this.duration*2 + this.oldValue[touchType]*1
+					}
+					console.log(this.oldValue[touchType])
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent
 					this.touchCurrent = this.touchCurrent < 0? 0 : this.touchCurrent
 				}
@@ -323,7 +342,7 @@
 				if(this.touchType=='current'){
 					this.current = this.touchCurrent
 					this.videoCtx.seek(this.current)
-				}else if(this.touchType=='bright'){
+				}else if(this.touchType=='bright'&&this.platform=='android'){
 					
 					//#ifndef H5
 					uni.setScreenBrightness({
@@ -336,7 +355,7 @@
 					    }
 					});
 					//#endif
-				}else if(this.touchType=='volume'){
+				}else if(this.touchType=='volume'&&this.platform=='android'){
 					//#ifdef APP-PLUS-NVUE
 					plus.device.setVolume(this.touchVolume.toFixed(2))
 					//#endif
@@ -348,6 +367,7 @@
 				
 			},
 			changeScreen(){
+				this.a = true
 				this.showControls = false
 				this.fullScreen = !this.fullScreen
 			},
@@ -396,25 +416,26 @@
 				
 			},
 			formatSeconds(a,type) {
-			     var hh = parseInt(a/3600);  
-				  if(hh<10) hh = hh=='0'?'':`0${hh}:`;  
-				  var mm = parseInt((a-hh*3600)/60);  
-				  if(mm<10) mm = "0" + mm;  
-				  var ss = parseInt((a-hh*3600)%60);  
-				  if(ss<10) ss = "0" + ss;  
-				  var length = hh  + mm + ":" + ss;  
-				  if(a>=0){  
+				var hh = parseInt(a/3600);  
+				if(hh<10) hh = hh=='0'?'':`0${hh}:`;  
+				var mm = parseInt((a-hh*3600)/60);  
+				if(mm<10) mm = "0" + mm;  
+				var ss = parseInt((a-hh*3600)%60);  
+				if(ss<10) ss = "0" + ss;  
+				var length = hh  + mm + ":" + ss;  
+				if(a>=0){  
 					return length;  
-				  }else{  
+				}else{  
 					return "00:00:00";  
-				  }  
+				}  
 			},
-			getNowTime()
-			    { 
-			        var now = new Date();
-			        var hh = now.getHours();            //时
-			        var mm = now.getMinutes();          //分
-			        return `${hh}:${mm}`; 
+			getNowTime(){ 
+				var now = new Date();
+				var hh = now.getHours();            //时
+				if(hh<10) hh = "0" + hh;
+				var mm = now.getMinutes();          //分
+				if(mm<10) mm = "0" + mm;  
+				return `${hh}:${mm}`; 
 			}
 		},
 		watch:{
@@ -435,8 +456,8 @@
 	}
 </script>
 
-<style scoped>
-	
+<style lang="scss">
+	@import "./android.scss";
 	/* #ifndef APP-PLUS-NVUE */
 	@font-face {
 		font-family: texticons;
@@ -454,7 +475,6 @@
 	.video{
 		flex:1;
 		width: 750rpx;
-		
 	}
 	.move-view{
 		
@@ -468,27 +488,27 @@
 		justify-content: center;
 		align-items: center;
 		position: absolute;
-		
+		z-index:999;
 	}
-	.list-icon {
+	.ios-icon {
 		font-size: 18px;
 		color: #fff;
 		font-family: texticons;
 		margin-right: 20rpx;
 	}
-	.list-title{
+	.ios-title{
 		font-size: 18px;
 		color: #fff;
 		margin-right: 20rpx;
 		text-align: center;
 	}
-	.full-icon{
+	.android-icon{
 		font-size: 9px;
 		color: #fff;
 		font-family: texticons;
 		margin-right: 10px;
 	}
-	.full-title{
+	.android-title{
 		font-size: 9px;
 		color: #fff;
 		margin-right: 10px;
@@ -501,7 +521,7 @@
 		/* #endif */
 		
 		
-		background-image: linear-gradient(to top , rgba(0,0,0,0) , rgba(0,0,0,0.8));
+		background-image: linear-gradient(to top , rgba(0,0,0,0.4) , rgba(0,0,0,0.4));
 		
 		height: 40px;
 		
@@ -527,18 +547,7 @@
 		font-size: 12px;
 		color: #fff;
 	}
-	.lock-view{
-		position: absolute;
-		margin: 40px;
-		width: 30px;
-		height: 30px;
-		padding: 5px;
-		transform: translateY(-30px);
-		background-color: rgba(0,0,0,0.3);
-		border-radius: 50%;
-		
-		text-align: center;
-	}
+	
 	.rate{
 		flex: 1;
 		height: 160px;
@@ -643,13 +652,13 @@
 		
 		/* #endif */
 		
-		background-image: linear-gradient(to bottom , rgba(0,0,0,0) , rgba(0,0,0,0.8));
+		background-image: linear-gradient(to bottom , rgba(0,0,0,0.4) , rgba(0,0,0,0.4));
 		height: 40px;
 		
 		
 		position: absolute;
 		bottom: 0;
-		
+		z-index: 99999;
 		flex-direction: row;
 		align-items: center;
 		padding: 0 40px;
@@ -657,6 +666,18 @@
 	.video-slider{
 		z-index: 100;
 		flex: 1;
+	}
+	.ios-lock{
+		position: absolute;
+		margin: 40px;
+		width: 40px;
+		height: 40px;
+		padding: 10px 0 0 10px;
+		transform: translateY(-40px);
+		background-color: rgba(0,0,0,0.3);
+		border-radius: 50%;
+			
+		text-align: center;
 	}
 	
 </style>
