@@ -12,12 +12,21 @@
 }
 .android-icon{
 	font-size: 9px;
-		color: #fff;
-		font-family: texticons;
-		margin-right: 10px;
-	}
+	color: #fff;
+	font-family: texticons;
+	margin-right: 10px;
+}
 .android-title{
 	font-size: 9px;
 	color: #fff;
 	margin-right: 10px;
+}
+.android-title-box{
+	border-width: 2px;
+	border-color: #fff;
+	line-height: 12px;
+}
+.android-srcTitle{
+	font-size: 6px;
+	color: #fff;
 }

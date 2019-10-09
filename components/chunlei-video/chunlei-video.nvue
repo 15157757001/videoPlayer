@@ -65,40 +65,39 @@
 					
 				</div>
 				<div class="fullCurrent-bottom">
-					<div class="fullCurrent-progress" :style="{width: `${touchCurrent/duration*110}px`}"> </div>
+					<div class="fullCurrent-progress" :style="{width: `${110-touchCurrent/duration*110}px`}"> </div>
 				</div>
 				
 			</cover-view>
 			<!-- 滑动video时显示音量 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='volume'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text :class="`${platform}-title`" style="marginRight:0;">音量</text>
+					<text :class="`${platform}-icon`">&#xe603;</text>
 					
 				</div>
-				<div class="fullCurrent-bottom">
-					<div class="fullCurrent-progress" :style="{width: `${touchVolume*110}px`}"> </div>
+				<div class="fullCurrent-volume">
+					<div class="fullCurrent-progress" :style="{width: `${110-touchVolume*110}px`}"> </div>
 				</div>
 				
 			</cover-view>
 			<!-- 滑动video时显示亮度 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='bright'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text :class="`${platform}-title`" style="marginRight:0;">亮度</text>
-					
+					<text :class="`${platform}-icon`">&#xe600;</text>
 				</div>
-				<div class="fullCurrent-bottom">
+				<div class="fullCurrent-bright">
 					<div class="fullCurrent-progress" :style="{width: `${touchBright*110}px`}"> </div>
 				</div>
 				
 			</cover-view>
 			
-			<cover-view class="fullControls-view"  ref="controlsBtm" :style="{ width: `${fullControlsWidth}px`,transform: `translateY(${controlsY*3}px)` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
+			<cover-view class="fullControls-view"  ref="controlsBtm" :style="{ width: `${fullControlsWidth}px` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="fullControls-top">
 					<text :class="`${platform}-title`">{{currentDuration}}</text>
 					<text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-160}px`}" :width="fullControlsWidth-250" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-80}px`}" :width="fullControlsWidth-250" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom">
 					<div class="fullControls-bottom-left">
@@ -106,8 +105,11 @@
 						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe601;</text>
 					</div>
 					<div class="fullControls-bottom-right">
-						<text :class="`${platform}-icon`">{{rate}}x</text>
-						<text :class="`${platform}-icon`" v-if="srcTitle!=''">{{srcTitle}}</text>
+						<text :class="`${platform}-title`">{{rate}}x</text>
+						<div class="`${platform}-title-box`" @click="clickSrc">
+							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
+						</div>
+						
 					</div>
 				</div>
 			</cover-view>
@@ -181,7 +183,7 @@
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",
-				'src': "url('../../static/text-icon.ttf')"
+				'src': "url('../../static/chunlei-video/text-icon.ttf')"
 			});
 			// #endif
 		},
@@ -243,9 +245,10 @@
 				}else{
 					this.videoCtx.exitFullScreen()
 				}
-				
-				
-				
+			},
+			//切换srctitle
+			clickSrc(){
+				if(this.srcList.length==1) return
 			},
 			clickVideo(){
 				this.showControls = !this.showControls
@@ -493,7 +496,7 @@
 		font-family: texticons;
 		font-weight: normal;
 		font-style: normal;
-		src: url('~@/static/text-icon.ttf') format('truetype');
+		src: url('~@/static/chunlei-video/text-icon.ttf') format('truetype');
 	}
 	/* #endif*/
 	
@@ -587,7 +590,7 @@
 	}
 	.fullCurrent-view{
 		background-color: rgba(0,0,0,0.3);
-		flex-direction: column;
+		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 		border-radius: 5px;
@@ -607,8 +610,32 @@
 		/* #endif */
 		overflow:hidden;
 	}
+	.fullCurrent-volume{
+		width: 110px;
+		border-radius: 3px;
+		background-color: linear-gradient(to right, white, #0081ff,yellow, red);
+		margin-top: 15px;
+		height: 10px;
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		/* #endif */
+		overflow:hidden;
+		align-items: flex-end;
+	}
+	.fullCurrent-bright{
+		width: 110px;
+		border-radius: 3px;
+		background-color: linear-gradient(to right, #0081ff, yellow, white);
+		margin-top: 15px;
+		height: 10px;
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		/* #endif */
+		overflow:hidden;
+		align-items: flex-end;
+	}
 	.fullCurrent-progress{
-		background-color: rgba(235, 235, 235,0.8); 
+		background-color: rgba(0, 0, 0,0.3); 
 		height: 10px;
 	}
 	.current-bottom{
