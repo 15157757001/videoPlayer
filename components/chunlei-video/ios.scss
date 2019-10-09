@@ -23,9 +23,12 @@
 	text-align: center;
 }
 .ios-title-box{
+	align-items: center;
+	text-align: center;
 	border-width: 2px;
 	border-color: #fff;
-	line-height: 24px;
+	border-style: solid;
+	padding: 2px;
 }
 .ios-srcTitle{
 	font-size: 12px;

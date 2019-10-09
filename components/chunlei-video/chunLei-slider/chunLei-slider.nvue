@@ -1,6 +1,6 @@
 <template>
 	<div class="slider" id="slider">
-		<div class="slider-left" :style="{ width: `${leftWidth-10}px` }" @touchend.stop="sliderTouch">
+		<div class="slider-left" :style="{ width: `${leftWidth-20}px` }" @touchend.stop="sliderTouch">
 			<div class="left" :style="{backgroundColor:backgroundColor}"></div>
 		</div>
 		
@@ -119,7 +119,7 @@
 		},
 		computed:{
 			blockBackgroundColor(){
-				return this.colorRgb(this.blockColor,0.7)
+				return this.colorRgb(this.blockColor,0.6)
 			}
 		},
 		watch:{
