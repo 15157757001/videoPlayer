@@ -39,9 +39,12 @@
 					<div>
 						<text class="ios-title">倍速播放</text>
 					</div>
-					
 					<div class="rate-list">
-						<text class="ios-title" @click.stop="tapRate(item)" v-for="item in rateList" :key="item" :style="{color:item==rate?'#FF6022':'#fff'}">{{item}}x</text>
+						<text class="ios-title" @click.stop="tapRate(0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
+						<text class="ios-title" @click.stop="tapRate(0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
+						<text class="ios-title" @click.stop="tapRate(1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
+						<text class="ios-title" @click.stop="tapRate(1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
+						<text class="ios-title" @click.stop="tapRate(1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
 					</div>
 				</div>
 			</cover-view>
