@@ -11,8 +11,8 @@
 				<div  class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 			</cover-view>
 			<cover-view class="controls-view" v-if="!fullScreen&&showControls" @click.stop="">
-				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe896;</text>
-				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe601;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe601;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe896;</text>
 				
 				<text class="ios-title">{{currentDuration}}</text>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
@@ -104,8 +104,8 @@
 				</div>
 				<div class="fullControls-bottom">
 					<div class="fullControls-bottom-left">
-						<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe503;</text>
-						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe601;</text>
+						<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe601;</text>
+						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe503;</text>
 					</div>
 					<div class="fullControls-bottom-right">
 						<text :class="`${platform}-title`">{{rate}}x</text>
@@ -460,6 +460,7 @@
 			gDuration:{
 				immediate:true,
 				handler(newVal,oldVal){
+					
 					this.duration = newVal
 				}
 			},
@@ -468,8 +469,7 @@
 				handler(newVal,oldVal){
 					if(typeof newVal=='string'){
 						this.src = newVal
-					}
-					if(newVal instanceof Array){
+					}else{
 						this.src = newVal[0].src
 						this.srcTitle = newVal[0].title
 					}
@@ -616,7 +616,7 @@
 	.fullCurrent-volume{
 		width: 110px;
 		border-radius: 3px;
-		background-color: linear-gradient(to right, white, #0081ff,yellow, red);
+		background-image: linear-gradient(to right, white, #0081ff,yellow, red);
 		margin-top: 15px;
 		height: 10px;
 		/* #ifndef APP-PLUS-NVUE */
@@ -628,7 +628,7 @@
 	.fullCurrent-bright{
 		width: 110px;
 		border-radius: 3px;
-		background-color: linear-gradient(to right, #0081ff, yellow, white);
+		background-image: linear-gradient(to right, #0081ff, yellow, white);
 		margin-top: 15px;
 		height: 10px;
 		/* #ifndef APP-PLUS-NVUE */

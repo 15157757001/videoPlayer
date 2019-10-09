@@ -177,8 +177,8 @@
 		align-items: center;
 	}
 	.block-inner{
-		height: 12px;
-		width: 12px;
-		border-radius: 6px;
+		height: 10px;
+		width: 10px;
+		border-radius: 5px;
 	}
 </style>
