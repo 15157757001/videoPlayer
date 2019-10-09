@@ -11,14 +11,14 @@
 				<div  class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 			</cover-view>
 			<cover-view class="controls-view" v-if="!fullScreen&&showControls" @click.stop="">
-				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe503;</text>
-				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe74f;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe896;</text>
+				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe601;</text>
 				
 				<text class="ios-title">{{currentDuration}}</text>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsHeigt-230}px`}" :width="`${fullControlsHeigt-230}`" @change="changeCurrent"></chunLei-slider>
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsHeigt-230}px`}" :width="`${fullControlsHeigt-230}`" @change="changeCurrent" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
 				<text class="ios-title" :style="{marginLeft:`20px`}">{{lastDuration}}</text>
-				<text class="ios-icon" @click="tapFullScreen">&#xe651;</text>
+				<text class="ios-icon" @click="tapFullScreen">&#xe60d;</text>
 			</cover-view>
 			<!-- 滑动video时显示 -->
 			<cover-view class="current-view" v-if="!fullScreen&&touchType=='current'">
@@ -41,16 +41,16 @@
 					</div>
 					
 					<div class="rate-list">
-						<text class="ios-title" @click.stop="tapRate(item)" v-for="item in rateList" :key="item">{{item}}x</text>
+						<text class="ios-title" @click.stop="tapRate(item)" v-for="item in rateList" :key="item" :style="{color:item==rate?'#FF6022':'#fff'}">{{item}}x</text>
 					</div>
 				</div>
 			</cover-view>
 			
 			
 			<!-- 全屏 -->
-			<cover-view class="controls-top" :style="{ width: `${fullControlsWidth}px`,transform: `translateY(${-controlsY}px)` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
+			<cover-view class="controls-top" ref="controlsTop" :style="{ width: `${fullControlsWidth}px` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="top-left">
-					<text :class="`${platform}-icon`" @click="tapFullScreen">&#xe60a;</text>
+					<text :class="`${platform}-icon`" @click="tapFullScreen">&#xe896;</text>
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
@@ -91,24 +91,32 @@
 				</div>
 				
 			</cover-view>
-			<cover-view class="fullControls-view" :style="{ width: `${fullControlsWidth}px`,transform: platform=='ios'?`translateY(${controlsY*2}px)`:`translateY(${controlsY}px)`,paddingBottom: platform!='ios'?'0':'40px',height:platform!='ios'?'40px':'80px' }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
-				<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe503;</text>
-				<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe74f;</text>
-				<!-- <text class="android-icon" @click="playNext">&#xe615;</text> -->
-				<text :class="`${platform}-title`">{{currentDuration}}</text>
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-250}px`}" :width="fullControlsWidth-250" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'"></chunLei-slider>
-				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
-				<text :class="`${platform}-title`" :style="{marginLeft:`20rpx`}">{{lastDuration}}</text>
+			
+			<cover-view class="fullControls-view"  ref="controlsBtm" :style="{ width: `${fullControlsWidth}px`,transform: `translateY(${controlsY*3}px)` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
+				<div class="fullControls-top">
+					<text :class="`${platform}-title`">{{currentDuration}}</text>
+					<text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{lastDuration}}</text>
+				</div>
+				<div class="fullControls-center">
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-160}px`}" :width="fullControlsWidth-250" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
+				</div>
+				<div class="fullControls-bottom">
+					<div class="fullControls-bottom-left">
+						<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe503;</text>
+						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe601;</text>
+					</div>
+					<div class="fullControls-bottom-right">
+						<text :class="`${platform}-icon`">{{rate}}x</text>
+						<text :class="`${platform}-icon`" v-if="srcTitle!=''">{{srcTitle}}</text>
+					</div>
+				</div>
 			</cover-view>
 			
 					
-			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: platform=='ios'?`${fullControlsHeigt/2-30}px`:`${fullControlsHeigt/2}px` }">
+			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: `${fullControlsHeigt/2-30}px`}">
 				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
 				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
 			</cover-view>
-			
-			
-	
 			
 		</video>
 		
@@ -117,13 +125,16 @@
 
 <script>
 	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue'
+	const animation = weex.requireModule('animation');
+	const modal = weex.requireModule('modal');
+	
 	export default{ 
 		components:{
 			chunLeiSlider
 		},
 		props:{
-			src:{ //要播放视频的资源地址
-				type:String,
+			srcList:{ //要播放视频的资源地址
+				type:[Array,String],
 				default:''
 			},
 			title:{ //视频标题
@@ -137,6 +148,8 @@
 		},
 		data(){
 			return{
+				src:'',
+				srcTitle:'', //高清标签
 				duration:0, //精确总时长
 				controls:false,
 				videoCtx:'',//视频上下文
@@ -151,7 +164,6 @@
 				oldValue:{},//触摸开始 进度，音量，亮度
 				nowTime:'',//当前时间
 				lock:false,//锁屏
-				controlsY:0,//全屏后Y动画
 				oldTouces:{},
 				touchType: null,//滑动类型
 				platform:'',
@@ -240,7 +252,8 @@
 				if(this.showControls){
 					this.controlsY = 40
 					this.nowTime = this.getNowTime()
-					this.animateControls(0,4)
+					this.animateControls(40,this.$refs.controlsTop)
+					this.animateControls(120,this.$refs.controlsBtm)
 				}else{
 					this.controlsY = 40
 				}
@@ -253,16 +266,18 @@
 				
 				this.lock = !this.lock
 			},
-			animateControls(distance,speed){
-				const temp = setInterval(() => {
-					if (this.controlsY > distance) {
-						this.controlsY = this.controlsY - speed
+			animateControls(distance,el){
+				animation.transition(el, {
+					styles: {
+						transform: `translate(0px, ${distance}px)`,
+					},
+					duration: 200, //ms
+					timingFunction: 'ease-in-out',
+					delay: 0 //ms
+					}, () => {
 						
-					} else {
-						this.controlsY = 0
-						clearInterval(temp)
 					}
-				}, 40)
+				)
 			},
 			// 触摸开始
 			videoTouchStart(e) {
@@ -423,7 +438,7 @@
 				if(a>=0){  
 					return length;  
 				}else{  
-					return "00:00:00";  
+					return "00:00";  
 				}  
 			},
 			getNowTime(){ 
@@ -441,7 +456,19 @@
 				handler(newVal,oldVal){
 					this.duration = newVal
 				}
-			}
+			},
+			srcList:{
+				immediate:true,
+				handler(newVal,oldVal){
+					if(typeof newVal=='string'){
+						this.src = newVal
+					}
+					if(newVal instanceof Array){
+						this.src = newVal[0].src
+						this.srcTitle = newVal[0].title
+					}
+				}
+			},
 		},
 		computed:{
 			lastDuration(){
@@ -460,6 +487,7 @@
 
 <style lang="scss">
 	@import "./android.scss";
+	@import "./ios.scss";
 	/* #ifndef APP-PLUS-NVUE */
 	@font-face {
 		font-family: texticons;
@@ -478,10 +506,7 @@
 		flex:1;
 		width: 750rpx;
 	}
-	.move-view{
-		
-		
-	}
+	
 	.video-view{
 		
 		/* #ifndef APP-PLUS-NVUE */
@@ -492,29 +517,7 @@
 		position: absolute;
 		z-index:999;
 	}
-	.ios-icon {
-		font-size: 18px;
-		color: #fff;
-		font-family: texticons;
-		margin-right: 20rpx;
-	}
-	.ios-title{
-		font-size: 18px;
-		color: #fff;
-		margin-right: 20rpx;
-		text-align: center;
-	}
-	.android-icon{
-		font-size: 9px;
-		color: #fff;
-		font-family: texticons;
-		margin-right: 10px;
-	}
-	.android-title{
-		font-size: 9px;
-		color: #fff;
-		margin-right: 10px;
-	}
+	
 	
 	.controls-top{
 		/* #ifndef APP-PLUS-NVUE */
@@ -641,7 +644,7 @@
 		height: 40px;
 		z-index: 99;
 		position: absolute;
-		background-color:rgba(0,0,0,0.3);
+		background-image:linear-gradient(to top , rgba(0,0,0,0.8) , rgba(0,0,0,0));
 		bottom: 0;
 		flex-direction: row;
 		align-items: center;
@@ -655,31 +658,41 @@
 		/* #endif */
 		
 		background-image: linear-gradient(to bottom , rgba(0,0,0,0.4) , rgba(0,0,0,0.4));
-		height: 40px;
+		height: 120px;
 		
 		
 		position: absolute;
 		bottom: 0;
 		z-index: 99999;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		padding: 0 40px;
+	}
+	.fullControls-top{
+		flex-direction: row;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		flex: 1;
+	}
+	.fullControls-center{
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		height: 40px;
+	}
+	.fullControls-bottom{
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		height: 40px;
+	}
+	.fullControls-bottom-right{
+		flex-direction: row;
 	}
 	.video-slider{
 		z-index: 100;
 		flex: 1;
 	}
-	.ios-lock{
-		position: absolute;
-		margin: 40px;
-		width: 40px;
-		height: 40px;
-		padding: 10px 0 0 10px;
-		transform: translateY(-40px);
-		background-color: rgba(0,0,0,0.3);
-		border-radius: 50%;
-			
-		text-align: center;
-	}
+
 	
 </style>
