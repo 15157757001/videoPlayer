@@ -1,15 +1,16 @@
 <template>
 	<view class="video-box">
 		<video :controls="false" :show-center-play-btn="false" :show-fullscreen-btn="false" :show-progress="false"
-			:objectFit="objectFit" :direction="direction" :src="src" :enable-progress-gesture="false"
+			:objectFit="objectFit" :direction="direction" :src="src" :loop="loop" :enable-progress-gesture="false"
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" @ended="ended" @waiting="waiting" @play="playing"
 			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
-				<div  class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
+				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
 			</cover-view>
 			<cover-view  class="video-view" v-if="fullScreen" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
-				<div  class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
+				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 			</cover-view>
+
 			<cover-view class="controls-view" v-if="!fullScreen&&showControls" @click.stop="">
 				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe601;</text>
 				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe896;</text>
@@ -40,11 +41,11 @@
 						<text class="ios-title">倍速播放</text>
 					</div>
 					<div class="rate-list">
-						<text class="ios-title" @click.stop="tapRate(0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
-						<text class="ios-title" @click.stop="tapRate(0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
-						<text class="ios-title" @click.stop="tapRate(1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
-						<text class="ios-title" @click.stop="tapRate(1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
-						<text class="ios-title" @click.stop="tapRate(1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
+						<text class="ios-title" :class="0.5==rate?'solid-bottom':''" @click.stop="tapRate(0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
+						<text class="ios-title" :class="0.8==rate?'solid-bottom':''" @click.stop="tapRate(0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
+						<text class="ios-title" :class="1.0==rate?'solid-bottom':''" @click.stop="tapRate(1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
+						<text class="ios-title" :class="1.25==rate?'solid-bottom':''" @click.stop="tapRate(1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
+						<text class="ios-title" :class="1.5==rate?'solid-bottom':''" @click.stop="tapRate(1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
 					</div>
 				</div>
 			</cover-view>
@@ -57,8 +58,72 @@
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
-					<text :class="`${platform}-icon`">&#xe642;</text>
+					<text :class="`${platform}-icon`" @click="clickMoreView">&#xe646;</text>
 					<text :class="`${platform}-title`">{{nowTime}}</text>
+				</div>
+			</cover-view>
+			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: `${fullControlsHeigt/2-30}px`}">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			</cover-view>
+			<cover-view class="set-view" v-if="fullScreen&&(rateView||srcView||moreView)" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
+				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="rateView"  @click.stop="clickRateView">
+					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">播放速度</text>
+					<div class="set-bottom">
+						<div class="setBox" :class="0.5==rate?'solid-bottom':''" @click.stop="tapRate(0.5)">
+							<text :class="`${platform}-big-title`" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
+						</div>
+						<div class="setBox" :class="0.8==rate?'solid-bottom':''" @click.stop="tapRate(0.8)">
+							<text :class="`${platform}-big-title`" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
+						</div>
+						<div class="setBox" :class="1.0==rate?'solid-bottom':''" @click.stop="tapRate(1.0)">
+							<text :class="`${platform}-big-title`" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
+						</div>
+						<div class="setBox" :class="1.25==rate?'solid-bottom':''" @click.stop="tapRate(1.25)">
+							<text :class="`${platform}-big-title`" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
+						</div>
+						<div class="setBox" :class="1.5==rate?'solid-bottom':''" @click.stop="tapRate(1.5)">
+							<text :class="`${platform}-big-title`" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
+						</div>
+					</div>
+				</div>
+				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="srcView"  @click.stop="clickSrcView">
+					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">{{srcTitle}}</text>
+					<div class="set-bottom">
+						<div class="setBox" :class="srcTitle==item.title?'solid-bottom':''" @click.stop="tapSrc(item)" v-for="(item,index) in srcList" :key="index">
+							<text :class="`${platform}-big-title`" :style="{color:srcTitle==item.title?'#FF6022':'#fff'}">{{item.title}}</text>
+						</div>
+					</div>
+				</div>
+				<div class="more-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="moreView"  @click.stop="clickMoreView">
+					<div class="more-row">
+						<div class="more-box" @click="clickLoop" v-if="!loop">
+							<text :class="`${platform}-big-icon`">&#xe657;</text>
+							<text :class="`${platform}-title`" style="marginRight:0;">循环播放</text>
+						</div>
+						<div class="more-box" @click="clickLoop" v-if="loop">
+							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe63b;</text>
+							<text :class="`${platform}-title`" :style="{color:'#FF6022',marginRight:0}">取消循环</text>
+						</div>
+						<div class="more-box" @click="clickFull" v-if="!full">
+							<text :class="`${platform}-big-icon`">&#xe602;</text>
+							<text :class="`${platform}-title`" style="marginRight:0;">撑满全屏</text>
+						</div>
+						<div class="more-box" @click="clickFull" v-if="full">
+							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe78a;</text>
+							<text :class="`${platform}-title`" :style="{color:'#FF6022',marginRight:0}">恢复不撑满</text>
+						</div>
+					</div>
+					<div class="more-row">
+						<div class="more-box"><text :class="`${platform}-title`">播放速度</text></div>
+						<scroll-view class="scroll-view" scroll-x="true" :scroll-left="1.5==rate?200:0" :style="{ width: `${fullControlsWidth-320}px`}">
+							<div class="more-box" @click.stop="tapRate(0.5)"><text class="`${platform}-title`" :class="0.5==rate?'solid-bottom':''" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text></div>
+							<div class="more-box" @click.stop="tapRate(0.8)"><text class="`${platform}-title`" :class="0.8==rate?'solid-bottom':''" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text></div>
+							<div class="more-box" @click.stop="tapRate('1.0')"><text class="`${platform}-title`" :class="1.0==rate?'solid-bottom':''" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text></div>
+							<div class="more-box" @click.stop="tapRate(1.25)"><text class="`${platform}-title`" :class="1.25==rate?'solid-bottom':''" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text></div>
+							<div class="more-box" @click.stop="tapRate(1.5)"><text class="`${platform}-title`" :class="1.5==rate?'solid-bottom':''" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text></div>
+						</scroll-view>
+					</div>
 				</div>
 			</cover-view>
 			<!-- 滑动video时显示 -->
@@ -75,8 +140,10 @@
 			<!-- 滑动video时显示音量 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='volume'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text :class="`${platform}-icon`">&#xe603;</text>
-					
+					<text :class="`${platform}-icon`" v-if="touchVolume==0">&#xe654;</text>
+					<text :class="`${platform}-icon`" v-if="touchVolume>0&&touchVolume<0.33">&#xe779;</text>
+					<text :class="`${platform}-icon`" v-if="touchVolume>=0.33&&touchVolume<0.66">&#xe603;</text>
+					<text :class="`${platform}-icon`" v-if="touchVolume>=0.66&&touchVolume<=1">&#xe61b;</text>
 				</div>
 				<div class="fullCurrent-volume">
 					<div class="fullCurrent-progress" :style="{width: `${110-touchVolume*110}px`}"> </div>
@@ -108,8 +175,8 @@
 						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe896;</text>
 					</div>
 					<div class="fullControls-bottom-right">
-						<text :class="`${platform}-title`">{{rate}}x</text>
-						<div :class="`${platform}-title-box`" @click="clickSrc">
+						<text :class="`${platform}-title`" @click="clickRateView">{{rate}}x</text>
+						<div :class="`${platform}-title-box`" @click="clickSrcView">
 							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
 						</div>
 						
@@ -118,10 +185,7 @@
 			</cover-view>
 			
 					
-			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: `${fullControlsHeigt/2-30}px`}">
-				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
-				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
-			</cover-view>
+			
 			
 		</video>
 		
@@ -160,6 +224,7 @@
 				videoCtx:'',//视频上下文
 				current: 0, //video进度
 				play: false,//播放状态
+				loop: false,//循环
 				fullScreen: false,//全屏状态
 				direction: -90,//全屏方向
 				objectFit:'contain',
@@ -171,9 +236,12 @@
 				lock:false,//锁屏
 				oldTouces:{},
 				touchType: null,//滑动类型
-				platform:'',
+				platform:'',//系统
 				rate:'1.0',
 				rateView:false,
+				srcView:false,
+				moreView:false,
+				full:false,//撑满全屏
 				rateList:['0.5','0.8','1.0','1.25','1.5'],//倍数
 				touchCurrent:0,
 				touchBright:0,
@@ -226,24 +294,57 @@
 				
 			},
 			ended(){
-				this.play = false
+				if(!this.loop){
+					this.play = false
+				}
+				
 			},
 			waiting(){
-				console.log('333')
+				
 			},
 			playing(){
-				console.log('322')
+				
 			},
 			//拖动滑块
 			changeCurrent(e){
 				this.current = e.detail.value
 				this.videoCtx.seek(this.current)
 			},
+			clickFull(){
+				if(this.full){
+					this.objectFit = 'contain'
+				}else{
+					this.objectFit = 'fill'
+				}
+				this.full = !this.full
+				this.clickMoreView()
+			},
+			clickLoop(){
+				this.loop = !this.loop
+				this.clickMoreView()
+			},
 			//倍速播放
 			tapRate(rate){
-				this.rateView = !this.rateView
 				this.videoCtx.playbackRate(rate*1)
 				this.rate = rate
+				if(this.fullScreen){
+					this.clickRateView()
+				}else{
+					this.rateView = !this.rateView
+				}
+			},
+			//切换高清
+			tapSrc(item){
+				if(this.src == item.src){
+					
+				}else{
+					this.src = item.src
+					this.srcTitle = item.title
+					this.videoCtx.play();
+					this.videoCtx.seek(this.current)
+					this.videoCtx.playbackRate(this.rate*1)
+				}
+				this.clickSrcView()
 			},
 			videoPlay(){
 				if(!this.play){
@@ -262,21 +363,50 @@
 					this.videoCtx.exitFullScreen()
 				}
 			},
-			//切换srctitle
-			clickSrc(){
-				if(this.srcList.length==1) return
-			},
 			async clickVideo(){
 				this.showControls = !this.showControls
 				if(this.showControls){
-					this.controlsY = 40
 					this.nowTime = this.getNowTime()
 					await this.promise()
-					
 					this.animateControls(0,this.$refs.controlsTop)
 					this.animateControls(0,this.$refs.controlsBtm)
+				}
+			},
+			async clickRateView(){
+				this.showControls = !this.showControls
+				if(this.moreView){
+					this.moreView = false
 				}else{
-					this.controlsY = 40
+					this.rateView = !this.rateView
+				}
+				
+				if(this.showControls){
+					this.nowTime = this.getNowTime()
+					await this.promise()
+					this.animateControls(0,this.$refs.controlsTop)
+					this.animateControls(0,this.$refs.controlsBtm)
+				}
+			},
+			//切换srctitle
+			async clickSrcView(){
+				if(this.srcList.length==1) return
+				this.showControls = !this.showControls
+				this.srcView = !this.srcView
+				if(this.showControls){
+					this.nowTime = this.getNowTime()
+					await this.promise()
+					this.animateControls(0,this.$refs.controlsTop)
+					this.animateControls(0,this.$refs.controlsBtm)
+				}
+			},
+			async clickMoreView(){
+				this.showControls = !this.showControls
+				this.moreView = !this.moreView
+				if(this.showControls){
+					this.nowTime = this.getNowTime()
+					await this.promise()
+					this.animateControls(0,this.$refs.controlsTop)
+					this.animateControls(0,this.$refs.controlsBtm)
 				}
 			},
 			//下一集
@@ -400,8 +530,11 @@
 				
 			},
 			changeScreen(){
-				this.a = true
+				
 				this.showControls = false
+				this.rateView = false
+				this.moreView = false
+				this.srcView = false
 				this.fullScreen = !this.fullScreen
 			},
 			getLevel(){
@@ -538,8 +671,58 @@
 		position: absolute;
 		z-index:999;
 	}
-	
-	
+	.set-view{
+		position: absolute;
+		z-index:999;
+		background-color: rgba(0,0,0,0.5);
+	}
+	.rate-set{
+		flex-direction: column;
+		padding: 40px 80px;
+		justify-content: flex-end;
+		opacity: 0.6;
+	}
+	.scroll-view{
+		flex-direction: row;
+	}
+	.more-set{
+		flex-direction: column;
+		padding: 40px 100px;
+	}
+	.more-row{
+		flex-direction: row;
+		padding: 0 20px;
+		border-bottom-width: 1px;
+		border-bottom-color: #70A0A0;
+		opacity: 0.6;
+	}
+	.more-box{
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		height: 100px;
+		width: 100px;
+		margin-right: 20px;
+		
+	}
+	.set-bottom{
+		flex-direction: row;
+	}
+	.setBox{
+		height: 100px;
+		width: 100px;
+		margin-right: 20px;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(94,162,162,0.3);
+	}
+	.solid-bottom{
+		border-bottom-width: 2px;
+		border-bottom-color: #FF6022;
+	}
+	.text-select{
+		color: #FF6022;
+	}
 	.controls-top{
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
@@ -689,6 +872,9 @@
 		padding-top: 20px;
 		flex-direction: row;
 		justify-content: center;
+	}
+	.fullRate-view{
+		flex-direction: row;
 	}
 	.controls-view{
 		/* #ifndef APP-PLUS-NVUE */
