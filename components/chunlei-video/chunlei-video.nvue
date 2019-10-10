@@ -41,17 +41,21 @@
 						<text class="ios-title">倍速播放</text>
 					</div>
 					<div class="rate-list">
-						<text class="ios-title" :class="0.5==rate?'solid-bottom':''" @click.stop="tapRate(0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
-						<text class="ios-title" :class="0.8==rate?'solid-bottom':''" @click.stop="tapRate(0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
-						<text class="ios-title" :class="1.0==rate?'solid-bottom':''" @click.stop="tapRate(1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
-						<text class="ios-title" :class="1.25==rate?'solid-bottom':''" @click.stop="tapRate(1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
-						<text class="ios-title" :class="1.5==rate?'solid-bottom':''" @click.stop="tapRate(1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
+						<text class="ios-title" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
+						<text class="ios-title" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
+						<text class="ios-title" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
+						<text class="ios-title" :class="1.25==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
+						<text class="ios-title" :class="1.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
 					</div>
 				</div>
 			</cover-view>
 			
 			
 			<!-- 全屏 -->
+			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls&&platform=='ios'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			</cover-view>
 			<cover-view class="controls-top" ref="controlsTop" :style="{ width: `${fullControlsWidth}px` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="top-left">
 					<text :class="`${platform}-icon`" @click="tapFullScreen">&#xe60a;</text>
@@ -62,27 +66,24 @@
 					<text :class="`${platform}-title`">{{nowTime}}</text>
 				</div>
 			</cover-view>
-			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls" :style="{ top: `${fullControlsHeigt/2-30}px`}">
-				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
-				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
-			</cover-view>
+			
 			<cover-view class="set-view" v-if="fullScreen&&(rateView||srcView||moreView)" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
 				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="rateView"  @click.stop="clickRateView">
 					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">播放速度</text>
 					<div class="set-bottom">
-						<div class="setBox" :class="0.5==rate?'solid-bottom':''" @click.stop="tapRate(0.5)">
+						<div class="setBox" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)">
 							<text :class="`${platform}-big-title`" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
 						</div>
-						<div class="setBox" :class="0.8==rate?'solid-bottom':''" @click.stop="tapRate(0.8)">
+						<div class="setBox" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)">
 							<text :class="`${platform}-big-title`" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
 						</div>
-						<div class="setBox" :class="1.0==rate?'solid-bottom':''" @click.stop="tapRate(1.0)">
+						<div class="setBox" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1)">
 							<text :class="`${platform}-big-title`" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
 						</div>
-						<div class="setBox" :class="1.25==rate?'solid-bottom':''" @click.stop="tapRate(1.25)">
+						<div class="setBox" :class="1.25==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.25)">
 							<text :class="`${platform}-big-title`" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
 						</div>
-						<div class="setBox" :class="1.5==rate?'solid-bottom':''" @click.stop="tapRate(1.5)">
+						<div class="setBox" :class="1.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.5)">
 							<text :class="`${platform}-big-title`" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
 						</div>
 					</div>
@@ -90,26 +91,26 @@
 				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="srcView"  @click.stop="clickSrcView">
 					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">{{srcTitle}}</text>
 					<div class="set-bottom">
-						<div class="setBox" :class="srcTitle==item.title?'solid-bottom':''" @click.stop="tapSrc(item)" v-for="(item,index) in srcList" :key="index">
+						<div class="setBox" :class="srcTitle==item.title?'solid-bottom':''" @click.stop="(args)=>tapSrc(args,item)" v-for="(item,index) in srcList" :key="index">
 							<text :class="`${platform}-big-title`" :style="{color:srcTitle==item.title?'#FF6022':'#fff'}">{{item.title}}</text>
 						</div>
 					</div>
 				</div>
 				<div class="more-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="moreView"  @click.stop="clickMoreView">
 					<div class="more-row">
-						<div class="more-box" @click="clickLoop" v-if="!loop">
-							<text :class="`${platform}-big-icon`">&#xe657;</text>
-							<text :class="`${platform}-title`" style="marginRight:0;">循环播放</text>
+						<div class="more-box" @click.stop="clickLoop" v-if="!loop">
+							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe657;</text>
+							<text :class="`${platform}-title`" style="marginRight:0;color:#FFF">循环播放</text>
 						</div>
-						<div class="more-box" @click="clickLoop" v-if="loop">
+						<div class="more-box" @click.stop="clickLoop" v-if="loop">
 							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe63b;</text>
 							<text :class="`${platform}-title`" :style="{color:'#FF6022',marginRight:0}">取消循环</text>
 						</div>
-						<div class="more-box" @click="clickFull" v-if="!full">
-							<text :class="`${platform}-big-icon`">&#xe602;</text>
-							<text :class="`${platform}-title`" style="marginRight:0;">撑满全屏</text>
+						<div class="more-box" @click.stop="clickFull" v-if="!full">
+							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe602;</text>
+							<text :class="`${platform}-title`" style="marginRight:0;color:#FFF">撑满全屏</text>
 						</div>
-						<div class="more-box" @click="clickFull" v-if="full">
+						<div class="more-box" @click.stop="clickFull" v-if="full">
 							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe78a;</text>
 							<text :class="`${platform}-title`" :style="{color:'#FF6022',marginRight:0}">恢复不撑满</text>
 						</div>
@@ -117,11 +118,11 @@
 					<div class="more-row">
 						<div class="more-box"><text :class="`${platform}-title`">播放速度</text></div>
 						<scroll-view class="scroll-view" scroll-x="true" :scroll-left="1.5==rate?200:0" :style="{ width: `${fullControlsWidth-320}px`}">
-							<div class="more-box" @click.stop="tapRate(0.5)"><text class="`${platform}-title`" :class="0.5==rate?'solid-bottom':''" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text></div>
-							<div class="more-box" @click.stop="tapRate(0.8)"><text class="`${platform}-title`" :class="0.8==rate?'solid-bottom':''" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text></div>
-							<div class="more-box" @click.stop="tapRate('1.0')"><text class="`${platform}-title`" :class="1.0==rate?'solid-bottom':''" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text></div>
-							<div class="more-box" @click.stop="tapRate(1.25)"><text class="`${platform}-title`" :class="1.25==rate?'solid-bottom':''" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text></div>
-							<div class="more-box" @click.stop="tapRate(1.5)"><text class="`${platform}-title`" :class="1.5==rate?'solid-bottom':''" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,0.5)"><text class="`${platform}-title`" :class="0.5==rate?'solid-bottom':''" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,0.8)"><text class="`${platform}-title`" :class="0.8==rate?'solid-bottom':''" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1)"><text class="`${platform}-title`" :class="1.0==rate?'solid-bottom':''" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1.25)"><text class="`${platform}-title`" :class="1.25==rate?'solid-bottom':''" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1.5)"><text class="`${platform}-title`" :class="1.5==rate?'solid-bottom':''" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text></div>
 						</scroll-view>
 					</div>
 				</div>
@@ -183,7 +184,10 @@
 					</div>
 				</div>
 			</cover-view>
-			
+			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls&&platform=='android'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			</cover-view>
 					
 			
 			
@@ -267,7 +271,6 @@
 				success: (e) => {
 					// #ifndef MP
 					this.platform = e.platform
-					
 					// #endif
 				}
 			})
@@ -284,7 +287,7 @@
 				let promise = new Promise((resolve,reject)=>{
 					setTimeout(()=>{
 						resolve()
-					},100)
+					},20)
 				})
 				return promise
 			},
@@ -310,7 +313,8 @@
 				this.current = e.detail.value
 				this.videoCtx.seek(this.current)
 			},
-			clickFull(){
+			clickFull(e){
+				e.stopPropagation();
 				if(this.full){
 					this.objectFit = 'contain'
 				}else{
@@ -319,12 +323,14 @@
 				this.full = !this.full
 				this.clickMoreView()
 			},
-			clickLoop(){
+			clickLoop(e){
+				e.stopPropagation();
 				this.loop = !this.loop
 				this.clickMoreView()
 			},
 			//倍速播放
-			tapRate(rate){
+			tapRate(e,rate){
+				e.stopPropagation();
 				this.videoCtx.playbackRate(rate*1)
 				this.rate = rate
 				if(this.fullScreen){
@@ -334,14 +340,20 @@
 				}
 			},
 			//切换高清
-			tapSrc(item){
+			async tapSrc(e,item){
+				e.stopPropagation();
+				let current= this.current
 				if(this.src == item.src){
 					
 				}else{
 					this.src = item.src
 					this.srcTitle = item.title
+					await this.promise()
+					this.videoCtx = uni.createVideoContext('chunleiVideo',this);
+					
+					await this.promise()
 					this.videoCtx.play();
-					this.videoCtx.seek(this.current)
+					this.videoCtx.seek(200)
 					this.videoCtx.playbackRate(this.rate*1)
 				}
 				this.clickSrcView()
@@ -376,6 +388,7 @@
 				this.showControls = !this.showControls
 				if(this.moreView){
 					this.moreView = false
+					
 				}else{
 					this.rateView = !this.rateView
 				}
@@ -413,8 +426,8 @@
 			playNext(){
 				
 			},
-			clickLock(){
-				
+			clickLock(e){
+				e.stopPropagation();
 				this.lock = !this.lock
 			},
 			animateControls(distance,el){
@@ -673,6 +686,7 @@
 	}
 	.set-view{
 		position: absolute;
+		top:0;
 		z-index:999;
 		background-color: rgba(0,0,0,0.5);
 	}
@@ -728,14 +742,14 @@
 		display: flex;
 		
 		/* #endif */
-		
+		position: absolute;
 		
 		background-image: linear-gradient(to top , rgba(0,0,0,0) , rgba(0,0,0,0.8));
 		
 		height: 40px;
 		
 		transform: translateY(-40px);
-		bottom: 0;
+		top: 0;
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
