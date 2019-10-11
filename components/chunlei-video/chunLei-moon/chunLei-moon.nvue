@@ -10,7 +10,7 @@
 		<div class="light light8" :style="{opacity:light8}"></div>
 		<div class="moon">
 			<div class="move-box" :style="{transform:`rotate(${360*percentage*8}deg)`}">
-				<div class="move-moon" :style="{right:`${-percentage*8}px`}"></div>
+				<div class="move-moon" :style="{right:`${-10+1-percentage*10}px`}"></div>
 			</div>
 		</div>
 	</div>
@@ -83,7 +83,7 @@
 		border-radius: 10px;
 		position: absolute;
 		top: 10px;
-		height: 10px;
+		left: 10px;
 		background-color: #fff;
 	}
 	.move-box{
@@ -96,11 +96,10 @@
 		position: absolute;
 		width: 20px;
 		height: 20px;
-		right: 0;
 		top:0;
 		border-radius: 10px;
 		position: relative;
-		background-color: rgba(0,0,0,0.3);
+		background-color: rgba(0,0,0,1);
 	}
 	.light{
 		position: absolute;

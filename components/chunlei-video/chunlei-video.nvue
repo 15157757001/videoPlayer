@@ -164,10 +164,10 @@
 			</cover-view>
 			<!-- 滑动video时显示亮度 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='bright'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
-				<div class="fullCurrent-top">
+				
 					<!-- <text :class="`${platform}-icon`">&#xe600;</text> -->
 					<chunLei-moon :percentage="touchBright"></chunLei-moon>
-				</div>
+				
 				<div class="fullCurrent-bright">
 					<div class="fullCurrent-progress" :style="{width: `${110-touchBright*110}px`}"> </div>
 				</div>
