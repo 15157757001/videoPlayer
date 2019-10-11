@@ -703,7 +703,7 @@
 	}
 	.power-view{
 		align-items: center;
-		width: 22px;
+		
 	}
 	.power-box{
 		flex-direction: row;
