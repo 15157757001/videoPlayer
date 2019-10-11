@@ -63,7 +63,17 @@
 				</div>
 				<div class="top-right">
 					<text :class="`${platform}-icon`" @click="clickMoreView">&#xe646;</text>
-					<text :class="`${platform}-title`">{{nowTime}}</text>
+					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
+					
+					<div class="power-view">
+						<div class="power-box">
+							<div class="power-header"></div>
+							<div class="power-body">
+								<div class="power-level" :style="{ width:`${16*level}px` }"></div>
+							</div>
+						</div>
+						<text :class="`${platform}-sm-title`">{{nowTime}}</text>
+					</div>
 				</div>
 			</cover-view>
 			
@@ -115,6 +125,7 @@
 							<text :class="`${platform}-title`" :style="{color:'#FF6022',marginRight:0}">恢复不撑满</text>
 						</div>
 					</div>
+					<div class="more-tap"></div>
 					<div class="more-row">
 						<div class="more-box"><text :class="`${platform}-title`">播放速度</text></div>
 						<scroll-view class="scroll-view" scroll-x="true" :scroll-left="1.5==rate?200:0" :style="{ width: `${fullControlsWidth-320}px`}">
@@ -154,7 +165,8 @@
 			<!-- 滑动video时显示亮度 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='bright'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
 				<div class="fullCurrent-top">
-					<text :class="`${platform}-icon`">&#xe600;</text>
+					<!-- <text :class="`${platform}-icon`">&#xe600;</text> -->
+					<chunLei-moon :percentage="touchBright"></chunLei-moon>
 				</div>
 				<div class="fullCurrent-bright">
 					<div class="fullCurrent-progress" :style="{width: `${110-touchBright*110}px`}"> </div>
@@ -197,13 +209,15 @@
 </template>
 
 <script>
-	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue'
+	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue';
+	import chunLeiMoon from './chunLei-moon/chunLei-moon.nvue';
 	const animation = weex.requireModule('animation');
 	const modal = weex.requireModule('modal');
 	
 	export default{ 
 		components:{
-			chunLeiSlider
+			chunLeiSlider,
+			chunLeiMoon
 		},
 		props:{
 			srcList:{ //要播放视频的资源地址
@@ -251,6 +265,7 @@
 				touchBright:0,
 				touchVolume:0,
 				ratio:1, //滚动条比例系数
+				level:1  //电量
 			}
 		},
 		beforeCreate() {
@@ -377,12 +392,6 @@
 			},
 			async clickVideo(){
 				this.showControls = !this.showControls
-				if(this.showControls){
-					this.nowTime = this.getNowTime()
-					await this.promise()
-					this.animateControls(0,this.$refs.controlsTop)
-					this.animateControls(0,this.$refs.controlsBtm)
-				}
 			},
 			async clickRateView(){
 				this.showControls = !this.showControls
@@ -392,35 +401,16 @@
 				}else{
 					this.rateView = !this.rateView
 				}
-				
-				if(this.showControls){
-					this.nowTime = this.getNowTime()
-					await this.promise()
-					this.animateControls(0,this.$refs.controlsTop)
-					this.animateControls(0,this.$refs.controlsBtm)
-				}
 			},
 			//切换srctitle
 			async clickSrcView(){
 				if(this.srcList.length==1) return
 				this.showControls = !this.showControls
 				this.srcView = !this.srcView
-				if(this.showControls){
-					this.nowTime = this.getNowTime()
-					await this.promise()
-					this.animateControls(0,this.$refs.controlsTop)
-					this.animateControls(0,this.$refs.controlsBtm)
-				}
 			},
 			async clickMoreView(){
 				this.showControls = !this.showControls
 				this.moreView = !this.moreView
-				if(this.showControls){
-					this.nowTime = this.getNowTime()
-					await this.promise()
-					this.animateControls(0,this.$refs.controlsTop)
-					this.animateControls(0,this.$refs.controlsBtm)
-				}
 			},
 			//下一集
 			playNext(){
@@ -551,44 +541,45 @@
 				this.fullScreen = !this.fullScreen
 			},
 			getLevel(){
-				level = 1
-				//#ifdef APP-PLUS-NVUE
-				if(this.platform == 'android'){
-					//注意，安卓需要配置下manifest.json文件，打开后，进入模块权限配置，在右侧的Android权限设置里勾选上android.permission.BATTERY_STATS
-					var main = plus.android.runtimeMainActivity();  
-					var Intent = plus.android.importClass('android.content.Intent');  
-					var recevier = plus.android.implements('io.dcloud.feature.internal.reflect.BroadcastReceiver', {  
-					        onReceive: function(context, intent) {  
-					        var action = intent.getAction();  
-					        if (action == Intent.ACTION_BATTERY_CHANGED) {  
-					            level   = intent.getIntExtra("level", 0); //电量  
-					            var voltage = intent.getIntExtra("voltage", 0); //电池电压  
-					            var temperature = intent.getIntExtra("temperature", 0); //电池温度  
-								return level
-					        }  
-					     }  
-					 });  
-					var IntentFilter = plus.android.importClass('android.content.IntentFilter');  
-					var filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);  
-					main.registerReceiver(recevier, filter);
-				}else if(this.platform == 'ios'){
-					var UIDevice = plus.ios.import("UIDevice");
-					var dev = UIDevice.currentDevice();  
-					if (!dev.isBatteryMonitoringEnabled()) {  
-					    dev.setBatteryMonitoringEnabled(true);  
-					}  
-					level =dev.batteryLevel();  
-					return level
-				}
-				//#endif
-				//#ifdef MP-WEIXIN
-				wx.getBatteryInfo({
-					success: function(e) {
-						
-						return e.level
+				let promise = new Promise((resolve,reject)=>{
+					//#ifdef APP-PLUS-NVUE
+					if(this.platform == 'android'){
+						//注意，安卓需要配置下manifest.json文件，打开后，进入模块权限配置，在右侧的Android权限设置里勾选上android.permission.BATTERY_STATS
+						var main = plus.android.runtimeMainActivity();  
+						var Intent = plus.android.importClass('android.content.Intent');  
+						var recevier = plus.android.implements('io.dcloud.feature.internal.reflect.BroadcastReceiver', {  
+						        onReceive: function(context, intent) {  
+						        var action = intent.getAction();  
+						        if (action == Intent.ACTION_BATTERY_CHANGED) {  
+						            let level   = intent.getIntExtra("level", 0); //电量  
+						            var voltage = intent.getIntExtra("voltage", 0); //电池电压  
+						            var temperature = intent.getIntExtra("temperature", 0); //电池温度  
+									resolve(level/100)
+						        }  
+						     }  
+						 });  
+						var IntentFilter = plus.android.importClass('android.content.IntentFilter');  
+						var filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);  
+						main.registerReceiver(recevier, filter);
+					}else if(this.platform == 'ios'){
+						var UIDevice = plus.ios.import("UIDevice");
+						var dev = UIDevice.currentDevice();  
+						if (!dev.isBatteryMonitoringEnabled()) {  
+						    dev.setBatteryMonitoringEnabled(true);  
+						}  
+						let level =dev.batteryLevel();  
+						resolve(level/100)
 					}
+					//#endif
+					//#ifdef MP-WEIXIN
+					wx.getBatteryInfo({
+						success: function(e) {
+							resolve(e.level)
+						}
+					})
+					//#endif
 				})
-				//#endif
+				return promise
 				
 				
 				
@@ -636,6 +627,19 @@
 					}
 				}
 			},
+			showControls:{
+				immediate:true,
+				handler:async function(newVal){
+					
+					if(newVal&&this.fullScreen){
+						this.nowTime = this.getNowTime()
+						this.level = await this.getLevel()
+						await this.promise()
+						this.animateControls(0,this.$refs.controlsTop)
+						this.animateControls(0,this.$refs.controlsBtm)
+					}
+				}
+			}
 		},
 		computed:{
 			lastDuration(){
@@ -652,7 +656,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 	@import "./android.scss";
 	@import "./ios.scss";
 	/* #ifndef APP-PLUS-NVUE */
@@ -694,7 +698,32 @@
 		flex-direction: column;
 		padding: 40px 80px;
 		justify-content: flex-end;
-		opacity: 0.6;
+		background-color: rgba(0,0,0,0.6);
+	}
+	.power-view{
+		align-items: center;
+		width: 22px;
+	}
+	.power-box{
+		flex-direction: row;
+		align-items: center;
+	}
+	.power-header{
+		height: 4px;
+		width: 2px;
+		background-color: #fff;
+	}
+	.power-body{
+		height: 9px;
+		width: 20px;
+		border-width: 1px;
+		border-color: #fff;
+		padding: 1px;
+		justify-content: flex-end;
+	}
+	.power-level{
+		background-color: #fff;
+		height: 5px;
 	}
 	.scroll-view{
 		flex-direction: row;
@@ -706,9 +735,14 @@
 	.more-row{
 		flex-direction: row;
 		padding: 0 20px;
-		border-bottom-width: 1px;
-		border-bottom-color: #70A0A0;
+		// border-bottom-width: 1px;
+		// border-bottom-color: #70A0A0;
+		// opacity: 0.6;
+	}
+	.more-tap{
+		height: 1px;
 		opacity: 0.6;
+		background-color: #70A0A0;
 	}
 	.more-box{
 		justify-content: center;
@@ -728,7 +762,7 @@
 		margin-right: 20px;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(94,162,162,0.3);
+		background-color: rgba(94,162,162,0.2);
 	}
 	.solid-bottom{
 		border-bottom-width: 2px;
