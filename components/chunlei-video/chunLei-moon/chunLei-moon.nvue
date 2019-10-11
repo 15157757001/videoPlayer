@@ -8,9 +8,13 @@
 		<div class="light light6" :style="{opacity:light6}"></div>
 		<div class="light light7" :style="{opacity:light7}"></div>
 		<div class="light light8" :style="{opacity:light8}"></div>
+		<div class="light light9" :style="{opacity:light9}"></div>
+		<div class="light light10" :style="{opacity:light10}"></div>
+		<div class="light light11" :style="{opacity:light11}"></div>
+		<div class="light light12" :style="{opacity:light12}"></div>
 		<div class="moon">
-			<div class="move-box" :style="{transform:`rotate(${360*percentage*8}deg)`}">
-				<div class="move-moon" :style="{right:`${-10+1-percentage*10}px`}"></div>
+			<div class="move-box" :style="{transform:`rotate(${225-270*percentage}deg)`}">
+				<div class="move-moon" :style="{right:`${-16+(1-percentage)*14}px`}"></div>
 			</div>
 		</div>
 	</div>
@@ -32,9 +36,9 @@
 		methods:{
 			getOpacity(percentage,nub){
 				let opacity
-				if(percentage<(1.125-0.125*nub)&&percentage>(1-0.125*nub)){
+				if(percentage<(13/12-nub/12)&&percentage>(1-nub/12)){
 					opacity = '0.5'
-				}else if(percentage<=(1-0.125*nub)){
+				}else if(percentage<=(1-nub/12)){
 					opacity = '0'
 				}else{
 					opacity = '1'
@@ -66,6 +70,18 @@
 			},
 			light8(){
 				return this.getOpacity(this.percentage,8)
+			},
+			light9(){
+				return this.getOpacity(this.percentage,9)
+			},
+			light10(){
+				return this.getOpacity(this.percentage,10)
+			},
+			light11(){
+				return this.getOpacity(this.percentage,11)
+			},
+			light12(){
+				return this.getOpacity(this.percentage,12)
 			}
 		}
 	}
@@ -78,9 +94,9 @@
 		height: 40px;
 	}
 	.moon{
-		width: 20px;
-		height: 20px;
-		border-radius: 10px;
+		width: 16px;
+		height: 16px;
+		border-radius: 8px;
 		position: absolute;
 		top: 10px;
 		left: 10px;
@@ -88,46 +104,59 @@
 	}
 	.move-box{
 		position: relative;
-		width: 20px;
-		height: 20px;
-		border-radius: 10px;
+		width: 16px;
+		height: 16px;
+		border-radius: 8px;
 	}
 	.move-moon{
 		position: absolute;
-		width: 20px;
-		height: 20px;
+		width: 16px;
+		height: 16px;
 		top:0;
-		border-radius: 10px;
+		border-radius: 8px;
 		position: relative;
-		background-color: rgba(0,0,0,1);
+		background-color: rgba(0,0,0,0.5);
 	}
 	.light{
 		position: absolute;
-		height: 4px;
+		height: 3px;
 		width: 2px;
 		top: 4px;
-		left: 19px;
-		transform-origin:center center;
+		left: 18px;
+		transform-origin:0px 7.5px;
+		background-color: #FFFFFF;
 	}
 	.light2{
-		transform: rotate(45deg);
+		transform: rotate(30deg);
 	}
 	.light3{
-		transform: rotate(90deg);
+		transform: rotate(60deg);
 	}
 	.light4{
-		transform: rotate(135deg);
+		transform: rotate(90deg);
 	}
 	.light5{
-		transform: rotate(180deg);
+		transform: rotate(120deg);
 	}
 	.light6{
-		transform: rotate(225deg);
+		transform: rotate(150deg);
 	}
 	.light7{
-		transform: rotate(270deg);
+		transform: rotate(180deg);
 	}
 	.light8{
-		transform: rotate(315deg);
+		transform: rotate(210deg);
+	}
+	.light9{
+		transform: rotate(240deg);
+	}
+	.light10{
+		transform: rotate(270deg);
+	}
+	.light11{
+		transform: rotate(300deg);
+	}
+	.light12{
+		transform: rotate(330deg);
 	}
 </style>

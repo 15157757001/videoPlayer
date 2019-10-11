@@ -69,7 +69,7 @@
 						<div class="power-box">
 							<div class="power-header"></div>
 							<div class="power-body">
-								<div class="power-level" :style="{ width:`${16*level}px` }"></div>
+								<div class="power-level" :style="{ width:`${16*level}px`,backgroundColor: '#fff' }"></div>
 							</div>
 						</div>
 						<text :class="`${platform}-sm-title`">{{nowTime}}</text>
@@ -473,10 +473,10 @@
 					
 					if(this.fullScreen&&!this.touchType&&this.platform=='android'){
 						//#ifdef APP-PLUS-NVUE
-						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX<=200 ? 'volume' : this.touchType
+						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX<=200 ? 'bright' : this.touchType
 						//#endif
 						//#ifndef H5
-						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX>200 ? 'bright' : this.touchType
+						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX>200 ? 'volume' : this.touchType
 						//#endif
 					}
 					if(this.fullScreen&&this.platform=='ios'){
@@ -568,7 +568,8 @@
 						    dev.setBatteryMonitoringEnabled(true);  
 						}  
 						let level =dev.batteryLevel();  
-						resolve(level/100)
+						
+						resolve(level)
 					}
 					//#endif
 					//#ifdef MP-WEIXIN
@@ -719,10 +720,11 @@
 		border-width: 1px;
 		border-color: #fff;
 		padding: 1px;
+		flex-direction: row;
 		justify-content: flex-end;
 	}
 	.power-level{
-		background-color: #fff;
+		
 		height: 5px;
 	}
 	.scroll-view{
@@ -839,7 +841,7 @@
 		left: 225rpx;
 	}
 	.fullCurrent-view{
-		background-color: rgba(0,0,0,0.3);
+		background-color: rgba(0,0,0,0.4);
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
@@ -850,7 +852,7 @@
 		position: absolute;
 	}
 	.fullCurrent-current{
-		background-color: rgba(0,0,0,0.3);
+		background-color: rgba(0,0,0,0.4);
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
