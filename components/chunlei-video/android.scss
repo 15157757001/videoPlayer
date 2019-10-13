@@ -3,12 +3,13 @@
 	margin: 40px;
 	width: 30px;
 	height: 30px;
-	padding: 5px 0 0 5px;
+	align-items: center;
+	justify-content: center;
 	transform: translateY(-30px);
 	background-color: rgba(0,0,0,0.3);
 	border-radius: 50%;
 	
-	text-align: center;
+	
 }
 .android-icon{
 	font-size: 9px;

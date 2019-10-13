@@ -15,10 +15,9 @@
 				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe601;</text>
 				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe896;</text>
 				
-				<text class="ios-title">{{currentDuration}}</text>
+				<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
-				<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsHeigt-230}px`}" :width="`${fullControlsHeigt-230}`" @change="changeCurrent" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
-				<text class="ios-title" :style="{marginLeft:`20px`}">{{lastDuration}}</text>
+				<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
 				<text class="ios-icon" @click="tapFullScreen">&#xe60d;</text>
 			</cover-view>
 			<!-- 滑动video时显示 -->
@@ -52,9 +51,9 @@
 			
 			
 			<!-- 全屏 -->
-			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls&&platform=='ios'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
-				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
-				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			<cover-view :class="`${platform}-lock`" @click.stop="clickLock" v-if="fullScreen&&showControls&&platform=='ios'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0">&#xe61d;</text>
 			</cover-view>
 			<cover-view class="controls-top" ref="controlsTop" :style="{ width: `${fullControlsWidth}px` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="top-left">
@@ -180,7 +179,7 @@
 					<text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-80}px`}" :width="fullControlsWidth-80" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
@@ -196,9 +195,9 @@
 					</div>
 				</div>
 			</cover-view>
-			<cover-view :class="`${platform}-lock`" @click.stop="" v-if="fullScreen&&showControls&&platform=='android'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
-				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0" @click.stop="clickLock">&#xe8dd;</text>
-				<text :class="`${platform}-icon`" v-if="lock" style="margin:0" @click.stop="clickLock">&#xe61d;</text>
+			<cover-view :class="`${platform}-lock`" @click.stop="clickLock" v-if="fullScreen&&showControls&&platform=='android'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
+				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0">&#xe8dd;</text>
+				<text :class="`${platform}-icon`" v-if="lock" style="margin:0">&#xe61d;</text>
 			</cover-view>
 					
 			
@@ -290,7 +289,7 @@
 				}
 			})
 		},
-		mounted() {
+		async mounted() {
 			this.videoCtx = uni.createVideoContext('chunleiVideo',this);
 			//#ifndef APP-PLUS-NVUE 
 			this.videoCtx.play();
@@ -307,7 +306,7 @@
 				return promise
 			},
 			timeupdate(event){
-				this.duration = event.detail.duration
+				if(this.gDuration==0) this.duration = event.detail.duration
 				this.current = event.detail.currentTime
 				
 			},
@@ -425,7 +424,7 @@
 					styles: {
 						transform: `translate(0px, ${distance}px)`,
 					},
-					duration: 500, //ms
+					duration: 300, //ms
 					timingFunction: 'ease-in-out',
 					delay: 0 //ms
 					}, () => {
@@ -526,6 +525,7 @@
 					plus.device.setVolume(this.touchVolume.toFixed(2))
 					//#endif
 				}else if(!this.touchType){
+					
 					this.clickVideo()
 				}
 				
@@ -588,11 +588,11 @@
 			},
 			formatSeconds(a,type) {
 				var hh = parseInt(a/3600);  
-				if(hh<10) hh = hh=='0'?'':`0${hh}:`;  
 				var mm = parseInt((a-hh*3600)/60);  
 				if(mm<10) mm = "0" + mm;  
 				var ss = parseInt((a-hh*3600)%60);  
 				if(ss<10) ss = "0" + ss;  
+				if(hh<10) hh = hh=='0'?'':`0${hh}:`;  
 				var length = hh  + mm + ":" + ss;  
 				if(a>=0){  
 					return length;  
@@ -652,6 +652,14 @@
 			touchCurrentDuration(){
 				return this.formatSeconds(this.touchCurrent)
 			},
+			//小屏时进度条长度
+			sliderWidth(){
+				if(this.duration>=3600){
+					return this.fullControlsHeigt-190
+				}else{
+					return this.fullControlsHeigt-160
+				}
+			}
 		}
 		
 	}
@@ -688,6 +696,11 @@
 		align-items: center;
 		position: absolute;
 		z-index:999;
+	}
+	.sm-title{
+		font-size: 12px;
+		color: #fff;
+		font-family: texticons;
 	}
 	.set-view{
 		position: absolute;
