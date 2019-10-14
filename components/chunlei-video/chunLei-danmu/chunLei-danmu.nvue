@@ -1,0 +1,94 @@
+<template>
+	<div class="danmu" :style="{ width: `${width}px` }">
+		<div class="danmu-row" :style="{ width: `${width}px` }">
+			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList1" :key="item._id"></text>
+		</div>
+		<div class="danmu-row" :style="{ width: `${width}px` }">
+			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList2" :key="item._id"></text>
+		</div>
+		<div class="danmu-row" :style="{ width: `${width}px` }">
+			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList3" :key="item._id"></text>
+		</div>
+		<div class="danmu-row" :style="{ width: `${width}px` }">
+			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList4" :key="item._id"></text>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default{
+		props:{
+			width:{
+				type:Number,
+				default:0
+			},
+			danmuList:{ //弹幕
+				type:[Array],
+				default:()=>[]
+			},
+			platform:{
+				type:String,
+				default:'android'
+			},
+			current:{
+				type:Number,
+				default:0
+			}
+		},
+		data(){
+			return{
+				
+			}
+		},
+		methods:{
+			randomRange(min, max) { // min最小值，max最大值
+			    return Math.floor(Math.random() * (max - min)) + min;
+			}
+		},
+		watch:{
+			danmuList:{
+				immediate:true,
+				handler(newVal,oldVal){
+					
+					for (let key in newVal) {
+						newVal[key]._id = key
+					}
+				}
+			},
+			current:{
+				handler(newVal,oldVal){
+					for (let item of danmuList) {
+						if(item.time == newVal) {
+							let num = this.randomRange(1,4)
+							this[`danmuList${num}`].push(item)
+						}
+					}
+				}
+			},
+		}
+	}
+</script>
+
+<style>
+.danmu{
+	height: 160px;
+	flex-direction: column;
+	
+}
+.danmu-row{
+	position: relative;
+	height: 40px;
+	flex-direction: row;
+	align-content: center;
+}
+.android-title{
+	font-size: 9px;
+}
+.ios-title{
+	font-size: 18px;
+}
+</style>

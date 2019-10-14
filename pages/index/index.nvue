@@ -1,7 +1,11 @@
 <template>
 	<div class="content">
 		
-		<chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
+		<!-- <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
+		
+		</chunlei-video> -->
+		<chunlei-video :title="videoList[index].title" :srcList="videoList[index].srcList" class="video" ref="video" 
+			:gDuration="videoList[index].gDuration" :episode="11" @playNext="playNext" :index="index" :danmuList="videoList[index].danmuList">
 		
 		</chunlei-video>
 		<button @tap="tapBtn" class="btn">播放暂停</button>
@@ -23,20 +27,68 @@
 				],
 				title: '无辣不欢，你没见过小龙虾的大场面',
 				gDuration:1162, //大概总时长
+				videoList:[{
+					srcList:[
+						{title:'流畅',src:'http://baobab.kaiyanapp.com/api/v1/playUrl?vid=164016&resourceType=video&editionType=low&source=aliyun&playUrlType=url_oss'},
+						{title:'标清',src:'http://baobab.kaiyanapp.com/api/v1/playUrl?vid=164016&resourceType=video&editionType=normal&source=aliyun&playUrlType=url_oss'},
+						{title:'高清',src:'http://baobab.kaiyanapp.com/api/v1/playUrl?vid=164016&resourceType=video&editionType=high&source=aliyun&playUrlType=url_oss'}
+					],
+					danmuList:[
+						{text: '我就算从这跳下去',color: '#ff0000',time: 1},
+						{text: '密集恐惧症患者',color: '#ff0000',time: 1},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 3}
+					],
+					title: '无辣不欢，你没见过小龙虾的大场面',
+					gDuration:1162, //大概总时长
+				}],
+				index:0
 			}
 		},
-		created() {
+		async created() {
 			//#ifdef APP-PLUS
 			plus.screen.lockOrientation("portrait-primary")
 			//#endif
-		},
-		mounted() {
 			
+		},
+		async mounted() {
+			await this.pushVideoList()
 		},
 		methods: {
 			tapBtn(){
 				this.$refs.video.videoPlay()
-			}
+			},
+			playNext(val){
+				this.index = val
+			},
+			pushVideoList(){
+				let promise = new Promise((resolve,reject)=>{
+					uni.request({
+						url: 'https://api.apiopen.top/videoRecommend?id=127398',
+						success: (res) => {
+							let videoGroup = []
+							for (let item of res.data.result) {
+								if(item.type == 'videoSmallCard'){
+									for (let itm of item.data.playInfo) {
+										itm = {
+											...itm,
+											title: itm.name,
+											src: itm.url
+										}
+									}
+									videoGroup.push({
+										srcList:item.data.playInfo,
+										title: item.data.title,
+										gDuration:item.data.duration, //大概总时长
+									})
+								}
+							}
+							this.videoList = [...this.videoList,...videoGroup]
+							resolve()
+						}
+					})
+				}) 
+				return promise
+			},
 		}
 	}
 </script>

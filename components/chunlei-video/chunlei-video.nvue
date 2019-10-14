@@ -51,6 +51,11 @@
 			
 			
 			<!-- 全屏 -->
+			<cover-view v-if="danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
+				<chunLeiDanmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current"></chunLeiDanmu>
+			</cover-view>
+			
+			
 			<cover-view :class="`${platform}-lock`" @click.stop="clickLock" v-if="fullScreen&&showControls&&platform=='ios'" :style="{ top: `${fullControlsHeigt/2-30}px`}">
 				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0">&#xe8dd;</text>
 				<text :class="`${platform}-icon`" v-if="lock" style="margin:0">&#xe61d;</text>
@@ -61,6 +66,8 @@
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
+					<text :class="`${platform}-icon`" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0" style="color:#FF6022">&#xe604;</text>
+					<text :class="`${platform}-icon`" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0">&#xe8de;</text>
 					<text :class="`${platform}-icon`" @click="clickMoreView">&#xe646;</text>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
 					
@@ -76,7 +83,7 @@
 				</div>
 			</cover-view>
 			
-			<cover-view class="set-view" v-if="fullScreen&&(rateView||srcView||moreView)" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
+			<cover-view class="set-view" v-if="fullScreen&&(rateView||srcView||moreView||episodeView)" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
 				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="rateView"  @click.stop="clickRateView">
 					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">播放速度</text>
 					<div class="set-bottom">
@@ -136,6 +143,11 @@
 						</scroll-view>
 					</div>
 				</div>
+				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="episodeView"  @click.stop="clickEpisodeView">
+					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)">
+						<text :class="`${platform}-title`" style="marginRight:0;">{{count}}</text>
+					</div>
+				</div>
 			</cover-view>
 			<!-- 滑动video时显示 -->
 			<cover-view class="fullCurrent-current" v-if="fullScreen&&touchType=='current'" :style="{ left: `${fullControlsWidth/2-75}px`}">
@@ -177,6 +189,7 @@
 				<div class="fullControls-top" :style="{ width: `${fullControlsWidth}px` }">
 					<text :class="`${platform}-title`">{{currentDuration}}</text>
 					<text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{lastDuration}}</text>
+					<text :class="`${platform}-icon`" @click="playNext" v-if="!(episode==0||episode==index)">&#xe615;</text>
 				</div>
 				<div class="fullControls-center">
 					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
@@ -191,7 +204,7 @@
 						<div :class="`${platform}-title-box`" @click="clickSrcView">
 							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
 						</div>
-						
+						<text :class="`${platform}-title`" @click="clickEpisodeView" style="margin:0">选集</text>
 					</div>
 				</div>
 			</cover-view>
@@ -199,11 +212,7 @@
 				<text :class="`${platform}-icon`" v-if="!lock" style="margin:0">&#xe8dd;</text>
 				<text :class="`${platform}-icon`" v-if="lock" style="margin:0">&#xe61d;</text>
 			</cover-view>
-					
-			
-			
 		</video>
-		
 	</view>
 </template>
 
@@ -231,6 +240,18 @@
 				type:Number,
 				default:0
 			}, 
+			episode:{ //集数
+				type:Number,
+				default:0
+			},
+			index:{ //当前集数
+				type:Number,
+				default:1
+			},
+			danmuList:{ //弹幕
+				type:[Array],
+				default:()=>[]
+			}
 		},
 		data(){
 			return{
@@ -258,6 +279,8 @@
 				rateView:false,
 				srcView:false,
 				moreView:false,
+				danmuView:true,//弹幕
+				episodeView:false,//选集
 				full:false,//撑满全屏
 				rateList:['0.5','0.8','1.0','1.25','1.5'],//倍数
 				touchCurrent:0,
@@ -312,7 +335,12 @@
 			},
 			ended(){
 				if(!this.loop){
-					this.play = false
+					//下一集
+					if(this.episode!=0&&this.index<this.episode){
+						this.playNext()
+					}else{
+						this.play = false
+					}
 				}
 				
 			},
@@ -407,13 +435,22 @@
 				this.showControls = !this.showControls
 				this.srcView = !this.srcView
 			},
+			//选集
+			async clickEpisodeView(){
+				this.showControls = !this.showControls
+				this.episodeView = !this.episodeView
+			},
+			//跳到指定集数
+			clickEpisode(count){
+				this.$emit('playNext',count)
+			},
 			async clickMoreView(){
 				this.showControls = !this.showControls
 				this.moreView = !this.moreView
 			},
 			//下一集
 			playNext(){
-				
+				this.$emit('playNext',index+1)
 			},
 			clickLock(e){
 				e.stopPropagation();
@@ -708,6 +745,11 @@
 		z-index:999;
 		background-color: rgba(0,0,0,0.5);
 	}
+	.danmu-view{
+		position: absolute;
+		top:0;
+		height: 160px;
+	}
 	.rate-set{
 		flex-direction: column;
 		padding: 40px 80px;
@@ -746,6 +788,19 @@
 	.more-set{
 		flex-direction: column;
 		padding: 40px 100px;
+	}
+	.episode-set{
+		flex-direction: column;
+		padding: 40px 100px;
+		flex-wrap: wrap;
+	}
+	.epiBox{
+		height: 50px;
+		width: 50px;
+		margin-right: 20px;
+		justify-content: center;
+		align-items: center;
+		background-color: rgba(0,0,0,0.8);
 	}
 	.more-row{
 		flex-direction: row;
