@@ -1,25 +1,27 @@
 <template>
 	<div class="danmu" :style="{ width: `${width}px` }">
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList1" :key="item._id"></text>
+			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList1" :key="item._id">{{item.text}}11</text>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList2" :key="item._id"></text>
+			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList2" :key="item._id">{{item.text}}11</text>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList3" :key="item._id"></text>
+			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList3" :key="item._id">{{item.text}}11</text>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${width}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList4" :key="item._id"></text>
+			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
+				v-for="item in danmuList4" :key="item._id">{{item.text}}11</text>
 		</div>
 	</div>
 </template>
 
 <script>
+	const animation = weex.requireModule('animation');
+	const modal = weex.requireModule('modal');
 	export default{
 		props:{
 			width:{
@@ -41,12 +43,38 @@
 		},
 		data(){
 			return{
-				
+				danmuList1:[],
+				danmuList2:[],
+				danmuList3:[],
+				danmuList4:[],
 			}
 		},
 		methods:{
+			promise(){
+				let promise = new Promise((resolve,reject)=>{
+					setTimeout(()=>{
+						resolve()
+					},100)
+				})
+				return promise
+			},
 			randomRange(min, max) { // min最小值，max最大值
 			    return Math.floor(Math.random() * (max - min)) + min;
+			},
+			animationText(id,distance,fn){
+				let el = this.$refs[`text_${id}`]
+				
+				animation.transition(el, {
+					styles: {
+						transform: `translate( ${-distance}px, 0px)`,
+					},
+					duration: 300, //ms
+					timingFunction: 'ease-in-out',
+					delay: 0 //ms
+					}, () => {
+						fn()
+					}
+				)
 			}
 		},
 		watch:{
@@ -60,13 +88,30 @@
 				}
 			},
 			current:{
-				handler(newVal,oldVal){
-					for (let item of danmuList) {
-						if(item.time == newVal) {
-							let num = this.randomRange(1,4)
-							this[`danmuList${num}`].push(item)
+				handler:async function(newVal,oldVal){
+					//间隔0.25
+					if(Math.abs(newVal-oldVal)>=0.25){
+						for (let item of this.danmuList) {
+							if( item.time > Math.floor(newVal*1) && item.time <= Math.floor(newVal*1+ 0.25) ) {
+								let num = this.randomRange(1,5)
+								console.log(num)
+								this[`danmuList${num}`].push(item)
+								await this.promise()
+								//开始动画
+								this.animationText(item._id,this.width*3,()=>{
+									// let index
+									// //删除动画后的text
+									// for (let key in this[`danmuList${num}`]) {
+									// 	if(this[`danmuList${num}`][key]._id==item._id){
+									// 		index = key
+									// 	}
+									// }
+									// this[`danmuList${num}`].splice(index,1)
+								})
+							}
 						}
 					}
+					
 				}
 			},
 		}
@@ -83,7 +128,7 @@
 	position: relative;
 	height: 40px;
 	flex-direction: row;
-	align-content: center;
+	
 }
 .android-title{
 	font-size: 9px;

@@ -51,7 +51,7 @@
 			
 			
 			<!-- 全屏 -->
-			<cover-view v-if="danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
+			<cover-view v-if="fullScreen&&danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
 				<chunLeiDanmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current"></chunLeiDanmu>
 			</cover-view>
 			
@@ -67,7 +67,7 @@
 				</div>
 				<div class="top-right">
 					<text :class="`${platform}-icon`" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0" style="color:#FF6022">&#xe604;</text>
-					<text :class="`${platform}-icon`" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0">&#xe8de;</text>
+					<text :class="`${platform}-icon`" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0" style="color:#FFF">&#xe8de;</text>
 					<text :class="`${platform}-icon`" @click="clickMoreView">&#xe646;</text>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
 					
@@ -144,8 +144,8 @@
 					</div>
 				</div>
 				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="episodeView"  @click.stop="clickEpisodeView">
-					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)">
-						<text :class="`${platform}-title`" style="marginRight:0;">{{count}}</text>
+					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''">
+						<text :class="`${platform}-title`" style="marginRight:0;" :style="{color:count==index?'#FF6022':'#fff'}">{{count}}</text>
 					</div>
 				</div>
 			</cover-view>
@@ -189,7 +189,7 @@
 				<div class="fullControls-top" :style="{ width: `${fullControlsWidth}px` }">
 					<text :class="`${platform}-title`">{{currentDuration}}</text>
 					<text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{lastDuration}}</text>
-					<text :class="`${platform}-icon`" @click="playNext" v-if="!(episode==0||episode==index)">&#xe615;</text>
+					
 				</div>
 				<div class="fullControls-center">
 					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
@@ -198,13 +198,14 @@
 					<div class="fullControls-bottom-left">
 						<text :class="`${platform}-icon`" @click="videoPlay" v-if="play">&#xe601;</text>
 						<text :class="`${platform}-icon`" @click="videoPlay" v-if="!play">&#xe896;</text>
+						<text :class="`${platform}-icon`" @click="playNext" v-if="!(episode==0||episode==index)">&#xe615;</text>
 					</div>
 					<div class="fullControls-bottom-right">
 						<text :class="`${platform}-title`" @click="clickRateView">{{rate}}x</text>
 						<div :class="`${platform}-title-box`" @click="clickSrcView">
 							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
 						</div>
-						<text :class="`${platform}-title`" @click="clickEpisodeView" style="margin:0">选集</text>
+						<text :class="`${platform}-title`" @click="clickEpisodeView" style="marginLeft:10px;marginRight:0px" v-if="episode!=0">选集</text>
 					</div>
 				</div>
 			</cover-view>
@@ -218,6 +219,7 @@
 
 <script>
 	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue';
+	import chunLeiDanmu from './chunLei-danmu/chunLei-danmu.nvue';
 	import chunLeiMoon from './chunLei-moon/chunLei-moon.nvue';
 	const animation = weex.requireModule('animation');
 	const modal = weex.requireModule('modal');
@@ -225,7 +227,8 @@
 	export default{ 
 		components:{
 			chunLeiSlider,
-			chunLeiMoon
+			chunLeiMoon,
+			chunLeiDanmu
 		},
 		props:{
 			srcList:{ //要播放视频的资源地址
@@ -395,7 +398,7 @@
 					
 					await this.promise()
 					this.videoCtx.play();
-					this.videoCtx.seek(200)
+					this.videoCtx.seek(this.current)
 					this.videoCtx.playbackRate(this.rate*1)
 				}
 				this.clickSrcView()
@@ -442,7 +445,7 @@
 			},
 			//跳到指定集数
 			clickEpisode(count){
-				this.$emit('playNext',count)
+				this.$emit('playEpi',count)
 			},
 			async clickMoreView(){
 				this.showControls = !this.showControls
@@ -450,7 +453,8 @@
 			},
 			//下一集
 			playNext(){
-				this.$emit('playNext',index+1)
+				this.play = false
+				this.$emit('playEpi',this.index+1)
 			},
 			clickLock(e){
 				e.stopPropagation();
@@ -654,6 +658,17 @@
 					this.duration = newVal
 				}
 			},
+			index:{
+				handler:async function(newVal){
+					
+					await this.promise()
+					this.videoCtx.play();
+					this.play = true
+					this.videoCtx.seek(0)
+					this.videoCtx.playbackRate(this.rate*1)
+					
+				}
+			},
 			srcList:{
 				immediate:true,
 				handler(newVal,oldVal){
@@ -790,7 +805,7 @@
 		padding: 40px 100px;
 	}
 	.episode-set{
-		flex-direction: column;
+		flex-direction: row;
 		padding: 40px 100px;
 		flex-wrap: wrap;
 	}
@@ -798,9 +813,10 @@
 		height: 50px;
 		width: 50px;
 		margin-right: 20px;
+		margin-bottom: 20px;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(0,0,0,0.8);
+		background-color: rgba(0,0,0,0.6);
 	}
 	.more-row{
 		flex-direction: row;
@@ -929,6 +945,9 @@
 		height: 80px;
 		top:60px;
 		position: absolute;
+	}
+	.fullControls-bottom-left{
+		flex-direction: row;
 	}
 	.fullCurrent-bottom{
 		width: 110px;
