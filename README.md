@@ -60,12 +60,12 @@ components:{chunleiVideo}
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| type | String | default | modal类型：default，select，advert，share，input，custom |
-| value | Boolean | false | 是否显示 |
-| maskEnable | Boolean | true | 是否点击遮罩退出 |
-| mData | Object, Array | Object | 数据 |
-| navMask | Boolean | 否 | 是否遮住导航栏 |
-| nav | Boolean | true | 该页面是否有导航栏，存在时遮住 |
+| srcList | String,Array | '' | 播放视频的资源地址 |
+| title | String | '' | 视频标题 |
+| gDuration | Number | 0 | 总时长 |
+| episode | Number | 0 | 集数 |
+| index | Number | 1 | 当前集数 |
+| danmuList | Array | [] | 弹幕 |
 
 ## 事件
 
