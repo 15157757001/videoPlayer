@@ -78,5 +78,5 @@ components:{chunleiVideo}
 | playEpi | 跳到指定集数 |
 
 
-如果觉得插件不错，麻烦给个好评
+## 如果觉得插件不错，麻烦给个好评
 
