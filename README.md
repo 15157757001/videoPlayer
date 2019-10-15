@@ -67,9 +67,9 @@ components:{chunleiVideo}
 | srcList | String,Array | '' | 播放视频的资源地址 |
 | title | String | '' | 视频标题 |
 | gDuration | Number | 0 | 总时长 |
-| episode | Number | 0 | 集数 |
+| episode | Number | 0 | 集数，为默认值时不显示选集，下一集 |
 | index | Number | 1 | 当前集数 |
-| danmuList | Array | [] | 弹幕 |
+| danmuList | Array | [] | 弹幕,为默认值时不显示按钮 |
 
 ## 事件
 
