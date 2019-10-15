@@ -77,5 +77,5 @@ components:{chunleiVideo}
 | ---  | --- |
 | playEpi | 跳到指定集数 |
 
-如果觉得插件不错，麻烦给个Star [gitHub](https://github.com/15157757001/videoPlayer)
+如果觉得插件不错，麻烦给个好评
 
