@@ -25,6 +25,8 @@ components:{chunleiVideo}
 
 7.循环播放
 
+8.锁屏
+
 **在index.vue中(简洁版)**  
 
 ~~~
