@@ -1,11 +1,10 @@
 .android-lock{
 	position: absolute;
-	margin: 40px;
+	left: 40px;
 	width: 30px;
 	height: 30px;
 	align-items: center;
 	justify-content: center;
-	transform: translateY(-30px);
 	background-color: rgba(0,0,0,0.3);
 	border-radius: 50%;
 	
@@ -15,12 +14,10 @@
 	font-size: 9px;
 	color: #fff;
 	font-family: texticons;
-	margin-right: 10px;
 }
 .android-title{
 	font-size: 9px;
 	color: #fff;
-	margin-right: 10px;
 }
 .android-title-box{
 	align-items: center;

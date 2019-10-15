@@ -8,6 +8,8 @@
 			:gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index-1].danmuList">
 		
 		</chunlei-video>
+		
+		
 		<button @tap="tapBtn" class="btn">播放暂停</button>
 	</div>
 </template>
@@ -38,9 +40,13 @@
 						{text: '密集恐惧症患者',color: '#fff',time: 1,avatar:'../../static/avatar.png'},
 						{text: '也不会吃你一口小龙虾',color: '#fff',time: 3,avatar:'../../static/avatar.png'},
 						{text: '也不会吃你一口小龙虾',color: '#fff',time: 4,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 5},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 6},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 7}
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 5,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 6,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 7,avatar:'../../static/avatar.png'},
+						{text: '真香!!!',color: '#fff',time: 11,avatar:'../../static/avatar.png'},
+						{text: '真香！！！！！',color: '#fff',time: 14},
+						{text: '真香！！！',color: '#fff',time: 18},
+						{text: '前方高能!!!',color: '#fff',time: 23,avatar:'../../static/avatar.png'},
 					],
 					title: '无辣不欢，你没见过小龙虾的大场面',
 					gDuration:1162, //大概总时长

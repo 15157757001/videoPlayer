@@ -2,21 +2,17 @@
 	font-size: 18px;
 	color: #fff;
 	font-family: texticons;
-	margin-right: 20rpx;
 }
 .ios-title{
 	font-size: 18px;
 	color: #fff;
-	margin-right: 20rpx;
 	text-align: center;
 }
 .ios-lock{
 	position: absolute;
-	margin: 40px;
+	left: 40px;
 	width: 40px;
 	height: 40px;
-	padding: 10px 0 0 10px;
-	transform: translateY(-40px);
 	background-color: rgba(0,0,0,0.3);
 	border-radius: 50%;
 	align-items: center;
