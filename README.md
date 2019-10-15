@@ -67,34 +67,11 @@ components:{chunleiVideo}
 | navMask | Boolean | 否 | 是否遮住导航栏 |
 | nav | Boolean | true | 该页面是否有导航栏，存在时遮住 |
 
-**mData数据示例**  
-
-~~~
-defaultData:{title:'提示',content:'这是一个模态弹窗',cancelText:'cancel',confirmColor:'#3CC51F'},
-selectData:[{title:'拍摄',content:'照片或视频',icon:'../../static/shoot.png'},{title:'从照片选择'}],
-advertData:{src:'../../static/advert.jpg',width:'600rpx',height:'350rpx'},
-shareData:[
-  {title:'朋友圈',icon:'../../static/pengyouquan.png'},
-  {title:'微信好友',icon:'../../static/weixinhaoyou.png'},
-  {title:'微博',icon:'../../static/weibo.png'},
-  {title:'QQ好友',icon:'../../static/QQhaoyou.png'},
-  {title:'QQ空间',icon:'../../static/QQkongjian.png'}
- ],
-inputData:{
-  title:'登录',
-  content:[
-  {title:'手机号',content:'',type:'number',placeholder:'请输入手机号'},
-  {title:'密码',content:'',type:'password',placeholder:'请输入密码'}
-  ]
-}
-~~~
-
 ## 事件
 
 | 事件名 | 说明 |
 | ---  | --- |
-| onConfirm | 用户点击了确定按钮 |
-| onCancel | 用户点击了取消按钮 |
+| playEpi | 跳到指定集数 |
 
-如果觉得插件不错，麻烦给个Star [gitHub](https://github.com/15157757001/uniapp-modal)
+如果觉得插件不错，麻烦给个Star [gitHub](https://github.com/15157757001/videoPlayer)
 
