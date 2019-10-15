@@ -25,7 +25,7 @@ components:{chunleiVideo}
 
 7.循环播放
 
-**在index.vue(简洁版)中**  
+**在index.vue中(简洁版)**  
 
 ~~~
 <template>
@@ -44,7 +44,7 @@ components:{chunleiVideo}
 
 3.下一集，选集
 
-**在index.vue(完整版)中**  
+**在index.vue中(完整版)**  
 
 ~~~
 <template>
