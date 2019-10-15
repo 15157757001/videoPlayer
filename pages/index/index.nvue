@@ -34,9 +34,13 @@
 						{title:'高清',src:'http://baobab.kaiyanapp.com/api/v1/playUrl?vid=164016&resourceType=video&editionType=high&source=aliyun&playUrlType=url_oss'}
 					],
 					danmuList:[
-						{text: '我就算从这跳下去',color: '#fff',time: 1},
-						{text: '密集恐惧症患者',color: '#fff',time: 1},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 3}
+						{text: '我就算从这跳下去',color: '#fff',time: 1,avatar:'../../static/avatar.png'},
+						{text: '密集恐惧症患者',color: '#fff',time: 1,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 3,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 4,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 5},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 6},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 7}
 					],
 					title: '无辣不欢，你没见过小龙虾的大场面',
 					gDuration:1162, //大概总时长

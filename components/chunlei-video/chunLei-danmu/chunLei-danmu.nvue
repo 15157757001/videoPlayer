@@ -1,20 +1,28 @@
 <template>
 	<div class="danmu" :style="{ width: `${width}px` }">
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList1" :key="item._id">{{item.text}}11</text>
+			<div :style="{ left:`${width}px`}" ref="move" :id="item._id" v-for="item in danmuList1" :key="item._id">
+				<image :src="item.avatar" class="img" v-if="item.avatar"></image>
+				<text :class="`${platform}-title`" :style="{ color:item.color?item.color:'#fff' }" class="moveDiv">{{item.text}}</text>
+			</div>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList2" :key="item._id">{{item.text}}11</text>
+			<div :style="{ left:`${width}px`}" ref="move" :id="item._id" v-for="item in danmuList2" :key="item._id">
+				<image :src="item.avatar" class="img" v-if="item.avatar"></image>
+				<text :class="`${platform}-title`" :style="{ color:item.color?item.color:'#fff' }" class="moveDiv">{{item.text}}</text>
+			</div>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList3" :key="item._id">{{item.text}}11</text>
+			<div :style="{ left:`${width}px`}" ref="move" :id="item._id" v-for="item in danmuList3" :key="item._id">
+				<image :src="item.avatar" class="img" v-if="item.avatar"></image>
+				<text :class="`${platform}-title`" :style="{ color:item.color?item.color:'#fff' }" class="moveDiv">{{item.text}}</text>
+			</div>
 		</div>
 		<div class="danmu-row" :style="{ width: `${width}px` }">
-			<text :class="`${platform}-title`" :style="{ right:`${1}px`,color:item.color?item.color:'#fff' }" :ref="`text_${item._id}`"
-				v-for="item in danmuList4" :key="item._id">{{item.text}}11</text>
+			<div :style="{ left:`${width}px`}" ref="move" :id="item._id" v-for="item in danmuList4" :key="item._id">
+				<image :src="item.avatar" class="img" v-if="item.avatar"></image>
+				<text :class="`${platform}-title`" :style="{ color:item.color?item.color:'#fff' }" class="moveDiv">{{item.text}}</text>
+			</div>
 		</div>
 	</div>
 </template>
@@ -62,14 +70,20 @@
 			    return Math.floor(Math.random() * (max - min)) + min;
 			},
 			animationText(id,distance,fn){
-				let el = this.$refs[`text_${id}`]
-				
+				let el
+				let elList = this.$refs.move
+				for (let item of elList) {
+					if(item.attr.id == id){
+						el = item
+					}
+					
+				}
 				animation.transition(el, {
 					styles: {
-						transform: `translate( ${-distance}px, 0px)`,
+						transform: `translate( ${distance}px, 0px)`,
 					},
-					duration: 300, //ms
-					timingFunction: 'ease-in-out',
+					duration: 240000, //ms
+					timingFunction: 'ease',
 					delay: 0 //ms
 					}, () => {
 						fn()
@@ -94,19 +108,19 @@
 						for (let item of this.danmuList) {
 							if( item.time > Math.floor(newVal*1) && item.time <= Math.floor(newVal*1+ 0.25) ) {
 								let num = this.randomRange(1,5)
-								console.log(num)
 								this[`danmuList${num}`].push(item)
 								await this.promise()
+								
 								//开始动画
-								this.animationText(item._id,this.width*3,()=>{
-									// let index
-									// //删除动画后的text
-									// for (let key in this[`danmuList${num}`]) {
-									// 	if(this[`danmuList${num}`][key]._id==item._id){
-									// 		index = key
-									// 	}
-									// }
-									// this[`danmuList${num}`].splice(index,1)
+								this.animationText(item._id,-this.width*3,()=>{
+									let index
+									//删除动画后的text
+									for (let key in this[`danmuList${num}`]) {
+										if(this[`danmuList${num}`][key]._id==item._id){
+											index = key
+										}
+									}
+									this[`danmuList${num}`].splice(index,1)
 								})
 							}
 						}
@@ -130,8 +144,18 @@
 	flex-direction: row;
 	
 }
+.moveDiv{
+	position: absolute;
+	flex-direction: row;
+}
 .android-title{
 	font-size: 9px;
+}
+.img{
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+	border-radius: 15px;
 }
 .ios-title{
 	font-size: 18px;

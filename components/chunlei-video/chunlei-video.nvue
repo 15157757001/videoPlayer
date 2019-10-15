@@ -3,9 +3,10 @@
 		<video :controls="false" :show-center-play-btn="false" :show-fullscreen-btn="false" :show-progress="false"
 			:objectFit="objectFit" :direction="direction" :src="src" :loop="loop" :enable-progress-gesture="false"
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" @ended="ended" @waiting="waiting" @play="playing"
-			id="chunleiVideo" ref="chunleiVideo" class="video">
+			:id="`chunleiVideo_${src}`" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
+				<div class="rate-view" @click.stop="rateView=true" v-if="!rateView"><text class="ios-title">{{rate}}x</text></div>
 			</cover-view>
 			<cover-view  class="video-view" v-if="fullScreen" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
@@ -14,7 +15,6 @@
 			<cover-view class="controls-view" v-if="!fullScreen&&showControls" @click.stop="">
 				<text class="ios-icon" @click.stop="videoPlay" v-if="play">&#xe601;</text>
 				<text class="ios-icon" @click.stop="videoPlay" v-if="!play">&#xe896;</text>
-				
 				<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
 				<!-- <slider class="video-slider" block-size="20" :max="duration" :value="current" @change="changeCurrent"></slider> -->
 				<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
@@ -24,16 +24,12 @@
 			<cover-view class="current-view" v-if="!fullScreen&&touchType=='current'">
 				<div class="current-top">
 					<text class="ios-title" style="marginRight:0;">{{touchCurrentDuration}}/{{lastDuration}}</text>
-					
 				</div>
 				<div class="current-bottom">
 					<div class="current-progress" :style="{width: `${touchCurrent/duration*260}rpx`}"> </div>
 				</div>
-				
 			</cover-view>
-			<cover-view class="rate-view" @click.stop="" v-if="!rateView&&!fullScreen">
-				<text class="ios-title" @click="rateView=true">{{rate}}x</text>
-			</cover-view>
+			
 			<cover-view class="rate" @click.stop="" v-if="rateView&&!fullScreen">
 				<div class="rate"  @click.stop="rateView=false" :style="{paddingTop: '40px'}">
 					<div>
@@ -51,7 +47,7 @@
 			
 			
 			<!-- 全屏 -->
-			<cover-view v-if="fullScreen&&danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
+			<cover-view v-if="danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
 				<chunLeiDanmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current"></chunLeiDanmu>
 			</cover-view>
 			
@@ -279,13 +275,14 @@
 				touchType: null,//滑动类型
 				platform:'',//系统
 				rate:'1.0',
-				rateView:false,
-				srcView:false,
-				moreView:false,
+				rateView:false, //倍速
+				srcView:false, //切换
+				moreView:false,//更多
 				danmuView:true,//弹幕
 				episodeView:false,//选集
 				full:false,//撑满全屏
 				rateList:['0.5','0.8','1.0','1.25','1.5'],//倍数
+				dblCount:0,//双击计数
 				touchCurrent:0,
 				touchBright:0,
 				touchVolume:0,
@@ -316,7 +313,7 @@
 			})
 		},
 		async mounted() {
-			this.videoCtx = uni.createVideoContext('chunleiVideo',this);
+			this.videoCtx = uni.createVideoContext(`chunleiVideo_${this.src}`,this)
 			//#ifndef APP-PLUS-NVUE 
 			this.videoCtx.play();
 			this.videoCtx.pause();
@@ -394,7 +391,7 @@
 					this.src = item.src
 					this.srcTitle = item.title
 					await this.promise()
-					this.videoCtx = uni.createVideoContext('chunleiVideo',this);
+					this.videoCtx = uni.createVideoContext(`chunleiVideo_${this.src}`,this)
 					
 					await this.promise()
 					this.videoCtx.play();
@@ -566,8 +563,16 @@
 					plus.device.setVolume(this.touchVolume.toFixed(2))
 					//#endif
 				}else if(!this.touchType){
-					
-					this.clickVideo()
+					if(this.dblCount==1||this.dblCount==0) this.dblCount++
+					if(this.dblCount==1){
+						setTimeout(function() {
+							//单击
+							if(this.dblCount==1) this.clickVideo()
+							//双击
+							if(this.dblCount==2) this.videoPlay()
+							this.dblCount = 0
+						}, 300);
+					}
 				}
 				
 				this.touchType = null
