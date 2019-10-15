@@ -45,6 +45,7 @@ components:{chunleiVideo}
 3.下一集，选集
 
 4.自动播放下一集
+
 **在index.vue中(完整版)**  
 
 ~~~
