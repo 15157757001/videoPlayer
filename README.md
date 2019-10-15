@@ -26,7 +26,7 @@ components:{chunleiVideo}
   <div class="content">
     <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
 		
-		</chunlei-video>
+    </chunlei-video>
   </div>
 </template>
 ~~~
@@ -42,9 +42,8 @@ components:{chunleiVideo}
 <template>
   <div class="content">
     <chunlei-video :title="videoList[index-1].title" :srcList="videoList[index-1].srcList" class="video" ref="video" 
-			:gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index"       :danmuList="videoList[index1].danmuList">
-		
-		</chunlei-video>
+      :gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index1].danmuList">
+    </chunlei-video>
   </div>
 </template>
 ~~~
