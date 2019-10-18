@@ -64,19 +64,19 @@ components:{chunleiVideo}
 <template>
   <div class="content">
     <chunlei-video ref="video"
-			class="video"  
-			:episode="11" 
-			:index="index" 
-			color="#c93756"
-			@playEpi="playEpi" 
-			:downloadBtn="true"
-			@clickDownload="clickDownload"
-			:title="videoList[index-1].title"
-			:srcList="videoList[index-1].srcList" 
-			:download="videoList[index-1].download"
-			:gDuration="videoList[index-1].gDuration" 
-			:danmuList="videoList[index-1].danmuList" 
-			:initialTime="videoList[index-1].initialTime"">
+ 	class="video"  
+	:episode="11" 
+	:index="index" 
+	color="#c93756"
+	@playEpi="playEpi" 
+	:downloadBtn="true"
+	@clickDownload="clickDownload"
+	:title="videoList[index-1].title"
+	:srcList="videoList[index-1].srcList" 
+	:download="videoList[index-1].download"
+	:gDuration="videoList[index-1].gDuration" 
+	:danmuList="videoList[index-1].danmuList" 
+	:initialTime="videoList[index-1].initialTime"">
     </chunlei-video>
   </div>
 </template>
