@@ -51,7 +51,7 @@
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
-					<div class="marginRight" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:color">&#xe604;</text></div>
+					<div class="marginRight" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" :style="{color:color}">&#xe604;</text></div>
 					<div class="marginRight" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FFF">&#xe8de;</text></div>
 					<div class="marginRight" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
@@ -114,6 +114,14 @@
 						<div class="more-box" @click.stop="clickFull" v-if="full">
 							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe78a;</text>
 							<text :class="`${platform}-title`" :style="{color:color}">恢复不撑满</text>
+						</div>
+						<div class="more-box" @click.stop="clickDownload" v-if="!download&&downloadBtn">
+							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe6cf;</text>
+							<text :class="`${platform}-title`" style="color:#FFF">下载</text>
+						</div>
+						<div class="more-box" @click.stop="clickDownload" v-if="download&&downloadBtn">
+							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe6cf;</text>
+							<text :class="`${platform}-title`" :style="{color:color}">下载中</text>
 						</div>
 					</div>
 					<div class="more-tap"></div>
@@ -239,9 +247,17 @@
 				type:Number,
 				default:0
 			},
-			color:{
+			color:{ //主题颜色
 				type:String,
 				default:'#FF6022'
+			},
+			downloadBtn:{ //下载按钮
+				type:Boolean,
+				default:false
+			},
+			download:{ //下载状态
+				type:Boolean,
+				default:false
 			}
 		},
 		data(){
@@ -356,6 +372,20 @@
 					this.objectFit = 'fill'
 				}
 				this.full = !this.full
+				this.clickMoreView()
+			},
+			clickDownload(e){
+				e.stopPropagation();
+				if(this.download){
+					uni.showToast({title:'暂停下载',icon:'none'})
+				}else{
+					uni.showToast({title:'开始下载',icon:'none'})
+				}
+				const event = {
+					idx:this.index,
+					src:this.src
+				}
+				this.$emit('clickDownload',event)
 				this.clickMoreView()
 			},
 			clickLoop(e){

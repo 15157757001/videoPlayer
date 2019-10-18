@@ -4,14 +4,34 @@
 		<!-- <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration" color="#22ac38">
 		
 		</chunlei-video> -->
-		<chunlei-video :title="videoList[index-1].title" :srcList="videoList[index-1].srcList" class="video" ref="video" :initialTime="videoList[index-1].initialTime"
-			:gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index-1].danmuList" color="#edd1d8">
+		<chunlei-video 
+			ref="video"
+			class="video"  
+			:episode="11" 
+			:index="index" 
+			color="#c93756"
+			@playEpi="playEpi" 
+			:downloadBtn="true"
+			@clickDownload="clickDownload"
+			:title="videoList[index-1].title"
+			:srcList="videoList[index-1].srcList" 
+			:download="videoList[index-1].download"
+			:gDuration="videoList[index-1].gDuration" 
+			:danmuList="videoList[index-1].danmuList" 
+			:initialTime="videoList[index-1].initialTime"
+		>
 		
 		</chunlei-video>
-		
-		
 		<button @click="tapBtn" class="btn">播放暂停</button>
 		<button @click="getCurrent" class="btn">视频当前进度</button>
+		<div class="progress-box" v-for="(item,index) in downloadList" :key="index">
+			<image src="../../static/video.png" class="box-image"></image>
+			<div class="box-content">
+				<progress :percent="item.progress" stroke-width="3" />
+				<text class="box-text">第{{item.epi}}集({{item.progress}}%)</text>
+			</div>
+			<button @click="clickDownloadBtn(index,item)" class="box-btn" plain>{{item.text}}</button>
+		</div>
 	</div>
 </template>
 
@@ -52,8 +72,10 @@
 					title: '无辣不欢，你没见过小龙虾的大场面',
 					initialTime: 100,
 					gDuration:1162, //大概总时长
+					download:false
 				}],
-				index:1
+				downloadList:[],
+				index:1 ,//当前集数
 			}
 		},
 		async created() {
@@ -64,16 +86,95 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
-			this.$refs.video.videoPlay()
+			// this.$refs.video.videoPlay()
 		},
 		methods: {
+			
+			clickDownload(e) {
+				if(!this.videoList[e.idx-1].download){
+					this.videoList[e.idx-1].download = true
+					let frist = true
+					
+					//继续下载
+					for (let item of this.downloadList) {
+						if(item.epi == e) {
+							item.text = '暂停'
+							item.task.start()
+							frist = false
+						} 
+					}
+					
+					
+					if(!frist) return
+					
+					//创建下载
+					const downloader = {
+						epi: e.idx, //集数
+						task: null,
+						progress: 0,
+						text: '暂停'
+					}
+					this.downloadList.push(downloader)
+					let idx = this.downloadList.length - 1
+					this.downloadList[idx].task = plus.downloader.createDownload(e.src, {}, (d, status)=>{
+						// 下载完成
+						if(status == 200){ 
+							this.downloadList[idx].text = '完成'
+							this.videoList[e.idx-1].download = false
+							uni.showToast({title:`下载成功,文件保存至${d.filename}`,icon:'none'})
+						} else {
+							 console.log("下载失败"); 
+						}  
+					});
+					//监听下载
+					this.downloadList[idx].task.addEventListener("statechanged", (download, status)=>{
+						let progress = isNaN(download.downloadedSize/download.totalSize)?0:download.downloadedSize/download.totalSize
+						this.downloadList[idx].progress = progress.toFixed(2)
+						// if(download.state == 4 && status == 200){
+						// 	// 下载完成 
+						// 	console.log("Download success: " + download.getFileName());  
+						// }  
+					}, false);
+					this.downloadList[idx].task.start();
+				}else{ //暂停
+					this.videoList[e-1].download = false
+					for (let item of this.downloadList) {
+						if(item.epi == e.idx) {
+							item.text = '继续'
+							item.task.pause()
+						}
+					}
+				}
+				
+			},
+			clickDownloadBtn(idx,itm){
+				if(itm.text == '继续'){
+					itm.text = '暂停'
+					this.videoList[itm.epi-1].download = true
+					itm.task.start();
+				}else if(itm.text == '暂停'){
+					itm.text = '继续'
+					this.videoList[itm.epi-1].download = false
+					itm.task.pause();
+				}else{
+					
+				}
+			},
+			// 暂停下载任务 
+			pauseDownload(idx) {
+				this.downloadList[idx].task.pause();
+			},
+			// 取消下载任务 
+			abortDownload(idx) {
+				this.downloadList[idx].task.abort();
+			},
 			tapBtn(){
 				this.$refs.video.videoPlay()
 			},
 			//获取视频当前进度
 			getCurrent(){
 				uni.showToast({
-					title:this.$refs.video.getCurrent(),
+					title: `${this.$refs.video.getCurrent()}`,
 					icon:'none'
 				})
 				
@@ -100,6 +201,8 @@
 										srcList:item.data.playInfo,
 										title: item.data.title,
 										gDuration:item.data.duration, //大概总时长
+										download:true,
+										task:{}
 									})
 								}
 							}
@@ -119,7 +222,7 @@
 	.content {
 		
 		width: 750rpx;
-		
+		align-items: center;
 	}
 	
 	.video{
@@ -128,8 +231,38 @@
 	}
 
 	.btn{
-		margin: 100rpx;
-		
+		width: 500rpx;
+		marginTop:50rpx;
+	}
+	.progress-box{
+		padding: 40rpx;
+		height: 150rpx;
+		marginTop:50rpx;
+		border-radius: 5px;
+		border-color: #e9e7ef;
+		border-style: solid;
+		border-width: 2px;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+	.box-content{
+		width: 300rpx;
+		padding: 20rpx;
+		justify-content: center;
 	}
 	
+	.box-btn{
+		height: 80rpx;
+		width: 100rpx;
+		border-color: #161823;
+	}
+	.box-image{
+		height: 80rpx;
+		width: 80rpx;
+	}
+	.box-text{
+		margin-top: 20rpx;
+		font-size: 16px;
+	}
 </style>
