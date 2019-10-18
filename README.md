@@ -75,6 +75,7 @@ components:{chunleiVideo}
 	:downloadBtn="true"
 	@clickDownload="clickDownload"
 	:title="videoList[index-1].title"
+	@fullscreenchange="fullscreenchange"
 	:srcList="videoList[index-1].srcList" 
 	:download="videoList[index-1].download"
 	:gDuration="videoList[index-1].gDuration" 
