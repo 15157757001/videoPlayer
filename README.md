@@ -63,7 +63,8 @@ components:{chunleiVideo}
 ~~~
 <template>
   <div class="content">
-    <chunlei-video ref="video"
+    <chunlei-video 
+    	ref="video"
  	class="video"  
 	:episode="11" 
 	:index="index" 
