@@ -1,6 +1,12 @@
 # videoPlayer
 uniapp自定义播放器
 
+## 说明
+
+1.插件在uni-app编译模式下编写，在 manifest.json 的源码视图里切换模式， manifest.json -> app-plus -> nvueCompiler 切换编译模式。
+
+2.下载管理不在组件里，具体看项目示例
+
 ## 使用方式
 
 **在index.js中**  
@@ -27,12 +33,14 @@ components:{chunleiVideo}
 
 8.锁屏
 
+9.主题颜色切换
+
 **在index.vue中(简洁版)**  
 
 ~~~
 <template>
   <div class="content">
-    <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
+    <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" color="#c93756" :gDuration="gDuration">
 		
     </chunlei-video>
   </div>
@@ -48,13 +56,30 @@ components:{chunleiVideo}
 
 4.自动播放下一集
 
+5.下载管理
+
+6.初始播放位置
+
 **在index.vue中(完整版)**  
 
 ~~~
 <template>
   <div class="content">
-    <chunlei-video :title="videoList[index-1].title" :srcList="videoList[index-1].srcList" class="video" ref="video" 
-      :gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index-1].danmuList">
+    <chunlei-video 
+    	ref="video"
+ 	class="video"  
+	:episode="11" 
+	:index="index" 
+	color="#c93756"
+	@playEpi="playEpi" 
+	:downloadBtn="true"
+	@clickDownload="clickDownload"
+	:title="videoList[index-1].title"
+	:srcList="videoList[index-1].srcList" 
+	:download="videoList[index-1].download"
+	:gDuration="videoList[index-1].gDuration" 
+	:danmuList="videoList[index-1].danmuList" 
+	:initialTime="videoList[index-1].initialTime"">
     </chunlei-video>
   </div>
 </template>
@@ -67,15 +92,20 @@ components:{chunleiVideo}
 | srcList | String,Array | '' | 播放视频的资源地址 |
 | title | String | '' | 视频标题 |
 | gDuration | Number | 0 | 总时长 |
+| color | String | '#FF6022' | 主题颜色 |
 | episode | Number | 0 | 集数，为默认值时不显示选集，下一集 |
 | index | Number | 1 | 当前集数 |
 | danmuList | Array | [] | 弹幕,为默认值时不显示按钮 |
+| initialTime | Number | 0 | 初始播放位置 |
+| downloadBtn | Boolean | false | 下载按钮 |
+| download | Boolean | false | 下载状态 |
 
 ## 事件
 
 | 事件名 | 说明 |
 | ---  | --- |
 | playEpi | 跳到指定集数 |
+| clickDownload | 点击下载 |
 
 
 ## 如果觉得插件不错，麻烦给个好评
