@@ -64,6 +64,7 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
+			this.$refs.video.videoPlay()
 		},
 		methods: {
 			tapBtn(){

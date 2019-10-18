@@ -386,7 +386,7 @@
 					await this.promise()
 					this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 					
-					await this.promise()
+					// await this.promise()
 					this.videoCtx.play();
 					this.videoCtx.seek(this.current)
 					this.videoCtx.playbackRate(this.rate*1)
@@ -569,7 +569,7 @@
 							//双击
 							if(this.dblCount==2) this.videoPlay()
 							this.dblCount = 0
-						}, 200);
+						}, 300);
 					}
 				}
 				
