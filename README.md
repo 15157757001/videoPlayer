@@ -58,6 +58,8 @@ components:{chunleiVideo}
 
 5.下载管理
 
+6.初始播放位置
+
 **在index.vue中(完整版)**  
 
 ~~~
@@ -94,6 +96,7 @@ components:{chunleiVideo}
 | episode | Number | 0 | 集数，为默认值时不显示选集，下一集 |
 | index | Number | 1 | 当前集数 |
 | danmuList | Array | [] | 弹幕,为默认值时不显示按钮 |
+| initialTime | Number | 0 | 初始播放位置 |
 | downloadBtn | Boolean | false | 下载按钮 |
 | download | Boolean | false | 下载状态 |
 
