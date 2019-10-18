@@ -36,10 +36,11 @@
 			
 			<!-- 全屏 -->
 			<cover-view  class="video-view" v-if="fullScreen" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
-				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 				<div v-if="danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
 					<chunLeiDanmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current" ref="danmu"></chunLeiDanmu>
 				</div>
+				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
+				
 				<div class="stop" v-if="!play"><text :class="`${platform}-title`">已暂停</text></div>
 			</cover-view>
 			
@@ -599,7 +600,7 @@
 							//双击
 							if(this.dblCount==2) this.videoPlay()
 							this.dblCount = 0
-						}, 300);
+						}, 200);
 					}
 				}
 				
@@ -613,6 +614,7 @@
 				this.moreView = false
 				this.srcView = false
 				this.fullScreen = !this.fullScreen
+				this.$emit('fullscreenchange',this.fullScreen)
 			},
 			getLevel(){
 				let promise = new Promise((resolve,reject)=>{

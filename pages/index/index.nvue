@@ -14,6 +14,7 @@
 			:downloadBtn="true"
 			@clickDownload="clickDownload"
 			:title="videoList[index-1].title"
+			@fullscreenchange="fullscreenchange"
 			:srcList="videoList[index-1].srcList" 
 			:download="videoList[index-1].download"
 			:gDuration="videoList[index-1].gDuration" 
@@ -24,10 +25,10 @@
 		</chunlei-video>
 		<button @click="tapBtn" class="btn">播放暂停</button>
 		<button @click="getCurrent" class="btn">视频当前进度</button>
-		<div class="progress-box" v-for="(item,index) in downloadList" :key="index">
+		<div class="progress-box" v-for="(item,index) in downloadList" :key="index" v-if="!fullScreen">
 			<image src="../../static/video.png" class="box-image"></image>
 			<div class="box-content">
-				<progress :percent="item.progress" stroke-width="3" />
+				<!-- <progress :percent="item.progress" stroke-width="3" /> -->
 				<text class="box-text">第{{item.epi}}集({{item.progress}}%)</text>
 			</div>
 			<button @click="clickDownloadBtn(index,item)" class="box-btn" plain>{{item.text}}</button>
@@ -76,6 +77,7 @@
 				}],
 				downloadList:[],
 				index:1 ,//当前集数
+				fullScreen: false
 			}
 		},
 		async created() {
@@ -86,24 +88,25 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
-			// this.$refs.video.videoPlay()
+			this.$refs.video.videoPlay()
 		},
 		methods: {
-			
+			fullscreenchange(e){
+				this.fullScreen = e
+			},
 			clickDownload(e) {
 				if(!this.videoList[e.idx-1].download){
 					let frist = true
 					
 					//继续下载
 					for (let item of this.downloadList) {
-						if(item.epi == e&&item.text!='完成') {
-							this.videoList[e.idx-1].download = true
+						if(item.epi == e.idx&&item.text!='完成') {
 							item.text = '暂停'
 							item.task.start()
 							frist = false
 						} 
 					}
-					
+					this.videoList[e.idx-1].download = true
 					
 					if(!frist) return
 					
@@ -121,15 +124,17 @@
 						if(status == 200){ 
 							this.downloadList[idx].text = '完成'
 							this.videoList[e.idx-1].download = false
-							uni.showToast({title:`下载成功,文件保存至${d.filename}`,icon:'none'})
+							let filename = plus.io.convertLocalFileSystemURL(d.filename)
+							console.log(filename)
+							uni.showToast({title:`下载成功,文件保存至${filename}`,icon:'none'})
 						} else {
 							 console.log("下载失败"); 
 						}  
 					});
 					//监听下载
 					this.downloadList[idx].task.addEventListener("statechanged", (download, status)=>{
-						let progress = isNaN(download.downloadedSize/download.totalSize)?0:download.downloadedSize/download.totalSize
-						this.downloadList[idx].progress = progress.toFixed(2)
+						let progress = isNaN(download.downloadedSize/download.totalSize)?0:download.downloadedSize/download.totalSize*100
+						this.downloadList[idx].progress = Math.floor(progress) 
 						// if(download.state == 4 && status == 200){
 						// 	// 下载完成 
 						// 	console.log("Download success: " + download.getFileName());  
@@ -139,7 +144,7 @@
 				}else{ //暂停
 					for (let item of this.downloadList) {
 						if(item.epi == e.idx&&item.text!='完成') {
-							this.videoList[e-1].download = false
+							this.videoList[e.idx-1].download = false
 							item.text = '继续'
 							item.task.pause()
 						}
@@ -201,7 +206,7 @@
 										srcList:item.data.playInfo,
 										title: item.data.title,
 										gDuration:item.data.duration, //大概总时长
-										download:true,
+										download:false,
 										task:{}
 									})
 								}
@@ -262,7 +267,6 @@
 		width: 80rpx;
 	}
 	.box-text{
-		margin-top: 20rpx;
 		font-size: 16px;
 	}
 </style>
