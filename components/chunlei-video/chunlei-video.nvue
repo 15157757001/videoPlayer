@@ -3,7 +3,7 @@
 		<video :controls="false" :show-center-play-btn="false" :show-fullscreen-btn="false" :show-progress="false"
 			:objectFit="objectFit" :direction="direction" :src="src" :loop="loop" :enable-progress-gesture="false"
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" @ended="ended" @waiting="waiting" @play="playing"
-			:id="`chunleiVideo_${src}`" ref="chunleiVideo" class="video">
+			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
 				<div class="rate-view" @click.stop="" v-if="!rateView"><text class="ios-title" @click="rateView=true">{{rate}}x</text></div>
@@ -11,7 +11,7 @@
 					<div @click="videoPlay" v-if="play" class="marginRight"><text class="ios-icon">&#xe601;</text></div>
 					<div @click="videoPlay" v-if="!play" class="marginRight"><text class="ios-icon">&#xe896;</text></div>
 					<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 					<div @click="tapFullScreen"><text class="ios-icon">&#xe60d;</text></div>
 				</div>
 				<!-- 滑动video时显示 -->
@@ -25,11 +25,11 @@
 				<div class="rate"  @click.stop="rateView=false" :style="{paddingTop: '40px'}">
 					<div><text class="ios-title">倍速播放</text></div>
 					<div class="rate-list">
-						<text class="ios-title marginRight" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
-						<text class="ios-title marginRight" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
-						<text class="ios-title marginRight" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.0)" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
-						<text class="ios-title marginRight" :class="1.25==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.25)" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
-						<text class="ios-title marginRight" :class="1.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.5)" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
+						<text class="ios-title marginRight" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)" :style="{color:0.5==rate?color:'#fff',borderBottomColor:0.5==rate?color:'#fff'}">0.5x</text>
+						<text class="ios-title marginRight" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)" :style="{color:0.8==rate?color:'#fff',borderBottomColor:0.8==rate?color:'#fff'}">0.8x</text>
+						<text class="ios-title marginRight" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.0)" :style="{color:1.0==rate?color:'#fff',borderBottomColor:1.0==rate?color:'#fff'}">1.0x</text>
+						<text class="ios-title marginRight" :class="1.25==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.25)" :style="{color:1.25==rate?color:'#fff',borderBottomColor:1.25==rate?color:'#fff'}">1.25x</text>
+						<text class="ios-title marginRight" :class="1.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.5)" :style="{color:1.5==rate?color:'#fff',borderBottomColor:1.5==rate?color:'#fff'}">1.5x</text>
 					</div>
 				</div>
 			</cover-view>
@@ -51,7 +51,7 @@
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
-					<div class="marginRight" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FF6022">&#xe604;</text></div>
+					<div class="marginRight" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:color">&#xe604;</text></div>
 					<div class="marginRight" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FFF">&#xe8de;</text></div>
 					<div class="marginRight" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
@@ -72,28 +72,28 @@
 				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="rateView"  @click.stop="clickRateView">
 					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">播放速度</text>
 					<div class="set-bottom">
-						<div class="setBox" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)">
-							<text :class="`${platform}-big-title`" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text>
+						<div class="setBox" :class="0.5==rate?'solid-bottom':''" :style="{borderBottomColor:0.5==rate?color:'#fff'}" @click.stop="(args)=>tapRate(args,0.5)">
+							<text :class="`${platform}-big-title`" :style="{color:0.5==rate?color:'#fff'}">0.5x</text>
 						</div>
-						<div class="setBox" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)">
-							<text :class="`${platform}-big-title`" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text>
+						<div class="setBox" :class="0.8==rate?'solid-bottom':''" :style="{borderBottomColor:0.8==rate?color:'#fff'}" @click.stop="(args)=>tapRate(args,0.8)">
+							<text :class="`${platform}-big-title`" :style="{color:0.8==rate?color:'#fff'}">0.8x</text>
 						</div>
-						<div class="setBox" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1)">
-							<text :class="`${platform}-big-title`" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text>
+						<div class="setBox" :class="1.0==rate?'solid-bottom':''" :style="{borderBottomColor:1.0==rate?color:'#fff'}" @click.stop="(args)=>tapRate(args,1)">
+							<text :class="`${platform}-big-title`" :style="{color:1.0==rate?color:'#fff'}">1.0x</text>
 						</div>
-						<div class="setBox" :class="1.25==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.25)">
-							<text :class="`${platform}-big-title`" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text>
+						<div class="setBox" :class="1.25==rate?'solid-bottom':''" :style="{borderBottomColor:1.25==rate?color:'#fff'}" @click.stop="(args)=>tapRate(args,1.25)">
+							<text :class="`${platform}-big-title`" :style="{color:1.25==rate?color:'#fff'}">1.25x</text>
 						</div>
-						<div class="setBox" :class="1.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.5)">
-							<text :class="`${platform}-big-title`" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text>
+						<div class="setBox" :class="1.5==rate?'solid-bottom':''" :style="{borderBottomColor:1.5==rate?color:'#fff'}" @click.stop="(args)=>tapRate(args,1.5)">
+							<text :class="`${platform}-big-title`" :style="{color:1.5==rate?color:'#fff'}">1.5x</text>
 						</div>
 					</div>
 				</div>
 				<div class="rate-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="srcView"  @click.stop="clickSrcView">
 					<text :class="`${platform}-big-title`" :style="{ marginBottom: '40px' }">{{srcTitle}}</text>
 					<div class="set-bottom">
-						<div class="setBox" :class="srcTitle==item.title?'solid-bottom':''" @click.stop="(args)=>tapSrc(args,item)" v-for="(item,index) in srcList" :key="index">
-							<text :class="`${platform}-big-title`" :style="{color:srcTitle==item.title?'#FF6022':'#fff'}">{{item.title}}</text>
+						<div class="setBox" :class="srcTitle==item.title?'solid-bottom':''" :style="{borderBottomColor:srcTitle==item.title?color:'#fff'}" @click.stop="(args)=>tapSrc(args,item)" v-for="(item,index) in srcList" :key="index">
+							<text :class="`${platform}-big-title`" :style="{color:srcTitle==item.title?color:'#fff'}">{{item.title}}</text>
 						</div>
 					</div>
 				</div>
@@ -104,33 +104,33 @@
 							<text :class="`${platform}-title`" style="color:#FFF">循环播放</text>
 						</div>
 						<div class="more-box" @click.stop="clickLoop" v-if="loop">
-							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe63b;</text>
-							<text :class="`${platform}-title`" :style="{color:'#FF6022'}">取消循环</text>
+							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe63b;</text>
+							<text :class="`${platform}-title`" :style="{color:color}">取消循环</text>
 						</div>
 						<div class="more-box" @click.stop="clickFull" v-if="!full">
 							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe602;</text>
 							<text :class="`${platform}-title`" style="color:#FFF">撑满全屏</text>
 						</div>
 						<div class="more-box" @click.stop="clickFull" v-if="full">
-							<text :class="`${platform}-big-icon`" :style="{color:'#FF6022'}">&#xe78a;</text>
-							<text :class="`${platform}-title`" :style="{color:'#FF6022'}">恢复不撑满</text>
+							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe78a;</text>
+							<text :class="`${platform}-title`" :style="{color:color}">恢复不撑满</text>
 						</div>
 					</div>
 					<div class="more-tap"></div>
 					<div class="more-row">
 						<div class="more-box"><text :class="`${platform}-title`">播放速度</text></div>
 						<scroll-view class="scroll-view" scroll-x="true" :scroll-left="1.5==rate?200:0" :style="{ width: `${fullControlsWidth-320}px`}">
-							<div class="more-box" @click.stop="(args)=>tapRate(args,0.5)"><text class="`${platform}-title`" :class="0.5==rate?'solid-bottom':''" :style="{color:0.5==rate?'#FF6022':'#fff'}">0.5x</text></div>
-							<div class="more-box" @click.stop="(args)=>tapRate(args,0.8)"><text class="`${platform}-title`" :class="0.8==rate?'solid-bottom':''" :style="{color:0.8==rate?'#FF6022':'#fff'}">0.8x</text></div>
-							<div class="more-box" @click.stop="(args)=>tapRate(args,1)"><text class="`${platform}-title`" :class="1.0==rate?'solid-bottom':''" :style="{color:1.0==rate?'#FF6022':'#fff'}">1.0x</text></div>
-							<div class="more-box" @click.stop="(args)=>tapRate(args,1.25)"><text class="`${platform}-title`" :class="1.25==rate?'solid-bottom':''" :style="{color:1.25==rate?'#FF6022':'#fff'}">1.25x</text></div>
-							<div class="more-box" @click.stop="(args)=>tapRate(args,1.5)"><text class="`${platform}-title`" :class="1.5==rate?'solid-bottom':''" :style="{color:1.5==rate?'#FF6022':'#fff'}">1.5x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,0.5)"><text class="`${platform}-title`" :class="0.5==rate?'solid-bottom':''" :style="{color:0.5==rate?color:'#fff',borderBottomColor:0.5==rate?color:'#fff'}">0.5x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,0.8)"><text class="`${platform}-title`" :class="0.8==rate?'solid-bottom':''" :style="{color:0.8==rate?color:'#fff',borderBottomColor:0.8==rate?color:'#fff'}">0.8x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1)"><text class="`${platform}-title`" :class="1.0==rate?'solid-bottom':''" :style="{color:1.0==rate?color:'#fff',borderBottomColor:1.0==rate?color:'#fff'}">1.0x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1.25)"><text class="`${platform}-title`" :class="1.25==rate?'solid-bottom':''" :style="{color:1.25==rate?color:'#fff',borderBottomColor:1.25==rate?color:'#fff'}">1.25x</text></div>
+							<div class="more-box" @click.stop="(args)=>tapRate(args,1.5)"><text class="`${platform}-title`" :class="1.5==rate?'solid-bottom':''" :style="{color:1.5==rate?color:'#fff',borderBottomColor:1.5==rate?color:'#fff'}">1.5x</text></div>
 						</scroll-view>
 					</div>
 				</div>
 				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="episodeView"  @click.stop="clickEpisodeView">
-					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''">
-						<text :class="`${platform}-title`" :style="{color:count==index?'#FF6022':'#fff'}">{{count}}</text>
+					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
+						<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
 					</div>
 				</div>
 			</cover-view>
@@ -172,7 +172,7 @@
 					<text :class="`${platform}-title`">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" backgroundColor="#FF6022" blockColor="#FF6022"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
@@ -234,6 +234,14 @@
 			danmuList:{ //弹幕
 				type:Array,
 				default:()=>[]
+			},
+			initialTime:{ //指定视频初始播放位置，单位为秒（s）。
+				type:Number,
+				default:0
+			},
+			color:{
+				type:String,
+				default:'#FF6022'
 			}
 		},
 		data(){
@@ -265,6 +273,7 @@
 				danmuView:true,//弹幕
 				episodeView:false,//选集
 				full:false,//撑满全屏
+				playFirst:true,//第一次播放
 				rateList:['0.5','0.8','1.0','1.25','1.5'],//倍数
 				dblCount:0,//双击计数
 				touchCurrent:0,
@@ -297,11 +306,7 @@
 			})
 		},
 		async mounted() {
-			this.videoCtx = uni.createVideoContext(`chunleiVideo_${this.src}`,this)
-			//#ifndef APP-PLUS-NVUE 
-			this.videoCtx.play();
-			this.videoCtx.pause();
-			//#endif
+			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 		},
 		methods:{
 			promise(){
@@ -339,6 +344,10 @@
 				this.current = e.detail.value
 				this.videoCtx.seek(this.current)
 			},
+			//获取视频当前进度
+			getCurrent(){
+				return Math.floor(this.current)
+			},
 			clickFull(e){
 				e.stopPropagation();
 				if(this.full){
@@ -375,7 +384,7 @@
 					this.src = item.src
 					this.srcTitle = item.title
 					await this.promise()
-					this.videoCtx = uni.createVideoContext(`chunleiVideo_${this.src}`,this)
+					this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 					
 					await this.promise()
 					this.videoCtx.play();
@@ -387,6 +396,10 @@
 			videoPlay(){
 				if(!this.play){
 					this.videoCtx.play();
+					if(this.playFirst){
+						this.videoCtx.seek(this.initialTime)
+						this.playFirst = false
+					}
 					if(this.current>=this.duration) this.current=0
 				}else{
 					this.videoCtx.pause();
@@ -654,7 +667,7 @@
 					await this.promise()
 					this.videoCtx.play();
 					this.play = true
-					this.videoCtx.seek(0)
+					this.videoCtx.seek(this.initialTime)
 					this.videoCtx.playbackRate(this.rate*1)
 					if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
 				}
@@ -844,10 +857,6 @@
 	}
 	.solid-bottom{
 		border-bottom-width: 2px;
-		border-bottom-color: #FF6022;
-	}
-	.text-select{
-		color: #FF6022;
 	}
 	.controls-top{
 		/* #ifndef APP-PLUS-NVUE */

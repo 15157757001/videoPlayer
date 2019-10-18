@@ -1,16 +1,17 @@
 <template>
 	<div class="content">
 		
-		<!-- <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
+		<!-- <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration" color="#22ac38">
 		
 		</chunlei-video> -->
-		<chunlei-video :title="videoList[index-1].title" :srcList="videoList[index-1].srcList" class="video" ref="video" 
-			:gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index-1].danmuList">
+		<chunlei-video :title="videoList[index-1].title" :srcList="videoList[index-1].srcList" class="video" ref="video" :initialTime="videoList[index-1].initialTime"
+			:gDuration="videoList[index-1].gDuration" :episode="11" @playEpi="playEpi" :index="index" :danmuList="videoList[index-1].danmuList" color="#edd1d8">
 		
 		</chunlei-video>
 		
 		
-		<button @tap="tapBtn" class="btn">播放暂停</button>
+		<button @click="tapBtn" class="btn">播放暂停</button>
+		<button @click="getCurrent" class="btn">视频当前进度</button>
 	</div>
 </template>
 
@@ -36,19 +37,20 @@
 						{title:'高清',src:'http://baobab.kaiyanapp.com/api/v1/playUrl?vid=164016&resourceType=video&editionType=high&source=aliyun&playUrlType=url_oss'}
 					],
 					danmuList:[
-						{text: '我就算从这跳下去',color: '#fff',time: 1,avatar:'../../static/avatar.png'},
-						{text: '密集恐惧症患者',color: '#fff',time: 1,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 3,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 4,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 5,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 6,avatar:'../../static/avatar.png'},
-						{text: '也不会吃你一口小龙虾',color: '#fff',time: 7,avatar:'../../static/avatar.png'},
-						{text: '真香!!!',color: '#fff',time: 11,avatar:'../../static/avatar.png'},
-						{text: '真香！！！！！',color: '#fff',time: 14},
-						{text: '真香！！！',color: '#fff',time: 18},
-						{text: '前方高能!!!',color: '#fff',time: 23,avatar:'../../static/avatar.png'},
+						{text: '我就算从这跳下去',color: '#fff',time: 101,avatar:'../../static/avatar.png'},
+						{text: '密集恐惧症患者',color: '#fff',time: 101,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 103,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 104,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 105,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 106,avatar:'../../static/avatar.png'},
+						{text: '也不会吃你一口小龙虾',color: '#fff',time: 107,avatar:'../../static/avatar.png'},
+						{text: '真香!!!',color: '#fff',time: 111,avatar:'../../static/avatar.png'},
+						{text: '真香！！！！！',color: '#fff',time: 114},
+						{text: '真香！！！',color: '#fff',time: 118},
+						{text: '前方高能!!!',color: '#fff',time: 123,avatar:'../../static/avatar.png'},
 					],
 					title: '无辣不欢，你没见过小龙虾的大场面',
+					initialTime: 100,
 					gDuration:1162, //大概总时长
 				}],
 				index:1
@@ -66,6 +68,14 @@
 		methods: {
 			tapBtn(){
 				this.$refs.video.videoPlay()
+			},
+			//获取视频当前进度
+			getCurrent(){
+				uni.showToast({
+					title:this.$refs.video.getCurrent(),
+					icon:'none'
+				})
+				
 			},
 			playEpi(val){
 				this.index = val
@@ -113,7 +123,7 @@
 	
 	.video{
 		height: 200px;
-		flex: 1;
+		width: 750rpx;
 	}
 
 	.btn{
