@@ -40,7 +40,7 @@ components:{chunleiVideo}
 ~~~
 <template>
   <div class="content">
-    <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" :gDuration="gDuration">
+    <chunlei-video :title="title" :srcList="srcList" class="video" ref="video" color="#c93756" :gDuration="gDuration">
 		
     </chunlei-video>
   </div>
