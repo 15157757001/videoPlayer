@@ -92,12 +92,12 @@
 			
 			clickDownload(e) {
 				if(!this.videoList[e.idx-1].download){
-					this.videoList[e.idx-1].download = true
 					let frist = true
 					
 					//继续下载
 					for (let item of this.downloadList) {
-						if(item.epi == e) {
+						if(item.epi == e&&item.text!='完成') {
+							this.videoList[e.idx-1].download = true
 							item.text = '暂停'
 							item.task.start()
 							frist = false
@@ -137,9 +137,9 @@
 					}, false);
 					this.downloadList[idx].task.start();
 				}else{ //暂停
-					this.videoList[e-1].download = false
 					for (let item of this.downloadList) {
-						if(item.epi == e.idx) {
+						if(item.epi == e.idx&&item.text!='完成') {
+							this.videoList[e-1].download = false
 							item.text = '继续'
 							item.task.pause()
 						}
