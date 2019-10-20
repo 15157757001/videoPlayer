@@ -54,7 +54,7 @@
 				<div class="top-right">
 					<div class="btnBox" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" :style="{color:color}">&#xe604;</text></div>
 					<div class="btnBox" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FFF">&#xe8de;</text></div>
-					<div class="btnBox" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
+					<div class="btnBox marginRight" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
 					
 					<div class="power-view">
@@ -330,7 +330,7 @@
 				let promise = new Promise((resolve,reject)=>{
 					setTimeout(()=>{
 						resolve()
-					},20)
+					},0)
 				})
 				return promise
 			},
@@ -418,6 +418,7 @@
 					this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 					
 					// await this.promise()
+					this.play = true
 					this.videoCtx.play();
 					this.videoCtx.seek(this.current)
 					this.videoCtx.playbackRate(this.rate*1)
@@ -490,7 +491,7 @@
 					styles: {
 						transform: `translate(0px, ${distance}px)`,
 					},
-					duration: 200, //ms
+					duration: 150, //ms
 					timingFunction: 'ease-in-out',
 					delay: 0 //ms
 					}, () => {
@@ -552,6 +553,7 @@
 					this.touchVolume = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchVolume = this.touchVolume > 1? 1 : this.touchVolume
 					this.touchVolume = this.touchVolume < 0? 0 : this.touchVolume
+					
 				}else if(this.touchType=='bright'){
 					this.touchBright = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchBright = this.touchBright > 1? 1 : this.touchBright
@@ -588,9 +590,7 @@
 					});
 					//#endif
 				}else if(this.touchType=='volume'&&this.platform=='android'){
-					//#ifdef APP-PLUS-NVUE
 					plus.device.setVolume(this.touchVolume.toFixed(2))
-					//#endif
 				}else if(!this.touchType){
 					if(this.dblCount==1||this.dblCount==0) this.dblCount++
 					
@@ -601,7 +601,7 @@
 							//双击
 							if(this.dblCount==2) this.videoPlay()
 							this.dblCount = 0
-						}, 300);
+						}, 250);
 					}
 				}
 				
@@ -657,7 +657,9 @@
 					})
 					//#endif
 				})
-				return promise
+				promise.then(res=>{
+					this.level = res
+				})
 				
 				
 				
@@ -722,7 +724,7 @@
 					
 					if(newVal&&this.fullScreen){
 						this.nowTime = this.getNowTime()
-						this.level = await this.getLevel()
+						this.getLevel()
 						await this.promise()
 						this.animateControls(0,this.$refs.controlsTop)
 						this.animateControls(0,this.$refs.controlsBtm)
@@ -771,7 +773,7 @@
 		
 	}
 	.marginRight{
-		margin-right: 20rpx;
+		margin-right: 10px;
 	}
 	.btnBox{
 		padding: 10px;
@@ -911,7 +913,7 @@
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0 40px;
+		padding: 0 40px 0 30px;
 		
 	}
 	.top-left{
@@ -1106,7 +1108,7 @@
 		justify-content: space-between;
 		align-items: center;
 		height: 40px;
-		padding: 0 40px;
+		padding: 0 40px 0 30px;
 	}
 	.fullControls-bottom-right{
 		flex-direction: row;
