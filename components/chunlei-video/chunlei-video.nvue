@@ -8,11 +8,11 @@
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
 				<div class="rate-view" @click.stop="" v-if="!rateView"><text class="ios-title" @click="rateView=true">{{rate}}x</text></div>
 				<div class="controls-view" v-if="showControls" @click.stop="">
-					<div @click="videoPlay" v-if="play" class="marginRight"><text class="ios-icon">&#xe601;</text></div>
-					<div @click="videoPlay" v-if="!play" class="marginRight"><text class="ios-icon">&#xe896;</text></div>
+					<div @click="videoPlay" v-if="play" class="btnBox"><text class="ios-icon">&#xe601;</text></div>
+					<div @click="videoPlay" v-if="!play" class="btnBox"><text class="ios-icon">&#xe896;</text></div>
 					<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
 					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color"></chunLei-slider>
-					<div @click="tapFullScreen"><text class="ios-icon">&#xe60d;</text></div>
+					<div @click="tapFullScreen" class="btnBox"><text class="ios-icon">&#xe60d;</text></div>
 				</div>
 				<!-- 滑动video时显示 -->
 				<div class="current-view" v-if="touchType=='current'">
@@ -48,13 +48,13 @@
 			
 			<cover-view class="controls-top" ref="controlsTop" :style="{ width: `${fullControlsWidth}px` }" @click.stop="" v-if="fullScreen&&showControls&&!lock">
 				<div class="top-left">
-					<div class="marginRight"  @click="tapFullScreen"><text :class="`${platform}-icon`">&#xe60a;</text></div>
+					<div class="btnBox"  @click="tapFullScreen"><text :class="`${platform}-icon`">&#xe60a;</text></div>
 					<text :class="`${platform}-title`">{{title}}</text>
 				</div>
 				<div class="top-right">
-					<div class="marginRight" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" :style="{color:color}">&#xe604;</text></div>
-					<div class="marginRight" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FFF">&#xe8de;</text></div>
-					<div class="marginRight" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
+					<div class="btnBox" @click="danmuView=false" v-if="danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" :style="{color:color}">&#xe604;</text></div>
+					<div class="btnBox" @click="danmuView=true" v-if="!danmuView&&danmuList.length!=0"><text :class="`${platform}-icon`" style="color:#FFF">&#xe8de;</text></div>
+					<div class="btnBox" @click="clickMoreView"><text :class="`${platform}-icon`">&#xe646;</text></div>
 					<!-- <text :class="`${platform}-title`" :style="{marginRight:'0px'}">{{nowTime}}</text> -->
 					
 					<div class="power-view">
@@ -156,7 +156,7 @@
 			</cover-view>
 			<!-- 滑动video时显示音量 -->
 			<cover-view class="fullCurrent-view" v-if="fullScreen&&touchType=='volume'&&platform=='android'" :style="{ left: `${fullControlsWidth/2-75}px`}">
-				<div class="fullCurrent-top">
+				<div class="marginRight">
 					<text :class="`${platform}-icon`" v-if="touchVolume==0">&#xe654;</text>
 					<text :class="`${platform}-icon`" v-if="touchVolume>0&&touchVolume<0.33">&#xe779;</text>
 					<text :class="`${platform}-icon`" v-if="touchVolume>=0.33&&touchVolume<0.66">&#xe603;</text>
@@ -185,9 +185,9 @@
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
-						<div class="marginRight" @click="videoPlay" v-if="play"><text :class="`${platform}-icon`">&#xe601;</text></div>
-						<div class="marginRight" @click="videoPlay" v-if="!play"><text :class="`${platform}-icon`">&#xe896;</text></div>
-						<div class="marginRight" @click="playNext" v-if="!(episode==0||episode==index)"><text :class="`${platform}-icon`">&#xe8df;</text></div>
+						<div class="btnBox" @click="videoPlay" v-if="play"><text :class="`${platform}-icon`">&#xe601;</text></div>
+						<div class="btnBox" @click="videoPlay" v-if="!play"><text :class="`${platform}-icon`">&#xe896;</text></div>
+						<div class="btnBox" @click="playNext" v-if="!(episode==0||episode==index)"><text :class="`${platform}-icon`">&#xe8df;</text></div>
 					</div>
 					<div class="fullControls-bottom-right">
 						<div class="marginRight"  @click="clickRateView"><text :class="`${platform}-title`">{{rate}}x</text></div>
@@ -574,14 +574,15 @@
 					this.current = this.touchCurrent
 					this.videoCtx.seek(this.current)
 				}else if(this.touchType=='bright'&&this.platform=='android'){
-					
+					// plus.screen.setBrightness(this.touchBright.toFixed(2))
+					// if(this.play) this.videoCtx.play();
 					//#ifndef H5
 					uni.setScreenBrightness({
 					    value: this.touchBright.toFixed(2),
 					    success: ()=> {
 							setTimeout(() => {
 								if(this.play) this.videoCtx.play();
-							}, 200);
+							}, 100);
 							
 					    }
 					});
@@ -600,7 +601,7 @@
 							//双击
 							if(this.dblCount==2) this.videoPlay()
 							this.dblCount = 0
-						}, 200);
+						}, 300);
 					}
 				}
 				
@@ -771,6 +772,10 @@
 	}
 	.marginRight{
 		margin-right: 20rpx;
+	}
+	.btnBox{
+		padding: 10px;
+		
 	}
 	.video{
 		flex:1;
@@ -1062,7 +1067,7 @@
 		bottom: 0;
 		flex-direction: row;
 		align-items: center;
-		padding: 0 20px;
+		padding: 0 10px;
 		
 	}
 	.fullControls-view{
