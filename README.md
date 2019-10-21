@@ -7,6 +7,8 @@ uniapp自定义播放器
 
 2.下载管理不在组件里，具体看项目示例
 
+3.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
+
 ## 使用方式
 
 **在index.js中**  
