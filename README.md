@@ -5,9 +5,11 @@ uniapp自定义播放器
 
 1.插件在uni-app编译模式下编写，在 manifest.json 的源码视图里切换模式， manifest.json -> app-plus -> nvueCompiler 切换编译模式。
 
-2.下载管理不在组件里，具体看项目示例
+2.引入的index要nvue后缀!!!!!
 
-3.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
+3.下载管理不在组件里，具体看项目示例
+
+4.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
 
 ## 使用方式
 
