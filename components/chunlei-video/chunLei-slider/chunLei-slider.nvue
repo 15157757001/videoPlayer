@@ -71,7 +71,6 @@
 		},
 		methods:{
 			sliderTouch(e){
-				console.log(e)
 				let touches = e.changedTouches[0]
 				this.leftWidth = touches[this.direction]*this.ratio-this.screenLeft
 				this.leftWidth = this.leftWidth > this.currentWidth? this.currentWidth : this.leftWidth
@@ -88,7 +87,7 @@
 			// 计算方向
 			blockTouchMove(e) {
 				let newToucesX
-				console.log(this.direction)
+				
 				newToucesX= e.changedTouches[0][this.direction];
 				this.leftWidth = (newToucesX - this.oldToucesX)*this.ratio+ this.oldLeftWidth
 				this.leftWidth = this.leftWidth > this.currentWidth? this.currentWidth : this.leftWidth
