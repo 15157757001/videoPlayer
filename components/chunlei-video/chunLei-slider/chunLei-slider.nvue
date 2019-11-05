@@ -1,5 +1,5 @@
 <template>
-	<div class="slider" id="slider" :style="{ width: `${width}px` }">
+	<div class="slider" id="slider" :style="{ width: `${width}px` }" ref="slider">
 		<div class="slider-left" :style="{ width: `${leftWidth}px` }" @touchend.stop="sliderTouch">
 			<div class="left" :style="{backgroundColor:backgroundColor}"></div>
 		</div>
@@ -51,6 +51,10 @@
 			blockColor:{ //滑块颜色
 				type:String,
 				default:'#ffffff'
+			},
+			screenLeft:{ //slider距离左边距离
+				type:Number,
+				default:0
 			}
 		},
 		data(){
@@ -67,9 +71,8 @@
 		},
 		methods:{
 			sliderTouch(e){
-			
 				let touches = e.changedTouches[0]
-				this.leftWidth = (touches[this.direction] - 60)*this.ratio
+				this.leftWidth = touches[this.direction]*this.ratio-this.screenLeft
 				this.leftWidth = this.leftWidth > this.currentWidth? this.currentWidth : this.leftWidth
 				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
 				this.blockTouchEnd()
@@ -84,7 +87,7 @@
 			// 计算方向
 			blockTouchMove(e) {
 				let newToucesX
-				console.log(this.direction)
+				
 				newToucesX= e.changedTouches[0][this.direction];
 				this.leftWidth = (newToucesX - this.oldToucesX)*this.ratio+ this.oldLeftWidth
 				this.leftWidth = this.leftWidth > this.currentWidth? this.currentWidth : this.leftWidth

@@ -11,7 +11,7 @@
 					<div @click="videoPlay" v-if="play" class="btnBox"><text class="ios-icon">&#xe601;</text></div>
 					<div @click="videoPlay" v-if="!play" class="btnBox"><text class="ios-icon">&#xe896;</text></div>
 					<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :screenLeft="duration>=3600?150:120" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 					<div @click="tapFullScreen" class="btnBox"><text class="ios-icon">&#xe60d;</text></div>
 				</div>
 				<!-- 滑动video时显示 -->
@@ -181,7 +181,7 @@
 					<text :class="`${platform}-title`">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :screenLeft="40" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
