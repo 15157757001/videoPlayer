@@ -37,7 +37,7 @@
 </template>
 
 <script>
-	import chunleiVideo from '../../components/chunlei-video/chunlei-video.nvue'
+	import chunleiVideo from '@/components/chunlei-video/chunlei-video.nvue'
 	export default { 
 		components:{
 			chunleiVideo

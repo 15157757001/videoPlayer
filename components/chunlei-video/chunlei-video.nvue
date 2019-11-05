@@ -323,6 +323,7 @@
 			})
 		},
 		async mounted() {
+			this.getLevel()
 			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 		},
 		methods:{
