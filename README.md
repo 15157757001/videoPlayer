@@ -88,6 +88,7 @@ components:{chunleiVideo}
 	@playEpi="playEpi" 
 	:downloadBtn="true"
 	@clickDownload="clickDownload"
+	:audio="videoList[index-1].audio"
 	:title="videoList[index-1].title"
 	@fullscreenchange="fullscreenchange"
 	:srcList="videoList[index-1].srcList" 
@@ -122,6 +123,8 @@ components:{chunleiVideo}
 | ---  | --- |
 | playEpi | 跳到指定集数 |
 | clickDownload | 点击下载 |
+| pageShow | 页面显示后播放 |
+| pageHide | 页面隐藏后暂停 |
 
 
 ## 如果觉得插件不错，麻烦给个好评
