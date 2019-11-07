@@ -73,7 +73,8 @@
 					title: '无辣不欢，你没见过小龙虾的大场面',
 					initialTime: 100,
 					gDuration:1162, //大概总时长
-					download:false
+					download:false,
+					audio:'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.mp3'
 				}],
 				downloadList:[],
 				index:1 ,//当前集数
@@ -115,7 +116,9 @@
 						epi: e.idx, //集数
 						task: null,
 						progress: 0,
-						text: '暂停'
+						text: '暂停',
+						filename:'',
+						index: 0
 					}
 					this.downloadList.push(downloader)
 					let idx = this.downloadList.length - 1
@@ -123,9 +126,20 @@
 						// 下载完成
 						if(status == 200){ 
 							this.downloadList[idx].text = '完成'
-							this.videoList[e.idx-1].download = false
+							
+							//保存本地视频至list
 							let filename = plus.io.convertLocalFileSystemURL(d.filename)
-							console.log(filename)
+							const video = this.videoList[e.idx-1]
+							video.src = filename
+							video.title = `本地视频第${e.idx}集`
+							video.initialTime = 0
+							this.videoList.push(video)
+							this.downloadList[idx].filename = filename
+							
+							this.videoList[e.idx-1].download = false
+							
+							//保存索引用于跳转
+							this.downloadList[idx].index = this.videoList.length
 							uni.showToast({title:`下载成功,文件保存至${filename}`,icon:'none'})
 						} else {
 							 console.log("下载失败"); 
@@ -162,7 +176,7 @@
 					this.videoList[itm.epi-1].download = false
 					itm.task.pause();
 				}else{
-					
+					this.playEpi(itm.index)
 				}
 			},
 			// 暂停下载任务 

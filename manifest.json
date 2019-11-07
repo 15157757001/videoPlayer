@@ -7,6 +7,7 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
+        "runmode" : "liberate",
         "nvueCompiler" : "uni-app",
         "usingComponents" : true,
         "splashscreen" : {
@@ -31,6 +32,7 @@
                     "<uses-permission android:name=\"android.permission.BATTERY_STATS\"/>",
                     "<uses-permission android:name=\"android.permission.CALL_PHONE\"/>",
                     "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CAPTURE_AUDIO_OUTPUT\"/>",
                     "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
@@ -48,7 +50,9 @@
                 ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "UIBackgroundModes" : [ "audio" ]
+            },
             /* SDK配置 */
             "sdkConfigs" : {}
         }

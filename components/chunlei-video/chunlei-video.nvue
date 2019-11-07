@@ -116,6 +116,14 @@
 							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe78a;</text>
 							<text :class="`${platform}-title`" :style="{color:color}">恢复不撑满</text>
 						</div>
+						<div class="more-box" @click.stop="clickDownload" v-if="!audioPlay&&audio!=''">
+							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe6cf;</text>
+							<text :class="`${platform}-title`" style="color:#FFF">后台音频播放</text>
+						</div>
+						<div class="more-box" @click.stop="clickDownload" v-if="audioPlay&&audio!=''">
+							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe6cf;</text>
+							<text :class="`${platform}-title`" :style="{color:color}">取消后台音频播放</text>
+						</div>
 						<div class="more-box" @click.stop="clickDownload" v-if="!download&&downloadBtn">
 							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe6cf;</text>
 							<text :class="`${platform}-title`" style="color:#FFF">下载</text>
@@ -259,7 +267,12 @@
 			download:{ //下载状态
 				type:Boolean,
 				default:false
+			},
+			audio:{ //音频
+				type:String,
+				default:''
 			}
+			
 		},
 		data(){
 			return{
@@ -297,7 +310,10 @@
 				touchBright:0,
 				touchVolume:0,
 				ratio:1, //滚动条比例系数
-				level:1  //电量
+				level:1  ,//电量
+				
+				audioPlay:false ,//后台音频
+				innerAudioContext:'',//音频上下文
 			}
 		},
 		beforeCreate() {
@@ -325,6 +341,21 @@
 		async mounted() {
 			this.getLevel()
 			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
+		},
+		onShow() {
+			//显示暂停
+			this.innerAudioContext.pause()
+			if(this.play){
+				this.videoCtx.play()
+			}
+		},
+		onHide() {
+			this.videoCtx.pause()
+			//显示播放
+			if(this.audio!=''&&this.play){
+				this.innerAudioContext.seek(this.current)
+				this.innerAudioContext.play()
+			}
 		},
 		methods:{
 			promise(){
@@ -425,6 +456,11 @@
 					this.videoCtx.playbackRate(this.rate*1)
 				}
 				this.clickSrcView()
+			},
+			//暂停
+			pause(){
+				this.videoCtx.pause();
+				this.play = false
 			},
 			videoPlay(){
 				if(!this.play){
@@ -697,6 +733,18 @@
 					this.duration = newVal
 				}
 			},
+			audio:{
+				immediate:true,
+				handler(newVal,oldVal){
+					if(newVal!=''){
+						this.innerAudioContext = uni.createInnerAudioContext();
+						this.innerAudioContext.src = newVal;
+						this.innerAudioContext.onPlay();
+						this.innerAudioContext.onPause();
+					}
+					
+				}
+			},
 			index:{
 				handler:async function(newVal){
 					
@@ -710,7 +758,7 @@
 			},
 			srcList:{
 				immediate:true,
-				handler(newVal,oldVal){
+				handler:async function(newVal,oldVal){
 					if(typeof newVal=='string'){
 						this.src = newVal
 					}else{
