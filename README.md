@@ -41,6 +41,8 @@ components:{chunleiVideo}
 
 9.主题颜色切换
 
+10.show后继续播放
+
 **在index.vue中(简洁版)**  
 
 ~~~
@@ -66,6 +68,9 @@ components:{chunleiVideo}
 
 6.初始播放位置
 
+7.下载后打开本地视频
+
+8.后台音频播放
 **在index.vue中(完整版)**  
 
 ~~~
@@ -106,6 +111,7 @@ components:{chunleiVideo}
 | initialTime | Number | 0 | 初始播放位置 |
 | downloadBtn | Boolean | false | 下载按钮 |
 | download | Boolean | false | 下载状态 |
+| audio | String | '' | 音频，为默认值时不显示后台播放 |
 
 ## 事件
 
