@@ -503,9 +503,12 @@
 					this.rateView = !this.rateView
 				}
 			},
-			clickAudio(){
+			async clickAudio(e){
+				e.stopPropagation();
 				this.showControls = !this.showControls
 				this.audioFlag = true
+				this.moreView = false
+				uni.showToast({title:'开启后台音频播放',icon:'none'})
 			},
 			//切换srctitle
 			async clickSrcView(){
