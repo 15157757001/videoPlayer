@@ -13,6 +13,8 @@ uniapp自定义播放器
 
 5.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
 
+6.[后台音频配置](https://ask.dcloud.net.cn/article/35241)
+
 ## 使用方式
 
 **在index.js中**  
