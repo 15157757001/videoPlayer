@@ -73,6 +73,7 @@ components:{chunleiVideo}
 7.下载后打开本地视频
 
 8.后台音频播放
+
 **在index.vue中(完整版)**  
 
 ~~~
