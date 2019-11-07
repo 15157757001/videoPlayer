@@ -13,6 +13,8 @@ uniapp自定义播放器
 
 5.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
 
+6.[后台音频配置](https://ask.dcloud.net.cn/article/35241)
+
 ## 使用方式
 
 **在index.js中**  
@@ -41,6 +43,8 @@ components:{chunleiVideo}
 
 9.主题颜色切换
 
+10.show后继续播放
+
 **在index.vue中(简洁版)**  
 
 ~~~
@@ -66,6 +70,10 @@ components:{chunleiVideo}
 
 6.初始播放位置
 
+7.下载后打开本地视频
+
+8.后台音频播放
+
 **在index.vue中(完整版)**  
 
 ~~~
@@ -80,6 +88,7 @@ components:{chunleiVideo}
 	@playEpi="playEpi" 
 	:downloadBtn="true"
 	@clickDownload="clickDownload"
+	:audio="videoList[index-1].audio"
 	:title="videoList[index-1].title"
 	@fullscreenchange="fullscreenchange"
 	:srcList="videoList[index-1].srcList" 
@@ -106,6 +115,7 @@ components:{chunleiVideo}
 | initialTime | Number | 0 | 初始播放位置 |
 | downloadBtn | Boolean | false | 下载按钮 |
 | download | Boolean | false | 下载状态 |
+| audio | String | '' | 音频，为默认值时不显示后台播放 |
 
 ## 事件
 
@@ -113,6 +123,8 @@ components:{chunleiVideo}
 | ---  | --- |
 | playEpi | 跳到指定集数 |
 | clickDownload | 点击下载 |
+| pageShow | 页面显示后播放 |
+| pageHide | 页面隐藏后暂停 |
 
 
 ## 如果觉得插件不错，麻烦给个好评
