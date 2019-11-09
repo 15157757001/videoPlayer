@@ -48,7 +48,7 @@
 		async mounted() {
 			await this.pushVideoList()
 			if(this.videoList.length==0){
-				uni.showToast({title:'无本地视频快去下载吧',icon:'none'})
+				uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
 			}else{
 				this.$refs.video.videoPlay()
 			}
@@ -76,7 +76,7 @@
 						// 创建读取目录信息对象 
 						var directoryReader = fs.root.createReader();
 						directoryReader.readEntries( ( entries )=>{
-							console.log(entries.length==0)
+							
 							if(entries.length==0) resolve()
 							for(let i=0; i < entries.length; i++ ) {
 								//获取路径
@@ -105,8 +105,8 @@
 					fail:()=>{
 						//m3u8格式 读取存在问题
 						// let regex = /\.m3u8$/;
-						// if(regex.test(file.name)){
 						
+						// if(regex.test(file.name)){
 						// 	this.videoList.push({
 						// 		srcList:file.fullPath,
 						// 		title: file.name,
@@ -117,7 +117,8 @@
 					complete:()=>{
 						this.i++
 						//回调结束
-						if(this.i==length-1) resolve()
+			
+						if(this.i==length) resolve()
 					}
 				})
 			}
