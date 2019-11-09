@@ -3,23 +3,24 @@ uniapp自定义播放器
 
 ## 目前存在问题！！！！
 
-1.app同时加载两个video时，通过this.videoCtx.requestFullScreen全屏会导致app崩溃。（pages.json切换首页查看示例）
+app同时加载两个video时，通过this.videoCtx.requestFullScreen全屏会导致app崩溃。（pages.json切换首页查看示例）
 
-2.plus.io.getVideoInfo读取m3u8格式存在问题，所以无法播放本地m3u8。
 
 ## 说明
 
-1.插件在uni-app编译模式下编写，在 manifest.json 的源码视图里切换模式， manifest.json -> app-plus -> nvueCompiler 切换编译模式。
+1.App平台： 支持本地视频(mp4/flv)！！！本地视频(mp4/flv)！！！本地视频(mp4/flv)！！！网络视频地址（mp4/flv/m3u8）
 
-2.引入的index要nvue后缀!!!!!
+3.插件在uni-app编译模式下编写，在 manifest.json 的源码视图里切换模式， manifest.json -> app-plus -> nvueCompiler 切换编译模式。
 
-3.更新hx
+4.引入的index要nvue后缀!!!!!
 
-4.下载管理不在组件里，具体看项目示例
+5.更新hx
 
-5.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
+6.下载管理不在组件里，具体看项目示例
 
-6.[后台音频配置](https://ask.dcloud.net.cn/article/35241)
+7.安卓下调整亮度时，视频会黑屏一下报了 [bug](https://ask.dcloud.net.cn/question/80969)
+
+8.[后台音频配置](https://ask.dcloud.net.cn/article/35241)
 
 ## 使用方式
 
