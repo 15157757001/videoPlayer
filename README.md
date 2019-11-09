@@ -1,6 +1,12 @@
 # videoPlayer
 uniapp自定义播放器
 
+## 目前存在问题！！！！
+
+1.app同时加载两个video时，通过this.videoCtx.requestFullScreen全屏会导致app崩溃。（pages.json切换首页查看示例）
+
+2.plus.io.getVideoInfo读取m3u8格式存在问题，所以无法播放本地m3u8。
+
 ## 说明
 
 1.插件在uni-app编译模式下编写，在 manifest.json 的源码视图里切换模式， manifest.json -> app-plus -> nvueCompiler 切换编译模式。
