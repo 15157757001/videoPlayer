@@ -1,0 +1,157 @@
+<template>
+	<div class="content">
+		<chunlei-video 
+			ref="video"
+			class="video"  
+			:index="index" 
+			color="#c93756"
+			:title="videoList[index].title"
+			@fullscreenchange="fullscreenchange"
+			:srcList="videoList[index].srcList" 
+			:gDuration="videoList[index].gDuration" 
+		>
+		
+		</chunlei-video>
+		
+		<div class="progress-box" v-for="(item,index) in videoList" :key="index" v-if="!fullScreen">
+			<image src="../../static/video.png" class="box-image"></image>
+			<div class="box-content">
+				<!-- <progress :percent="item.progress" stroke-width="3" /> -->
+				<text class="box-text">{{item.title}}</text>
+			</div>
+			<button @click="clickVideo(index)" class="box-btn" plain>打开</button>
+		</div>
+	</div>
+</template>
+
+<script>
+	import chunleiVideo from '@/components/chunlei-video/chunlei-video.nvue'
+	export default { 
+		components:{
+			chunleiVideo
+		},
+		data() {
+			return {
+				videoList:[],
+				index:0 ,
+				fullScreen: false
+			}
+		},
+		async created() {
+			//#ifdef APP-PLUS
+			plus.screen.lockOrientation("portrait-primary")
+			//#endif
+			
+		},
+		async mounted() {
+			await this.pushVideoList()
+			// await this.pushVideoList()
+			// this.$refs.video.videoPlay()
+		},
+		methods: {
+			clickVideo(index){
+				this.index = index
+			},
+			fullscreenchange(e){
+				this.fullScreen = e
+			},
+			pushVideoList(){
+				let promise = new Promise((resolve,reject)=>{
+					plus.io.requestFileSystem( plus.io.PUBLIC_DOWNLOADS, (fs)=>{
+						// fs.root是根目录操作对象DirectoryEntry
+						// 创建读取目录信息对象 
+						var directoryReader = fs.root.createReader();
+						directoryReader.readEntries( ( entries )=>{
+							var i;
+							for( i=0; i < entries.length; i++ ) {
+								//获取路径
+								entries[i].file( (file) => {
+									//获取时长
+									this.getVideoInfoBy(file)
+									plus.io.getVideoInfo({
+										filePath:file.fullPath,
+										success:(videoInfo)=>{
+											this.videoList.push({
+												srcList:file.fullPath,
+												title: file.name,
+												gDuration:videoInfo.duration, //大概总时长
+											})
+										},
+										fail:()=>{
+											//m3u8格式
+											let regex = /\.m3u8$/;
+											if(regex.test(file.name)){
+												this.videoList.push({
+													srcList:file.fullPath,
+													title: file.name,
+													gDuration:0, //大概总时长
+												})
+											}
+										},
+										complete:()=>{
+											//回调结束
+											if(this.videoList.length==entries.length) resolve()
+										}
+									})
+									
+								} );
+							}
+						})
+					}, function ( e ) {
+						console.log( "Read entries failed: " + e.message );
+					} );
+				} );
+				return promise
+			},
+		}
+	}
+</script>
+
+<style>
+	
+	.content {
+		
+		width: 750rpx;
+		align-items: center;
+	}
+	
+	.video{
+		height: 200px;
+		width: 750rpx;
+	}
+
+	.btn{
+		width: 500rpx;
+		marginTop:50rpx;
+	}
+	.progress-box{
+		padding: 40rpx;
+		height: 150rpx;
+		marginTop:50rpx;
+		border-radius: 5px;
+		border-color: #e9e7ef;
+		border-style: solid;
+		border-width: 2px;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+	.box-content{
+		width: 300rpx;
+		padding: 20rpx;
+		justify-content: center;
+	}
+	
+	.box-btn{
+		height: 80rpx;
+		width: 100rpx;
+		border-color: #161823;
+	}
+	.box-image{
+		height: 80rpx;
+		width: 80rpx;
+	}
+	.box-text{
+		font-size: 16px;
+	}
+</style>
