@@ -1,5 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		//由于bug原因，只能加载一个页面，请在此更换首页
 		{
 			"path": "pages/local/index",
 			"style": {

@@ -131,14 +131,17 @@
 					}
 					this.downloadList.push(downloader)
 					let idx = this.downloadList.length - 1
-					this.downloadList[idx].task = plus.downloader.createDownload(e.src, {}, (d, status)=>{
+					this.downloadList[idx].task = plus.downloader.createDownload(e.src, {
+						filename:`_downloads/本地:${this.videoList[e.idx-1].title}`
+					}, (d, status)=>{
 						// 下载完成
 						if(status == 200){ 
 							this.downloadList[idx].text = '打开'
 							
 							//保存本地视频至list
 							let filename = plus.io.convertLocalFileSystemURL(d.filename)
-							const video = this.videoList[e.idx-1]
+							
+							const video = {...this.videoList[e.idx-1]}
 							video.src = filename
 							video.title = `本地视频第${e.idx}集`
 							video.initialTime = 0

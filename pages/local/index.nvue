@@ -1,6 +1,7 @@
 <template>
 	<div class="content">
 		<chunlei-video 
+			v-if="videoList.length!=0"
 			ref="video"
 			class="video"  
 			:index="index" 
@@ -34,7 +35,8 @@
 			return {
 				videoList:[],
 				index:0 ,
-				fullScreen: false
+				fullScreen: false,
+				i:0
 			}
 		},
 		async created() {
@@ -45,8 +47,20 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
-			// await this.pushVideoList()
-			// this.$refs.video.videoPlay()
+			if(this.videoList.length==0){
+				uni.showToast({title:'无本地视频快去下载吧',icon:'none'})
+			}else{
+				this.$refs.video.videoPlay()
+			}
+			
+		},
+		onShow() {
+			//展示播放
+			if(typeof this.$refs.video!='undefined' && this.videoList.length!=0) this.$refs.video.pageShow()
+		},
+		onHide() {
+			//隐藏暂停播放
+			if(this.videoList.length!=0){ this.$refs.video.pageHide() }
 		},
 		methods: {
 			clickVideo(index){
@@ -62,38 +76,13 @@
 						// 创建读取目录信息对象 
 						var directoryReader = fs.root.createReader();
 						directoryReader.readEntries( ( entries )=>{
-							var i;
-							for( i=0; i < entries.length; i++ ) {
+							console.log(entries.length==0)
+							if(entries.length==0) resolve()
+							for(let i=0; i < entries.length; i++ ) {
 								//获取路径
 								entries[i].file( (file) => {
 									//获取时长
-									this.getVideoInfoBy(file)
-									plus.io.getVideoInfo({
-										filePath:file.fullPath,
-										success:(videoInfo)=>{
-											this.videoList.push({
-												srcList:file.fullPath,
-												title: file.name,
-												gDuration:videoInfo.duration, //大概总时长
-											})
-										},
-										fail:()=>{
-											//m3u8格式
-											let regex = /\.m3u8$/;
-											if(regex.test(file.name)){
-												this.videoList.push({
-													srcList:file.fullPath,
-													title: file.name,
-													gDuration:0, //大概总时长
-												})
-											}
-										},
-										complete:()=>{
-											//回调结束
-											if(this.videoList.length==entries.length) resolve()
-										}
-									})
-									
+									this.getVideoInfoBy(file,resolve,entries.length)
 								} );
 							}
 						})
@@ -103,6 +92,35 @@
 				} );
 				return promise
 			},
+			getVideoInfoBy(file,resolve,length){
+				plus.io.getVideoInfo({
+					filePath:file.fullPath,
+					success:(videoInfo)=>{
+						this.videoList.push({
+							srcList:file.fullPath,
+							title: file.name,
+							gDuration:videoInfo.duration, //大概总时长
+						})
+					},
+					fail:()=>{
+						//m3u8格式 读取存在问题
+						// let regex = /\.m3u8$/;
+						// if(regex.test(file.name)){
+						
+						// 	this.videoList.push({
+						// 		srcList:file.fullPath,
+						// 		title: file.name,
+						// 		gDuration:0, //大概总时长
+						// 	})
+						// }
+					},
+					complete:()=>{
+						this.i++
+						//回调结束
+						if(this.i==length-1) resolve()
+					}
+				})
+			}
 		}
 	}
 </script>

@@ -199,11 +199,11 @@
 					</div>
 					<div class="fullControls-bottom-right">
 						<div class="marginRight"  @click="clickRateView"><text :class="`${platform}-title`">{{rate}}x</text></div>
-						<div class="marginRight"></div>
-						<div :class="`${platform}-title-box`" @click="clickSrcView">
-							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
+						<div class="marginRight" v-if="srcTitle!=''"></div>
+						<div :class="`${platform}-title-box`" @click="clickSrcView" v-if="srcTitle!=''">
+							<text :class="`${platform}-srcTitle`">{{srcTitle}}</text>
 						</div>
-						<div class="marginRight"></div>
+						<div class="marginRight" v-if="episode!=0"></div>
 						<text :class="`${platform}-title`" @click="clickEpisodeView" style="marginLeft:20rpx" v-if="episode!=0">选集</text>
 					</div>
 				</div>
