@@ -14,6 +14,7 @@
 			:downloadBtn="true"
 			@clickDownload="clickDownload"
 			:title="videoList[index-1].title"
+			:audio="videoList[index-1].audio"
 			@fullscreenchange="fullscreenchange"
 			:srcList="videoList[index-1].srcList" 
 			:download="videoList[index-1].download"
@@ -74,7 +75,7 @@
 					initialTime: 100,
 					gDuration:1162, //大概总时长
 					download:false,
-					audio:'https://img-cdn-qiniu.dcloud.net.cn/uniapp/audio/music.mp3'
+					audio:'../../static/audio.mp3'
 				}],
 				downloadList:[],
 				index:1 ,//当前集数
@@ -90,6 +91,14 @@
 		async mounted() {
 			await this.pushVideoList()
 			this.$refs.video.videoPlay()
+		},
+		onShow() {
+			//展示播放
+			if(typeof this.$refs.video!='undefined') this.$refs.video.pageShow()
+		},
+		onHide() {
+			//隐藏暂停播放
+			this.$refs.video.pageHide()
 		},
 		methods: {
 			fullscreenchange(e){
@@ -125,7 +134,7 @@
 					this.downloadList[idx].task = plus.downloader.createDownload(e.src, {}, (d, status)=>{
 						// 下载完成
 						if(status == 200){ 
-							this.downloadList[idx].text = '完成'
+							this.downloadList[idx].text = '打开'
 							
 							//保存本地视频至list
 							let filename = plus.io.convertLocalFileSystemURL(d.filename)

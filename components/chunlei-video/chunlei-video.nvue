@@ -116,13 +116,13 @@
 							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe78a;</text>
 							<text :class="`${platform}-title`" :style="{color:color}">恢复不撑满</text>
 						</div>
-						<div class="more-box" @click.stop="clickDownload" v-if="!audioPlay&&audio!=''">
-							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe6cf;</text>
+						<div class="more-box" @click.stop="clickAudio" v-if="!audioFlag&&audio!=''">
+							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe606;</text>
 							<text :class="`${platform}-title`" style="color:#FFF">后台音频播放</text>
 						</div>
-						<div class="more-box" @click.stop="clickDownload" v-if="audioPlay&&audio!=''">
-							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe6cf;</text>
-							<text :class="`${platform}-title`" :style="{color:color}">取消后台音频播放</text>
+						<div class="more-box" @click.stop="audioFlag=false" v-if="audioFlag&&audio!=''">
+							<text :class="`${platform}-big-icon`" :style="{color:color}">&#xe605;</text>
+							<text :class="`${platform}-title`" :style="{color:color}">后台音频播放</text>
 						</div>
 						<div class="more-box" @click.stop="clickDownload" v-if="!download&&downloadBtn">
 							<text :class="`${platform}-big-icon`" style="color:#FFF">&#xe6cf;</text>
@@ -199,9 +199,11 @@
 					</div>
 					<div class="fullControls-bottom-right">
 						<div class="marginRight"  @click="clickRateView"><text :class="`${platform}-title`">{{rate}}x</text></div>
+						<div class="marginRight"></div>
 						<div :class="`${platform}-title-box`" @click="clickSrcView">
 							<text :class="`${platform}-srcTitle`" v-if="srcTitle!=''">{{srcTitle}}</text>
 						</div>
+						<div class="marginRight"></div>
 						<text :class="`${platform}-title`" @click="clickEpisodeView" style="marginLeft:20rpx" v-if="episode!=0">选集</text>
 					</div>
 				</div>
@@ -312,8 +314,8 @@
 				ratio:1, //滚动条比例系数
 				level:1  ,//电量
 				
-				audioPlay:false ,//后台音频
-				innerAudioContext:'',//音频上下文
+				audioFlag:false ,//后台音频
+				innerAudioContext:null,//音频上下文
 			}
 		},
 		beforeCreate() {
@@ -342,22 +344,28 @@
 			this.getLevel()
 			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 		},
-		onShow() {
-			//显示暂停
-			this.innerAudioContext.pause()
-			if(this.play){
-				this.videoCtx.play()
-			}
-		},
-		onHide() {
-			this.videoCtx.pause()
-			//显示播放
-			if(this.audio!=''&&this.play){
-				this.innerAudioContext.seek(this.current)
-				this.innerAudioContext.play()
-			}
-		},
 		methods:{
+			async pageShow() {
+				//显示暂停
+				if(this.audio!='') this.innerAudioContext.pause()
+				await this.promise()
+				if(this.play){
+					this.videoCtx.play()
+					this.videoCtx.seek(this.current)
+				}
+			},
+			async pageHide() {
+				this.videoCtx.pause()
+				await this.promise()
+				//显示播放
+				if(this.audio!=''&&this.play&&this.audioFlag){
+					this.innerAudioContext.seek(this.current)
+					this.innerAudioContext.onTimeUpdate(()=>{
+						this.current = this.innerAudioContext.currentTime
+					})
+					this.innerAudioContext.play()
+				}
+			},
 			promise(){
 				let promise = new Promise((resolve,reject)=>{
 					setTimeout(()=>{
@@ -494,6 +502,13 @@
 				}else{
 					this.rateView = !this.rateView
 				}
+			},
+			async clickAudio(e){
+				e.stopPropagation();
+				this.showControls = !this.showControls
+				this.audioFlag = true
+				this.moreView = false
+				uni.showToast({title:'开启后台音频播放',icon:'none'})
 			},
 			//切换srctitle
 			async clickSrcView(){
@@ -735,12 +750,16 @@
 			},
 			audio:{
 				immediate:true,
-				handler(newVal,oldVal){
+				handler:async function(newVal,oldVal){
 					if(newVal!=''){
+						await this.promise()
 						this.innerAudioContext = uni.createInnerAudioContext();
+						
 						this.innerAudioContext.src = newVal;
 						this.innerAudioContext.onPlay();
 						this.innerAudioContext.onPause();
+					}else{
+						this.innerAudioContext = null
 					}
 					
 				}
@@ -928,7 +947,7 @@
 		align-items: center;
 		text-align: center;
 		height: 100px;
-		width: 100px;
+		width: 120px;
 		margin-right: 20px;
 		
 	}
