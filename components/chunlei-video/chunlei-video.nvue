@@ -522,7 +522,7 @@
 			//选集
 			async clickEpisodeView(e){
 				e.stopPropagation();
-				console.log(11)
+				
 				this.showControls = !this.showControls
 				this.episodeView = !this.episodeView
 			},
