@@ -136,7 +136,7 @@
 					let localName 
 					//m3u8不处理 标记格式  
 					localName = this.getSaveName(e.src,this.videoList[e.idx-1].title)
-					
+					console.log(localName)
 					this.downloadList[idx].task = plus.downloader.createDownload(e.src, localName , (d, status)=>{
 						// 下载完成
 						if(status == 200){ 
@@ -252,15 +252,16 @@
 				
 				if(/\.m3u8$/.test(src)){
 					return {}
-				}else if(/\.mp4$/.test(src)){
+				}else{
 					return {
-						filename:`_downloads/本地:${title}.mp4`
-					}
-				}else if(/\.flv$/.test(src)){
-					return {
-						filename:`_downloads/本地:${title}.flv`
+						filename:`_downloads/${title}.mp4`
 					}
 				}
+				// else if(/\.flv$/.test(src)){
+				// 	return {
+				// 		filename:`_downloads/本地:${title}.flv`
+				// 	}
+				// }
 			}
 		}
 	}

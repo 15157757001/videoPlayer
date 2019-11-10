@@ -50,7 +50,10 @@
 			if(this.videoList.length==0){
 				uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
 			}else{
-				this.$refs.video.videoPlay()
+				setTimeout(()=>{
+					this.$refs.video.videoPlay()
+				},2000)
+				
 			}
 			
 		},
@@ -65,6 +68,8 @@
 		},
 		methods: {
 			clickVideo(index){
+				
+				 
 				this.index = index
 			},
 			fullscreenchange(e){
@@ -99,13 +104,13 @@
 					success:(videoInfo)=>{
 						
 						//本地支持mp4 flv
-						if(/\.mp4$/.test(file.name)||/\.flv$/.test(file.name)){
+						
 							this.videoList.push({
 								srcList:file.fullPath,
 								title: file.name,
 								gDuration:videoInfo.duration, //大概总时长
 							})
-						}
+						
 						
 					},
 					fail:()=>{

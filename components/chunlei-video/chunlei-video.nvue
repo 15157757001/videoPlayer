@@ -773,6 +773,7 @@
 				handler:async function(newVal){
 					
 					await this.promise()
+					
 					this.videoCtx.play();
 					this.play = true
 					this.videoCtx.seek(this.initialTime)
@@ -931,7 +932,6 @@
 		flex-wrap: wrap;
 	}
 	.episode-scroll{
-		
 		flex-direction: row;
 		
 		flex-wrap: wrap;
