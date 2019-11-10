@@ -145,11 +145,14 @@
 						</scroll-view>
 					</div>
 				</div>
-				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }" v-if="episodeView"  @click.stop="clickEpisodeView">
-					<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
-						<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
-					</div>
+				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"  v-if="episodeView"  @click.stop="clickEpisodeView">
+					<scroll-view scroll-y class="episode-scroll" :style="{ width: `${fullControlsWidth-200}px`,maxHeight: `${fullControlsHeigt-40}px` }" @click.stop="clickEpisodeView">
+						<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
+							<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
+						</div>
+					</scroll-view>
 				</div>
+				
 			</cover-view>
 			<!-- 滑动video时显示 -->
 			<cover-view class="fullCurrent-current" v-if="fullScreen&&touchType=='current'" :style="{ left: `${fullControlsWidth/2-75}px`}">
@@ -517,7 +520,9 @@
 				this.srcView = !this.srcView
 			},
 			//选集
-			async clickEpisodeView(){
+			async clickEpisodeView(e){
+				e.stopPropagation();
+				console.log(11)
 				this.showControls = !this.showControls
 				this.episodeView = !this.episodeView
 			},
@@ -920,8 +925,15 @@
 		padding: 40px 100px;
 	}
 	.episode-set{
-		flex-direction: row;
+		
+		flex-direction: column;
 		padding: 40px 100px;
+		flex-wrap: wrap;
+	}
+	.episode-scroll{
+		
+		flex-direction: row;
+		
 		flex-wrap: wrap;
 	}
 	.epiBox{
