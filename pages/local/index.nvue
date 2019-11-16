@@ -1,5 +1,6 @@
 <template>
 	<div class="content">
+		
 		<chunlei-video 
 			v-if="videoList.length!=0"
 			ref="video"
@@ -36,7 +37,9 @@
 				videoList:[],
 				index:0 ,
 				fullScreen: false,
-				i:0
+				i:0,
+				src:''
+				
 			}
 		},
 		async created() {
@@ -48,8 +51,11 @@
 		async mounted() {
 			await this.pushVideoList()
 			if(this.videoList.length==0){
-				uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
+				setTimeout(()=>{
+					uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
+				},2000)
 			}else{
+				this.src = this.videoList[0].srcList
 				setTimeout(()=>{
 					this.$refs.video.videoPlay()
 				},2000)
@@ -114,21 +120,23 @@
 						
 					},
 					fail:()=>{
-						//m3u8格式 不支持本地m3u8
-						// let regex = /\.m3u8$/;
+						//m3u8格式 不支持本地m3u8  ios会失败
+						let regex = /\.mp4$/;
 						
-						// if(regex.test(file.name)){
-						// 	this.videoList.push({
-						// 		srcList:file.fullPath,
-						// 		title: file.name,
-						// 		gDuration:0, //大概总时长
-						// 	})
-						// }
+						if(regex.test(file.name)){
+							this.videoList.push({
+								srcList:file.fullPath,
+								title: file.name
+							})
+						}
+						
+						
+						
 					},
 					complete:()=>{
 						this.i++
 						//回调结束
-			
+						
 						if(this.i==length) resolve()
 					}
 				})

@@ -79,14 +79,21 @@
 				}],
 				downloadList:[],
 				index:1 ,//当前集数
-				fullScreen: false
+				fullScreen: false,
+				platform:''
 			}
 		},
 		async created() {
 			//#ifdef APP-PLUS
 			plus.screen.lockOrientation("portrait-primary")
 			//#endif
-			
+			uni.getSystemInfo({
+				success: (e) => {
+					// #ifndef MP
+					this.platform = e.platform
+					// #endif
+				}
+			})
 		},
 		async mounted() {
 			await this.pushVideoList()
@@ -133,10 +140,10 @@
 					let idx = this.downloadList.length - 1
 					
 					
-					let localName 
+					let localName ={}
 					//m3u8不处理 标记格式  
 					localName = this.getSaveName(e.src,this.videoList[e.idx-1].title)
-					console.log(localName)
+					
 					this.downloadList[idx].task = plus.downloader.createDownload(e.src, localName , (d, status)=>{
 						// 下载完成
 						if(status == 200){ 
@@ -250,7 +257,7 @@
 			},
 			getSaveName(src,title){
 				
-				if(/\.m3u8$/.test(src)){
+				if(/\.m3u8$/.test(src)||this.platform=='ios'){
 					return {}
 				}else{
 					return {

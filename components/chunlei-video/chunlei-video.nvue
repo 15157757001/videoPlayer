@@ -369,16 +369,19 @@
 					this.innerAudioContext.play()
 				}
 			},
-			promise(){
+			promise(time=0){
 				let promise = new Promise((resolve,reject)=>{
 					setTimeout(()=>{
 						resolve()
-					},0)
+					},time)
 				})
 				return promise
 			},
 			timeupdate(event){
-				if(this.gDuration==0) this.duration = event.detail.duration
+				console.log(this.gDuration)
+				if(this.gDuration==0){
+					this.duration = event.detail.duration
+				} 
 				this.current = event.detail.currentTime
 				
 			},
@@ -473,10 +476,13 @@
 				this.videoCtx.pause();
 				this.play = false
 			},
-			videoPlay(){
+			async videoPlay(){
 				if(!this.play){
+					await this.promise(100)
 					this.videoCtx.play();
+					
 					if(this.playFirst){
+						
 						this.videoCtx.seek(this.initialTime)
 						this.playFirst = false
 					}
