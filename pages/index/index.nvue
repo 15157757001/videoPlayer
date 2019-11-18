@@ -163,6 +163,8 @@
 							
 							//保存索引用于跳转
 							this.downloadList[idx].index = this.videoList.length
+							
+							this.setGlobalData()
 							uni.showToast({title:`下载成功,文件保存至${filename}`,icon:'none'})
 						} else {
 							 console.log("下载失败"); 
@@ -269,6 +271,15 @@
 				// 		filename:`_downloads/本地:${title}.flv`
 				// 	}
 				// }
+			},
+			setGlobalData(){
+				let length = 0
+				for (let item of this.downloadList) {
+					if(item.text=='打开'){
+						length++
+					}
+				}
+				getApp().globalData.downloadLength = length
 			}
 		}
 	}

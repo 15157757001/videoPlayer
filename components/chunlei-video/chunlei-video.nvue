@@ -378,7 +378,7 @@
 				return promise
 			},
 			timeupdate(event){
-				console.log(this.gDuration)
+				
 				if(this.gDuration==0){
 					this.duration = event.detail.duration
 				} 

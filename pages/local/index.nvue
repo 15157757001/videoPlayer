@@ -36,7 +36,8 @@
 				videoList:[],
 				index:0 ,
 				fullScreen: false,
-				i:0
+				i:0,
+				downloadLength:0
 			}
 		},
 		async created() {
@@ -47,14 +48,18 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
-			if(this.videoList.length==0){
-				uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
-			}else{
-				this.$refs.video.videoPlay()
-			}
+			setTimeout(() =>{
+				if(this.videoList.length==0){
+					uni.showToast({title:'无本地视频快去下载吧,安卓可能存在bug具体见文档',icon:'none'})
+				}else{
+					this.$refs.video.videoPlay()
+				}
+			}, 200);
 			
 		},
 		onShow() {
+			
+			this.downloadLength = getApp().globalData.downloadLength
 			//展示播放
 			if(typeof this.$refs.video!='undefined' && this.videoList.length!=0) this.$refs.video.pageShow()
 		
@@ -72,6 +77,7 @@
 			},
 			pushVideoList(){
 				let promise = new Promise((resolve,reject)=>{
+					this.videoList = []
 					plus.io.requestFileSystem( plus.io.PUBLIC_DOWNLOADS, (fs)=>{
 						// fs.root是根目录操作对象DirectoryEntry
 						// 创建读取目录信息对象 
@@ -94,6 +100,7 @@
 				return promise
 			},
 			getVideoInfoBy(file,resolve,length){
+				
 				plus.io.getVideoInfo({
 					filePath:"file://"+file.fullPath,
 					success:(videoInfo)=>{
@@ -114,6 +121,13 @@
 						if(this.i==length) resolve()
 					}
 				})
+			}
+		},
+		watch:{
+			downloadLength:{
+				handler:async function(newVal,oldVal){
+					await this.pushVideoList()
+				}
 			}
 		}
 	}

@@ -1,5 +1,8 @@
 <script>
 	export default {
+		globalData: {  
+			downloadLength: 0  
+		},
 		onLaunch: function() {
 			console.log('App Launch')
 		},
