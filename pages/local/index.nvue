@@ -1,6 +1,5 @@
 <template>
 	<div class="content">
-		
 		<chunlei-video 
 			v-if="videoList.length!=0"
 			ref="video"
@@ -37,9 +36,7 @@
 				videoList:[],
 				index:0 ,
 				fullScreen: false,
-				i:0,
-				src:''
-				
+				i:0
 			}
 		},
 		async created() {
@@ -51,15 +48,9 @@
 		async mounted() {
 			await this.pushVideoList()
 			if(this.videoList.length==0){
-				setTimeout(()=>{
-					uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
-				},2000)
+				uni.showToast({title:'无本地视频快去下载吧,如果下载了请重启app',icon:'none'})
 			}else{
-				this.src = this.videoList[0].srcList
-				setTimeout(()=>{
-					this.$refs.video.videoPlay()
-				},2000)
-				
+				this.$refs.video.videoPlay()
 			}
 			
 		},
@@ -74,8 +65,6 @@
 		},
 		methods: {
 			clickVideo(index){
-				
-				 
 				this.index = index
 			},
 			fullscreenchange(e){
@@ -106,32 +95,17 @@
 			},
 			getVideoInfoBy(file,resolve,length){
 				plus.io.getVideoInfo({
-					filePath:file.fullPath,
+					filePath:"file://"+file.fullPath,
 					success:(videoInfo)=>{
-						
 						//本地支持mp4 flv
-						
-							this.videoList.push({
-								srcList:file.fullPath,
-								title: file.name,
-								gDuration:videoInfo.duration, //大概总时长
-							})
-						
-						
+						this.videoList.push({
+							srcList:"file://"+file.fullPath,
+							title: file.name,
+							gDuration:videoInfo.duration, //大概总时长
+						})
 					},
 					fail:()=>{
-						//m3u8格式 不支持本地m3u8  ios会失败
-						let regex = /\.mp4$/;
-						
-						if(regex.test(file.name)){
-							this.videoList.push({
-								srcList:file.fullPath,
-								title: file.name
-							})
-						}
-						
-						
-						
+
 					},
 					complete:()=>{
 						this.i++

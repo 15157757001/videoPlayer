@@ -257,7 +257,7 @@
 			},
 			getSaveName(src,title){
 				
-				if(/\.m3u8$/.test(src)||this.platform=='ios'){
+				if(/\.m3u8$/.test(src)){
 					return {}
 				}else{
 					return {
