@@ -348,6 +348,15 @@
 			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 		},
 		methods:{
+			async changSrc(){
+				await this.promise()
+				
+				this.videoCtx.play();
+				this.play = true
+				this.videoCtx.seek(this.initialTime)
+				this.videoCtx.playbackRate(this.rate*1)
+				if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
+			},
 			async pageShow() {
 				//显示暂停
 				if(this.audio!='') this.innerAudioContext.pause()
@@ -777,14 +786,7 @@
 			},
 			index:{
 				handler:async function(newVal){
-					
-					await this.promise()
-					
-					this.videoCtx.play();
-					this.play = true
-					this.videoCtx.seek(this.initialTime)
-					this.videoCtx.playbackRate(this.rate*1)
-					if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
+					await this.changSrc()
 				}
 			},
 			srcList:{
