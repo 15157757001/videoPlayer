@@ -1,7 +1,7 @@
 <template>
 	<view class="video-box">
 		<video :controls="false" :show-center-play-btn="false" :show-fullscreen-btn="false" :show-progress="false"
-			:objectFit="objectFit" :direction="direction" :src="src" :loop="loop" :enable-progress-gesture="false"
+			:objectFit="objectFit"  :src="src" :loop="loop" :enable-progress-gesture="false"
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" @ended="ended" @waiting="waiting" @play="playing"
 			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
@@ -344,9 +344,15 @@
 			})
 			
 			plus.orientation.watchOrientation( o => {
-				if(this.fullScreen){
-					console.log( "Orientation\nAlpha:" + o.alpha + "\nBeta:" + o.beta + "\nGamma:" + o.gamma );
-				}
+				
+					if(o.gamma>20){
+						
+						this.direction = 90
+					}else if(o.gamma<20){
+						this.direction = -90
+					}
+					
+				
 				
 			} );
 		},
@@ -465,6 +471,7 @@
 					this.clickRateView()
 				}else{
 					this.rateView = !this.rateView
+					
 				}
 			},
 			//切换高清
@@ -819,7 +826,14 @@
 						this.animateControls(0,this.$refs.controlsBtm)
 					}
 				}
+			},
+			async direction(newVal){
+				if(this.fullScreen&&!this.lock){
+					
+					this.videoCtx.requestFullScreen({direction: newVal})
+				}
 			}
+			
 		},
 		computed:{
 			lastDuration(){
