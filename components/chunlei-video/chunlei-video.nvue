@@ -276,7 +276,11 @@
 			audio:{ //音频
 				type:String,
 				default:''
-			}
+			},
+			orientation:{ //全屏下屏幕旋转
+				type:Boolean,
+				default:false
+			},
 			
 		},
 		data(){
@@ -342,19 +346,16 @@
 					// #endif
 				}
 			})
-			
-			plus.orientation.watchOrientation( o => {
-				
-					if(o.gamma>20){
-						
+			if(this.orientation){
+				plus.orientation.watchOrientation( o => {
+					if(o.gamma>40){
 						this.direction = 90
-					}else if(o.gamma<20){
+					}else if(o.gamma<-40){
 						this.direction = -90
 					}
-					
-				
-				
-			} );
+				} ,()=>{},{frequency:1000});
+			}
+			
 		},
 		async mounted() {
 			this.getLevel()
@@ -829,7 +830,8 @@
 			},
 			async direction(newVal){
 				if(this.fullScreen&&!this.lock){
-					
+					this.videoCtx.exitFullScreen()
+					await this.promise(1000)
 					this.videoCtx.requestFullScreen({direction: newVal})
 				}
 			}
