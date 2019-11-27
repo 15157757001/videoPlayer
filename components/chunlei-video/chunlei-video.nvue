@@ -342,6 +342,13 @@
 					// #endif
 				}
 			})
+			
+			plus.orientation.watchOrientation( o => {
+				if(this.fullScreen){
+					console.log( "Orientation\nAlpha:" + o.alpha + "\nBeta:" + o.beta + "\nGamma:" + o.gamma );
+				}
+				
+			} );
 		},
 		async mounted() {
 			this.getLevel()
