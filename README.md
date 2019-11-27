@@ -123,6 +123,7 @@ components:{chunleiVideo}
 | downloadBtn | Boolean | false | 下载按钮 |
 | download | Boolean | false | 下载状态 |
 | audio | String | '' | 音频，为默认值时不显示后台播放 |
+| orientation | Boolean | false | 全屏时旋转 |
 
 ## 事件
 
