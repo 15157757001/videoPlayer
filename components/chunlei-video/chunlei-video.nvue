@@ -249,6 +249,10 @@
 				type:Number,
 				default:0
 			},
+			currentSen:{ //进度条灵敏度
+				type:Number,
+				default:2
+			},
 			index:{ //当前集数
 				type:Number,
 				default:1
@@ -647,9 +651,9 @@
 					this.touchBright = this.touchBright < 0? 0 : this.touchBright
 				}else if(this.touchType=='current'){
 					
-					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)/250*this.duration*2 + this.oldValue[touchType]*1
+					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)/250*this.duration*this.currentSen + this.oldValue[touchType]*1
 					if(this.platform=='ios'&&this.fullScreen){
-						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)/250*this.duration*2 + this.oldValue[touchType]*1
+						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)/250*this.duration*this.currentSen + this.oldValue[touchType]*1
 					}
 					
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent
