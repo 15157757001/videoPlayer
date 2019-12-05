@@ -1,6 +1,9 @@
 .ios-icon {
 	font-size: 18px;
 	color: #fff;
+	/* #ifndef APP-PLUS-NVUE */
+	font-family: "texticons";
+	/* #endif*/
 	font-family: texticons;
 }
 .ios-title{
@@ -41,5 +44,8 @@
 .ios-big-icon{
 	font-size: 52px;
 	color: #fff;
+	/* #ifndef APP-PLUS-NVUE */
+	font-family: "texticons";
+	/* #endif*/
 	font-family: texticons;
 }

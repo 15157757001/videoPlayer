@@ -13,6 +13,9 @@
 .android-icon{
 	font-size: 9px;
 	color: #fff;
+	/* #ifndef APP-PLUS-NVUE */
+	font-family: "texticons";
+	/* #endif*/
 	font-family: texticons;
 }
 .android-title{
@@ -42,5 +45,8 @@
 .android-big-icon{
 	font-size: 26px;
 	color: #fff;
+	/* #ifndef APP-PLUS-NVUE */
+	font-family: "texticons";
+	/* #endif*/
 	font-family: texticons;
 }

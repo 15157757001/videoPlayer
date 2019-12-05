@@ -5,11 +5,12 @@
 		
 		</chunlei-video> -->
 		<chunlei-video 
+			autoplay
 			ref="video"
 			orientation
-			class="video"  
-			:episode="11" 
-			:index="index" 
+			class="video"
+			:episode="11"
+			:index="index"
 			color="#c93756"
 			@playEpi="playEpi" 
 			:downloadBtn="true"
@@ -98,7 +99,7 @@
 		},
 		async mounted() {
 			await this.pushVideoList()
-			this.$refs.video.videoPlay()
+			//this.$refs.video.videoPlay()   //refs调动播放
 		},
 		onShow() {
 			//展示播放
@@ -301,12 +302,12 @@
 
 	.btn{
 		width: 500rpx;
-		marginTop:50rpx;
+		margin-top:50rpx;
 	}
 	.progress-box{
 		padding: 40rpx;
 		height: 150rpx;
-		marginTop:50rpx;
+		margin-top:50rpx;
 		border-radius: 5px;
 		border-color: #e9e7ef;
 		border-style: solid;

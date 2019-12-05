@@ -1,14 +1,14 @@
 <template>
-	<div class="slider" id="slider" :style="{ width: `${width}px` }" ref="slider">
-		<div class="slider-left" :style="{ width: `${leftWidth}px` }" @touchend.stop="sliderTouch">
+	<div class="slider flex" id="slider" :style="{ width: `${width}px` }" ref="slider">
+		<div class="slider-left flex" :style="{ width: `${leftWidth}px` }" @touchend.stop="sliderTouch">
 			<div class="left" :style="{backgroundColor:backgroundColor}"></div>
 		</div>
-		<div class="slider-right" @touchend.stop="sliderTouch" :style="{ width: `${currentWidth-leftWidth}px` }">
+		<div class="slider-right flex" @touchend.stop="sliderTouch" :style="{ width: `${currentWidth-leftWidth}px` }">
 			<div class="right"></div>
 		</div>
-		<div class="block" :style="{backgroundColor:touch?blockOuterColor:'rgba(0,0,0,0)', left: `${leftWidth}px`}"
+		<div class="block flex" :style="{backgroundColor:touch?blockOuterColor:'rgba(0,0,0,0)', left: `${leftWidth}px`}"
 			@click.stop="">
-			<div class="block-inner" :style="{backgroundColor:blockBackgroundColor}"  @touchmove.stop.prevent="blockTouchMove" @touchend="blockTouchEnd" @touchstart="blockTouchStart">
+			<div class="block-inner flex" :style="{backgroundColor:blockBackgroundColor}"  @touchmove.stop.prevent="blockTouchMove" @touchend="blockTouchEnd" @touchstart="blockTouchStart">
 				<div class="block-inner-inner" :style="{backgroundColor:blockColor}">
 					
 				</div>
@@ -150,6 +150,12 @@
 </script>
 
 <style lang="scss" scoped>
+	.flex{
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		
+	}
 	.slider{
 		position: relative;
 		flex-direction: row;

@@ -5,26 +5,32 @@
 			 @fullscreenchange="changeScreen" @timeupdate="timeupdate" @ended="ended" @waiting="waiting" @play="playing"
 			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
-				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `200px`,height: `750rpx` }"></div>
+				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ height: `200px`,width: `750rpx` }"></div>
 				<div class="rate-view" @click.stop="" v-if="!rateView"><text class="ios-title" @click="rateView=true">{{rate}}x</text></div>
 				<div class="controls-view" v-if="showControls" @click.stop="">
 					<div @click="videoPlay" v-if="play" class="btnBox"><text class="ios-icon">&#xe601;</text></div>
 					<div @click="videoPlay" v-if="!play" class="btnBox"><text class="ios-icon">&#xe896;</text></div>
 					<text class="sm-title">{{currentDuration}}/{{lastDuration}}</text>
+					<!-- #ifdef APP-PLUS -->
 					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :screenLeft="duration>=3600?150:120" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color"></chunLei-slider>
-					<div @click="tapFullScreen" class="btnBox"><text class="ios-icon">&#xe60d;</text></div>
+					<!-- #endif -->
+					<!-- #ifndef APP-PLUS -->
+					<chunLei-slider :max="duration" :value="current" :style="{width:`${sliderWidth}px`}" :screenLeft="duration>=3600?150:120" :width="sliderWidth" @change="changeCurrent" :backgroundColor="color" :blockColor="color" direction="clientX"></chunLei-slider>
+					<!-- #endif -->
+					<div @click="tapFullScreen" class="btnBox" v-if="showFullscreenBtn"><text class="ios-icon">&#xe60d;</text></div>
 				</div>
 				<!-- 滑动video时显示 -->
-				<div class="current-view" v-if="touchType=='current'">
+				<div class="current-view flex" v-if="touchType=='current'">
 					<div class="current-top"><text class="ios-title">{{touchCurrentDuration}}/{{lastDuration}}</text></div>
 					<div class="current-bottom"><div class="current-progress" :style="{width: `${touchCurrent/duration*260}rpx`}"> </div></div>
 				</div>
 				<div class="stop" v-if="!play"><text class="ios-title">已暂停</text></div>
 			</cover-view>
-			<cover-view class="rate" @click.stop="" v-if="rateView&&!fullScreen">
-				<div class="rate"  @click.stop="rateView=false" :style="{paddingTop: '40px'}">
-					<div><text class="ios-title">倍速播放</text></div>
-					<div class="rate-list">
+			
+			<cover-view class="rate flex" @click.stop="" v-if="rateView&&!fullScreen">
+				<div class="rate flex"  @click.stop="rateView=false" :style="{paddingTop: '40px'}">
+					<text class="ios-title">倍速播放</text>
+					<div class="rate-list flex">
 						<text class="ios-title marginRight" :class="0.5==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.5)" :style="{color:0.5==rate?color:'#fff',borderBottomColor:0.5==rate?color:'#fff'}">0.5x</text>
 						<text class="ios-title marginRight" :class="0.8==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,0.8)" :style="{color:0.8==rate?color:'#fff',borderBottomColor:0.8==rate?color:'#fff'}">0.8x</text>
 						<text class="ios-title marginRight" :class="1.0==rate?'solid-bottom':''" @click.stop="(args)=>tapRate(args,1.0)" :style="{color:1.0==rate?color:'#fff',borderBottomColor:1.0==rate?color:'#fff'}">1.0x</text>
@@ -33,11 +39,13 @@
 					</div>
 				</div>
 			</cover-view>
+			<!-- #ifdef APP-PLUS -->
+			
 			
 			<!-- 全屏 -->
 			<cover-view  class="video-view" v-if="fullScreen" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }">
 				<div v-if="danmuView" class="danmu-view" :style="{ width: `${fullControlsWidth}px` }">
-					<chunLeiDanmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current" ref="danmu"></chunLeiDanmu>
+					<chunLei-danmu :danmuList="danmuList" :width="fullControlsWidth" :platform="platform" :current="current" ref="danmu"></chunLei-danmu>
 				</div>
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"></div>
 				
@@ -215,22 +223,31 @@
 				<text :class="`${platform}-icon`" v-if="!lock">&#xe8dd;</text>
 				<text :class="`${platform}-icon`" v-if="lock">&#xe61d;</text>
 			</cover-view>
+			
+			<!-- #endif -->
 		</video>
 	</view>
 </template>
 
 <script>
 	import chunLeiSlider from './chunLei-slider/chunLei-slider.nvue';
+	//#ifdef APP-NVUE
 	import chunLeiDanmu from './chunLei-danmu/chunLei-danmu.nvue';
+	//#endif
 	import chunLeiMoon from './chunLei-moon/chunLei-moon.nvue';
+	
+	//#ifdef APP-NVUE
 	const animation = weex.requireModule('animation');
 	const modal = weex.requireModule('modal');
+	//#endif
 	
 	export default{ 
 		components:{
 			chunLeiSlider,
 			chunLeiMoon,
+			//#ifdef APP-NVUE
 			chunLeiDanmu
+			//#endif
 		},
 		props:{
 			srcList:{ //要播放视频的资源地址
@@ -251,7 +268,7 @@
 			},
 			currentSen:{ //进度条灵敏度
 				type:Number,
-				default:2
+				default:4
 			},
 			index:{ //当前集数
 				type:Number,
@@ -285,7 +302,14 @@
 				type:Boolean,
 				default:false
 			},
-			
+			autoplay:{ //自动播放
+				type:Boolean,
+				default:false
+			},
+			showFullscreenBtn:{ //是否显示全屏按钮	
+				type:Boolean,
+				default:true
+			}
 		},
 		data(){
 			return{
@@ -330,7 +354,7 @@
 			}
 		},
 		beforeCreate() {
-			// #ifdef APP-PLUS-NVUE
+			// #ifdef APP-NVUE
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",
@@ -345,11 +369,10 @@
 			
 			uni.getSystemInfo({
 				success: (e) => {
-					// #ifndef MP
 					this.platform = e.platform
-					// #endif
 				}
 			})
+			//#ifdef APP-NVUE
 			if(this.orientation){
 				plus.orientation.watchOrientation( o => {
 					if(o.gamma>40){
@@ -359,7 +382,7 @@
 					}
 				} ,()=>{},{frequency:1000});
 			}
-			
+			//#endif
 		},
 		async mounted() {
 			this.getLevel()
@@ -476,7 +499,6 @@
 					this.clickRateView()
 				}else{
 					this.rateView = !this.rateView
-					
 				}
 			},
 			//切换高清
@@ -651,9 +673,9 @@
 					this.touchBright = this.touchBright < 0? 0 : this.touchBright
 				}else if(this.touchType=='current'){
 					
-					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)/250*this.duration*this.currentSen + this.oldValue[touchType]*1
+					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
 					if(this.platform=='ios'&&this.fullScreen){
-						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)/250*this.duration*this.currentSen + this.oldValue[touchType]*1
+						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
 					}
 					
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent
@@ -804,8 +826,10 @@
 				}
 			},
 			index:{
-				handler:async function(newVal){
+				handler:async function(newVal,oldVal){
+					
 					await this.changSrc()
+					
 				}
 			},
 			srcList:{
@@ -817,6 +841,7 @@
 						this.src = newVal[0].src
 						this.srcTitle = newVal[0].title
 					}
+					if(this.playFirst&&this.autoplay) await this.changSrc()
 				}
 			},
 			showControls:{
@@ -869,13 +894,16 @@
 	@import "./ios.scss";
 	/* #ifndef APP-PLUS-NVUE */
 	@font-face {
-		font-family: texticons;
-		font-weight: normal;
-		font-style: normal;
+		font-family: "texticons";
 		src: url('~@/static/chunlei-video/text-icon.ttf') format('truetype');
 	}
 	/* #endif*/
-	
+	.flex{
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		
+	}
 	.video-box{
 		
 		height: 200px;
@@ -908,7 +936,9 @@
 	.sm-title{
 		font-size: 12px;
 		color: #fff;
-		font-family: texticons;
+		/* #ifndef APP-PLUS-NVUE */
+		font-family: "texticons";
+		/* #endif*/
 	}
 	.set-view{
 		position: absolute;
@@ -1058,12 +1088,14 @@
 		width: 750rpx;
 		height: 160px;
 		flex-direction: column;
+		z-index: 101;
 	}
 	.rate-view{
 		position: absolute;
 		height: 20px;
 		top:90px;
 		right: 0;
+		z-index: 90;
 	}
 	.current-view{
 		padding: 20rpx;
@@ -1178,7 +1210,7 @@
 		/* #endif */
 		
 		height: 40px;
-		z-index: 99;
+		z-index: 100;
 		position: absolute;
 		background-image:linear-gradient(to top , rgba(0,0,0,0.8) , rgba(0,0,0,0));
 		bottom: 0;
