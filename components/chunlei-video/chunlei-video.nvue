@@ -169,7 +169,7 @@
 					
 				</div>
 				<div class="fullCurrent-bottom">
-					<div class="fullCurrent-progress" :style="{width: `${touchCurrent/duration*110}px`}"> </div>
+					<div class="current-progress" :style="{width: `${touchCurrent/duration*110}px`}"> </div>
 				</div>
 				
 			</cover-view>
@@ -182,7 +182,7 @@
 					<text :class="`${platform}-icon`" v-if="touchVolume>=0.66&&touchVolume<=1">&#xe61b;</text>
 				</div>
 				<div class="fullCurrent-volume">
-					<div class="fullCurrent-progress" :style="{width: `${110-touchVolume*110}px`}"> </div>
+					<div class="fullCurrent-progress" :style="{width: `${150-touchVolume*150}px`}"> </div>
 				</div>
 			</cover-view>
 			<!-- 滑动video时显示亮度 -->
@@ -190,7 +190,7 @@
 				<!-- <text :class="`${platform}-icon`">&#xe600;</text> -->
 				<chunLei-moon :percentage="touchBright"></chunLei-moon>
 				<div class="fullCurrent-bright">
-					<div class="fullCurrent-progress" :style="{width: `${110-touchBright*110}px`}"> </div>
+					<div class="fullCurrent-progress" :style="{width: `${150-touchBright*150}px`}"> </div>
 				</div>
 			</cover-view>
 			
@@ -1116,9 +1116,9 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: 5px;
-		width: 180px;
+		width: 220px;
 		height: 40px;
-		top:60px;
+		top:50px;
 		position: absolute;
 	}
 	.fullCurrent-current{
@@ -1137,21 +1137,21 @@
 	}
 	.fullCurrent-bottom{
 		width: 110px;
-		border-radius: 3px;
-		background-color: rgba(0,0,0,0.3);
+		
+		background-color: rgba(255,255,255,0.3);
 		margin-top: 15px;
-		height: 10px;
+		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
 		overflow:hidden;
 	}
 	.fullCurrent-volume{
-		width: 110px;
-		border-radius: 3px;
+		width: 150px;
+		
 		background-image: linear-gradient(to right, #BAFFFD, #FF4F00);
 		
-		height: 10px;
+		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
@@ -1160,11 +1160,10 @@
 		align-items: flex-end;
 	}
 	.fullCurrent-bright{
-		width: 110px;
-		border-radius: 3px;
+		width: 150px;
 		background-image: linear-gradient(to right, #06ABEE, #FAFBFE);
 		
-		height: 10px;
+		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
@@ -1173,23 +1172,23 @@
 		align-items: flex-end;
 	}
 	.fullCurrent-progress{
-		background-color: rgba(0, 0, 0,1); 
-		height: 10px;
+		background-color: rgba(0,0,0,1);
+		height: 5px;
 	}
 	.current-bottom{
 		width: 260rpx;
-		border-radius: 3px;
-		background-color: rgba(0,0,0,1);
+		
+		background-color: rgba(255,255,255,0.3);
 		margin-top: 15px;
-		height: 10px;
+		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
 		overflow:hidden;
 	}
 	.current-progress{
-		background-color: rgba(235, 235, 235,0.8); 
-		height: 10px;
+		background-color: rgba(255, 255, 255,0.7); 
+		height: 5px;
 	}
 	.rate-list{
 		padding-top: 20px;
