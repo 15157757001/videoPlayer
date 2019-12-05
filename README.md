@@ -132,14 +132,13 @@ components:{chunleiVideo}
 | ---  | --- |
 | playEpi | 跳到指定集数 |
 | clickDownload | 点击下载 |
-| pageShow | 页面显示后播放 |
-| pageHide | 页面隐藏后暂停 |
 
 ## refs事件
 
 | 事件名 | 说明 |
 | ---  | --- |
 | changSrc | 改变src时播放 |
+| videoPlay | 播放或暂停 |
 | pageShow | 页面显示后播放 |
 | pageHide | 页面隐藏后暂停 |
 
