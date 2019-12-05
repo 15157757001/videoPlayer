@@ -124,7 +124,8 @@ components:{chunleiVideo}
 | download | Boolean | false | 下载状态 |
 | audio | String | '' | 音频，为默认值时不显示后台播放 |
 | orientation | Boolean | false | 全屏时旋转 |
-| currentSen| Number | 2 | 进度条灵敏度越大进度跨度越大 |
+| currentSen| Number | 4 | 进度条灵敏度越大进度跨度越小 |
+| autoplay| Boolean | false | 首次自动播放 |
 
 ## 事件
 
@@ -132,9 +133,15 @@ components:{chunleiVideo}
 | ---  | --- |
 | playEpi | 跳到指定集数 |
 | clickDownload | 点击下载 |
+
+## refs事件
+
+| 事件名 | 说明 |
+| ---  | --- |
+| changSrc | 改变src时播放 |
+| videoPlay | 播放或暂停 |
 | pageShow | 页面显示后播放 |
 | pageHide | 页面隐藏后暂停 |
-
 
 ## 如果觉得插件不错，麻烦给个好评
 
