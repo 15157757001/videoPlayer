@@ -7,7 +7,6 @@
 		<chunlei-video 
 			autoplay
 			ref="video"
-			orientation
 			class="video"
 			:episode="11"
 			:index="index"

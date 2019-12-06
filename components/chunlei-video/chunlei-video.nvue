@@ -182,6 +182,8 @@
 					<text :class="`${platform}-icon`" v-if="touchVolume>=0.66&&touchVolume<=1">&#xe61b;</text>
 				</div>
 				<div class="fullCurrent-volume">
+					<div class="fullCurrent-volume-left"></div>
+					<div class="fullCurrent-volume-right"></div>
 					<div class="fullCurrent-progress" :style="{width: `${150-touchVolume*150}px`}"> </div>
 				</div>
 			</cover-view>
@@ -190,6 +192,8 @@
 				<!-- <text :class="`${platform}-icon`">&#xe600;</text> -->
 				<chunLei-moon :percentage="touchBright"></chunLei-moon>
 				<div class="fullCurrent-bright">
+					<div class="fullCurrent-bright-left"></div>
+					<div class="fullCurrent-bright-right"></div>
 					<div class="fullCurrent-progress" :style="{width: `${150-touchBright*150}px`}"> </div>
 				</div>
 			</cover-view>
@@ -650,24 +654,23 @@
 					this.touchType = Math.abs( newTouces.pageX - oldTouces.pageX ) > 20 ? 'current' : null
 					//全屏下支持音量和亮度
 					
-					if(this.fullScreen&&!this.touchType&&this.platform=='android'){
-						//#ifdef APP-PLUS-NVUE
+					if(this.fullScreen&&!this.touchType){
+					
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX<=200 ? 'bright' : this.touchType
-						//#endif
-						//#ifndef H5
+						
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX>200 ? 'volume' : this.touchType
-						//#endif
+						
 					}
 					if(this.fullScreen&&this.platform=='ios'){
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 ? 'current' : null
 					}
 					
-				}else if(this.touchType=='volume'){
+				}else if(this.touchType=='volume'&&this.platform=='android'){
 					this.touchVolume = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchVolume = this.touchVolume > 1? 1 : this.touchVolume
 					this.touchVolume = this.touchVolume < 0? 0 : this.touchVolume
 					
-				}else if(this.touchType=='bright'){
+				}else if(this.touchType=='bright'&&this.platform=='android'){
 					this.touchBright = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchBright = this.touchBright > 1? 1 : this.touchBright
 					this.touchBright = this.touchBright < 0? 0 : this.touchBright
@@ -1148,9 +1151,6 @@
 	}
 	.fullCurrent-volume{
 		width: 150px;
-		
-		background-image: linear-gradient(to right, #BAFFFD, #FF4F00);
-		
 		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
@@ -1158,20 +1158,49 @@
 		overflow:hidden;
 		justify-content: center;
 		align-items: flex-end;
+		position: relative;
+	}
+	.fullCurrent-volume-left{
+		width: 75px;
+		background-image: linear-gradient(to right, #BAFFFD, #71FCBA);
+		
+		height: 5px;
+	}
+	.fullCurrent-volume-right{
+		width: 75px;
+		background-image: linear-gradient(to right, #71FCBA, #E35313);
+		
+		height: 5px;
 	}
 	.fullCurrent-bright{
 		width: 150px;
-		background-image: linear-gradient(to right, #06ABEE, #FAFBFE);
+		
 		
 		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
 		overflow:hidden;
-		justify-content: center;
-		align-items: flex-end;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+		position: relative;
+	}
+	.fullCurrent-bright-left{
+		width: 75px;
+		background-image: linear-gradient(to right, #01B6FF, #FFF159);
+		
+		height: 5px;
+	}
+	.fullCurrent-bright-right{
+		width: 75px;
+		background-image: linear-gradient(to right, #FFF159, #FFFFFF);
+		
+		height: 5px;
 	}
 	.fullCurrent-progress{
+		position: absolute;
+		right:0;
 		background-color: rgba(0,0,0,1);
 		height: 5px;
 	}
