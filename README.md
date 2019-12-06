@@ -126,6 +126,7 @@ components:{chunleiVideo}
 | orientation | Boolean | false | 全屏时旋转 |
 | currentSen| Number | 4 | 进度条灵敏度越大进度跨度越小 |
 | autoplay| Boolean | false | 首次自动播放 |
+| poster| String | '' | 封面图片 |
 
 ## 事件
 
