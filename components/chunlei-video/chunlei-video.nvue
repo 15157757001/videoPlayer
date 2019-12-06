@@ -1156,13 +1156,16 @@
 	}
 	.fullCurrent-volume{
 		width: 150px;
+		
+		
 		height: 5px;
 		/* #ifndef APP-PLUS-NVUE */
 		display: flex;
 		/* #endif */
 		overflow:hidden;
-		justify-content: center;
-		align-items: flex-end;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
 		position: relative;
 	}
 	.fullCurrent-volume-left{

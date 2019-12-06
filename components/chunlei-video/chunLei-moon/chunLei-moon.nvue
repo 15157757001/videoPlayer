@@ -119,6 +119,7 @@
 	}
 	.light{
 		position: absolute;
+		border-radius: 0.8px;
 		height: 3px;
 		width: 2px;
 		top: 4px;
