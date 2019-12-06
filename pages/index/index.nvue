@@ -16,6 +16,7 @@
 			@clickDownload="clickDownload"
 			:title="videoList[index-1].title"
 			:audio="videoList[index-1].audio"
+			:poster="videoList[index-1].poster"
 			@fullscreenchange="fullscreenchange"
 			:srcList="videoList[index-1].srcList" 
 			:download="videoList[index-1].download"
@@ -76,7 +77,8 @@
 					initialTime: 100,
 					gDuration:1162, //大概总时长
 					download:false,
-					audio:'../../static/audio.mp3'
+					audio:'../../static/audio.mp3',
+					poster:'../../static/avatar.png'
 				}],
 				downloadList:[],
 				index:1 ,//当前集数

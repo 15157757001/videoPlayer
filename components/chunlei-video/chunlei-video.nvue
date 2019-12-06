@@ -6,6 +6,8 @@
 			id="chunleiVideo" ref="chunleiVideo" class="video">
 			<cover-view  class="video-view" v-if="!fullScreen" :style="{ width: `750rpx`,height: `200px` }">
 				<div class="move-view" @touchend="videoTouchEnd" @touchmove="videoTouchMove" @touchstart="videoTouchStart" :style="{ height: `200px`,width: `750rpx` }"></div>
+				<div class="stop" v-if="!play"><text class="ios-title">已暂停</text></div>
+				<image class="video-view" :style="{ width: `750rpx`,height: `200px` }" :src="poster" v-if="poster!=''&&playFirst"></image>
 				<div class="rate-view" @click.stop="" v-if="!rateView"><text class="ios-title" @click="rateView=true">{{rate}}x</text></div>
 				<div class="controls-view" v-if="showControls" @click.stop="">
 					<div @click="videoPlay" v-if="play" class="btnBox"><text class="ios-icon">&#xe601;</text></div>
@@ -24,7 +26,7 @@
 					<div class="current-top"><text class="ios-title">{{touchCurrentDuration}}/{{lastDuration}}</text></div>
 					<div class="current-bottom"><div class="current-progress" :style="{width: `${touchCurrent/duration*260}rpx`}"> </div></div>
 				</div>
-				<div class="stop" v-if="!play"><text class="ios-title">已暂停</text></div>
+				
 			</cover-view>
 			
 			<cover-view class="rate flex" @click.stop="" v-if="rateView&&!fullScreen">
@@ -313,6 +315,10 @@
 			showFullscreenBtn:{ //是否显示全屏按钮	
 				type:Boolean,
 				default:true
+			},
+			poster:{ //视频封面的图片
+				type:String,
+				default:''
 			}
 		},
 		data(){
@@ -674,11 +680,14 @@
 					this.touchVolume = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchVolume = this.touchVolume > 1? 1 : this.touchVolume
 					this.touchVolume = this.touchVolume < 0? 0 : this.touchVolume
-					
+					//相等时重置oldTouces
+					if(this.touchVolume==this.oldValue[touchType]) this.oldTouces = newTouces
 				}else if(this.touchType=='bright'&&this.platform=='android'){
 					this.touchBright = ( oldTouces.pageY - newTouces.pageY)/200*1*2 + this.oldValue[touchType]
 					this.touchBright = this.touchBright > 1? 1 : this.touchBright
 					this.touchBright = this.touchBright < 0? 0 : this.touchBright
+					//相等时重置oldTouces
+					if(this.touchBright==this.oldValue[touchType]) this.oldTouces = newTouces
 				}else if(this.touchType=='current'){
 					
 					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
@@ -688,6 +697,8 @@
 					
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent
 					this.touchCurrent = this.touchCurrent < 0? 0 : this.touchCurrent
+					//相等时重置oldTouces
+					if(this.touchCurrent==this.oldValue[touchType]) this.oldTouces = newTouces
 				}
 				
 			},
