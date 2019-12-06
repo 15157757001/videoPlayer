@@ -401,7 +401,7 @@
 		methods:{
 			async changSrc(){
 				await this.promise()
-				
+				this.playFirst = false
 				this.videoCtx.play();
 				this.play = true
 				this.videoCtx.seek(this.initialTime)
