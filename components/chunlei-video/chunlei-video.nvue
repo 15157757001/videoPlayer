@@ -654,7 +654,7 @@
 					this.touchType = Math.abs( newTouces.pageX - oldTouces.pageX ) > 20 ? 'current' : null
 					//全屏下支持音量和亮度
 					
-					if(this.fullScreen&&!this.touchType){
+					if(this.fullScreen&&!this.touchType&&this.platform=='android'){
 					
 						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 && newTouces.pageX<=200 ? 'bright' : this.touchType
 						
@@ -662,7 +662,12 @@
 						
 					}
 					if(this.fullScreen&&this.platform=='ios'){
-						this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 ? 'current' : null
+						this.touchType = Math.abs( newTouces.pageX - oldTouces.pageX ) > 20 ? 'bright' : null
+						
+						if(!this.touchType){
+							this.touchType = Math.abs( newTouces.pageY - oldTouces.pageY ) > 20 ? 'current' : this.touchType
+						}
+						
 					}
 					
 				}else if(this.touchType=='volume'&&this.platform=='android'){
