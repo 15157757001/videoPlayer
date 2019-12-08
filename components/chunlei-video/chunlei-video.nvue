@@ -206,7 +206,7 @@
 					<text :class="`${platform}-title`">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :screenLeft="40" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
+					<chunLei-slider :max="duration" :iosDirection="platform!='ios'?1:-direction/90" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :screenLeft="40" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
@@ -380,19 +380,10 @@
 			uni.getSystemInfo({
 				success: (e) => {
 					this.platform = e.platform
+					this.changDirection()
 				}
 			})
-			//#ifdef APP-NVUE
-			if(this.orientation){
-				plus.orientation.watchOrientation( o => {
-					if(o.gamma>40){
-						this.direction = 90
-					}else if(o.gamma<-40){
-						this.direction = -90
-					}
-				} ,()=>{},{frequency:1000});
-			}
-			//#endif
+			
 		},
 		async mounted() {
 			this.getLevel()
@@ -407,6 +398,27 @@
 				this.videoCtx.seek(this.initialTime)
 				this.videoCtx.playbackRate(this.rate*1)
 				if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
+			},
+			changDirection(){
+				//#ifdef APP-NVUE
+				if(this.orientation){
+					plus.orientation.watchOrientation( o => {
+						if(this.platform=='android'){
+							if(o.gamma>40){
+								this.direction = 90
+							}else if(o.gamma<-40){
+								this.direction = -90
+							}
+						}else{
+							if(o.alpha>40){
+								this.direction = -90
+							}else if(o.alpha<-40){
+								this.direction = 90
+							}
+						}
+					} ,()=>{},{frequency:1000});
+				}
+				//#endif
 			},
 			async pageShow() {
 				//显示暂停
@@ -465,6 +477,11 @@
 			//拖动滑块
 			changeCurrent(e){
 				this.current = e.detail.value
+				this.videoCtx.seek(this.current)
+			},
+			async seek(time){
+				await this.promise(1000)
+				this.current = time
 				this.videoCtx.seek(this.current)
 			},
 			//获取视频当前进度
@@ -692,7 +709,7 @@
 					
 					this.touchCurrent = (newTouces.pageX - oldTouces.pageX)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
 					if(this.platform=='ios'&&this.fullScreen){
-						this.touchCurrent = (newTouces.pageY - oldTouces.pageY)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
+						this.touchCurrent = this.direction/-90*(newTouces.pageY - oldTouces.pageY)*this.duration/250/this.currentSen + this.oldValue[touchType]*1
 					}
 					
 					this.touchCurrent = this.touchCurrent > this.duration? this.duration : this.touchCurrent

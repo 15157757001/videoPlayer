@@ -7,6 +7,7 @@
 		<chunlei-video 
 			autoplay
 			ref="video"
+			orientation
 			class="video"
 			:episode="11"
 			:index="index"
@@ -101,6 +102,7 @@
 		async mounted() {
 			await this.pushVideoList()
 			//this.$refs.video.videoPlay()   //refs调动播放
+			
 		},
 		onShow() {
 			//展示播放

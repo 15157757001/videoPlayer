@@ -55,6 +55,10 @@
 			screenLeft:{ //slider距离左边距离
 				type:Number,
 				default:0
+			},
+			iosDirection:{
+				type:Number,
+				default:1
 			}
 		},
 		data(){
@@ -89,7 +93,7 @@
 				let newToucesX
 				
 				newToucesX= e.changedTouches[0][this.direction];
-				this.leftWidth = (newToucesX - this.oldToucesX)*this.ratio+ this.oldLeftWidth
+				this.leftWidth = this.iosDirection*(newToucesX - this.oldToucesX)*this.ratio+ this.oldLeftWidth
 				this.leftWidth = this.leftWidth > this.currentWidth? this.currentWidth : this.leftWidth
 				this.leftWidth = this.leftWidth < 0? 0 : this.leftWidth
 				
