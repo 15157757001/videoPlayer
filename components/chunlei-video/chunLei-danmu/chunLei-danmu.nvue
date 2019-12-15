@@ -109,8 +109,9 @@
 			},
 			current:{
 				handler:async function(newVal,oldVal){
+					
 					//间隔0.25
-					if(Math.abs(newVal-oldVal)>=0.25){
+					if(Math.abs(newVal-oldVal)>=0.24){
 						for (let item of this.danmuList) {
 							if( item.time > Math.floor(newVal*1) && item.time <= Math.floor(newVal*1+ 0.25) ) {
 								let num = this.randomRange(1,5)
