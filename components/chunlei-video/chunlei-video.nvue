@@ -430,6 +430,7 @@
 				}
 			},
 			async pageHide() {
+				this.showControls = false
 				this.videoCtx.pause()
 				await this.promise()
 				//显示播放
