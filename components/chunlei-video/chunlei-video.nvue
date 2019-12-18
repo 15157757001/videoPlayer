@@ -391,7 +391,7 @@
 		},
 		methods:{
 			async changSrc(){
-				await this.promise()
+				await this.promise(100)
 				this.playFirst = false
 				this.videoCtx.play();
 				this.play = true
