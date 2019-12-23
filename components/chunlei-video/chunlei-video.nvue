@@ -9,6 +9,9 @@
 				<div class="stop" v-if="!play"><text class="ios-title">已暂停</text></div>
 				<image class="video-view" :style="{ width: `750rpx`,height: `200px` }" :src="poster" v-if="poster!=''&&playFirst"></image>
 				<div class="rate-view" @click.stop="" v-if="!rateView"><text class="ios-title" @click="rateView=true">{{rate}}x</text></div>
+				<div class="controls-view-top" v-if="showControls&&isBack" @click.stop="">
+					<div @click="back" class="btnBox"><text class="ios-icon">&#xe60a;</text></div>
+				</div>
 				<div class="controls-view" v-if="showControls" @click.stop="">
 					<div @click="videoPlay" v-if="play" class="btnBox"><text class="ios-icon">&#xe601;</text></div>
 					<div @click="videoPlay" v-if="!play" class="btnBox"><text class="ios-icon">&#xe896;</text></div>
@@ -319,6 +322,10 @@
 			poster:{ //视频封面的图片
 				type:String,
 				default:''
+			},
+			isBack:{ //小屏返回
+				type:Boolean,
+				default:false
 			}
 		},
 		data(){
@@ -390,6 +397,11 @@
 			this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 		},
 		methods:{
+			back(){
+				uni.navigateBack({
+					delta:1
+				})
+			},
 			async changSrc(){
 				await this.promise(100)
 				this.playFirst = false
@@ -1275,10 +1287,29 @@
 		/* #endif */
 		
 		height: 40px;
-		z-index: 100;
+		
 		position: absolute;
 		background-image:linear-gradient(to top , rgba(0,0,0,0.8) , rgba(0,0,0,0));
 		bottom: 0;
+		flex-direction: row;
+		align-items: center;
+		padding: 0 10px;
+		
+	}
+	.controls-view-top{
+		/* #ifndef APP-PLUS-NVUE */
+		display: flex;
+		width: 730rpx;
+		/* #endif */
+		
+		/* #ifdef APP-PLUS-NVUE */
+		width: 750rpx;
+		/* #endif */
+		
+		height: 40px;
+		
+		position: absolute;
+		top: 0;
 		flex-direction: row;
 		align-items: center;
 		padding: 0 10px;

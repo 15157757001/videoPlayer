@@ -5,6 +5,7 @@
 		
 		</chunlei-video> -->
 		<chunlei-video 
+			isBack
 			autoplay
 			ref="video"
 			orientation
