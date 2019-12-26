@@ -127,6 +127,8 @@ components:{chunleiVideo}
 | currentSen| Number | 4 | 进度条灵敏度越大进度跨度越小 |
 | autoplay| Boolean | false | 首次自动播放 |
 | poster| String | '' | 封面图片 |
+| isBack| Boolean | false | 小屏返回 |
+
 
 ## 事件
 
