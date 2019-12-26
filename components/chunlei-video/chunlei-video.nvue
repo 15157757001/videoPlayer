@@ -375,7 +375,7 @@
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",
-				'src': "url('../../static/chunlei-video/text-icon.ttf')"
+				'src': "url('/static/chunlei-video/text-icon.ttf')"
 			});
 			// #endif
 		},
