@@ -159,7 +159,7 @@
 					</div>
 				</div>
 				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"  v-if="episodeView"  @click.stop="clickEpisodeView">
-					<scroll-view scroll-y class="episode-scroll" :style="{ width: `${fullControlsWidth-200}px`,maxHeight: `${fullControlsHeigt-40}px` }" @click.stop="clickEpisodeView">
+					<scroll-view scroll-x class="episode-scroll" :style="{ maxWidth: `${fullControlsWidth-200}px`,height: `${fullControlsHeigt-40}px` }" @click.stop="clickEpisodeView">
 						<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
 							<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
 						</div>
@@ -1046,7 +1046,7 @@
 		flex-wrap: wrap;
 	}
 	.episode-scroll{
-		flex-direction: row;
+		flex-direction: column;
 		
 		flex-wrap: wrap;
 	}
