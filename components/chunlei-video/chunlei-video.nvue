@@ -472,9 +472,8 @@
 			},
 			timeupdate(event){
 				
-				if(this.gDuration==0){
-					this.duration = event.detail.duration
-				} 
+				this.duration = event.detail.duration
+				
 				this.current = event.detail.currentTime
 				
 			},
