@@ -159,10 +159,13 @@
 					</div>
 				</div>
 				<div class="episode-set" :style="{ width: `${fullControlsWidth}px`,height: `${fullControlsHeigt}px` }"  v-if="episodeView"  @click.stop="clickEpisodeView">
-					<scroll-view scroll-x class="episode-scroll" :style="{ maxWidth: `${fullControlsWidth-200}px`,height: `${fullControlsHeigt-40}px` }" @click.stop="clickEpisodeView">
-						<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
-							<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
+					<scroll-view scroll-x class="scroll-view" :style="{ width: `${fullControlsWidth-200}px`,height: `${fullControlsHeigt-40}px` }">
+						<div class="episode-scroll" :style="{height: `${fullControlsHeigt-40}px`,width: `${75*episode/4}px` }">
+							<div class="epiBox" v-for="count in episode" :key="count" @click="clickEpisode(count)" :class="count==index?'solid-bottom':''" :style="{borderBottomColor:count==index?color:'#fff'}">
+								<text :class="`${platform}-title`" :style="{color:count==index?color:'#fff'}">{{count}}</text>
+							</div>
 						</div>
+						
 					</scroll-view>
 				</div>
 				
@@ -375,7 +378,7 @@
 			var domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "texticons",
-				'src': "url('/static/chunlei-video/text-icon.ttf')"
+				'src': "url('../../static/chunlei-video/text-icon.ttf')"
 			});
 			// #endif
 		},
@@ -407,7 +410,10 @@
 				this.playFirst = false
 				this.videoCtx.play();
 				this.play = true
+				
+				if(this.platform=='ios') await this.promise(1500)
 				this.videoCtx.seek(this.initialTime)
+
 				this.videoCtx.playbackRate(this.rate*1)
 				if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
 			},
@@ -422,6 +428,7 @@
 								this.direction = -90
 							}
 						}else{
+							
 							if(o.alpha>40){
 								this.direction = -90
 							}else if(o.alpha<-40){
@@ -437,7 +444,8 @@
 				if(this.audio!='') this.innerAudioContext.pause()
 				await this.promise()
 				if(this.play){
-					this.videoCtx.play()
+					if(this.platform=='ios') await this.promise(1000)
+					
 					this.videoCtx.seek(this.current)
 				}
 			},
@@ -493,7 +501,7 @@
 				this.videoCtx.seek(this.current)
 			},
 			async seek(time){
-				await this.promise(1000)
+				
 				this.current = time
 				this.videoCtx.seek(this.current)
 			},
@@ -556,6 +564,7 @@
 					// await this.promise()
 					this.play = true
 					this.videoCtx.play();
+					if(this.platform=='ios') await this.promise(1000)
 					this.videoCtx.seek(this.current)
 					this.videoCtx.playbackRate(this.rate*1)
 				}
@@ -572,6 +581,7 @@
 					this.videoCtx.play();
 					
 					if(this.playFirst){
+						if(this.platform=='ios') await this.promise(1000)
 						
 						this.videoCtx.seek(this.initialTime)
 						this.playFirst = false
@@ -1047,6 +1057,7 @@
 	}
 	.episode-scroll{
 		flex-direction: column;
+		
 		
 		flex-wrap: wrap;
 	}
