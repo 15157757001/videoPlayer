@@ -192,7 +192,7 @@
 				<div class="fullCurrent-volume">
 					<div class="fullCurrent-volume-left"></div>
 					<div class="fullCurrent-volume-right"></div>
-					<div class="fullCurrent-progress" :style="{width: `${150-touchVolume*150}px`}"> </div>
+					<div class="fullCurrent-progress" :style="{width: `${151-touchVolume*150}px`}"> </div>
 				</div>
 			</cover-view>
 			<!-- 滑动video时显示亮度 -->
@@ -202,7 +202,7 @@
 				<div class="fullCurrent-bright">
 					<div class="fullCurrent-bright-left"></div>
 					<div class="fullCurrent-bright-right"></div>
-					<div class="fullCurrent-progress" :style="{width: `${150-touchBright*150}px`}"> </div>
+					<div class="fullCurrent-progress" :style="{width: `${151-touchBright*150}px`}"> </div>
 				</div>
 			</cover-view>
 			
@@ -212,7 +212,7 @@
 					<text :class="`${platform}-title`">{{lastDuration}}</text>
 				</div>
 				<div class="fullControls-center">
-					<chunLei-slider :max="duration" :iosDirection="platform!='ios'?1:-direction/90" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :screenLeft="40" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="platform=='ios'?1:ratio" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
+					<chunLei-slider :max="duration" :iosDirection="platform!='ios'?1:-direction/90" :value="current" :style="{width:`${fullControlsWidth-40}px`}" :screenLeft="40" :width="fullControlsWidth-40" @change="changeCurrent" :ratio="1" :direction="platform!='ios'?'screenX':'screenY'" :backgroundColor="color" :blockColor="color"></chunLei-slider>
 				</div>
 				<div class="fullControls-bottom" :style="{ width: `${fullControlsWidth}px` }">
 					<div class="fullControls-bottom-left">
@@ -384,8 +384,8 @@
 		},
 		created() {
 			this.fullControlsWidth = uni.getSystemInfoSync().screenHeight
-			this.fullControlsHeigt = uni.getSystemInfoSync().screenWidth
-			this.ratio = this.fullControlsWidth / this.fullControlsHeigt
+			this.fullControlsHeigt = uni.getSystemInfoSync().screenWidth+1
+			//this.ratio = this.fullControlsWidth / this.fullControlsHeigt
 			
 			uni.getSystemInfo({
 				success: (e) => {
@@ -444,10 +444,12 @@
 				if(this.audio!='') this.innerAudioContext.pause()
 				await this.promise()
 				if(this.play){
+					this.videoCtx.play()
 					if(this.platform=='ios') await this.promise(1000)
 					
 					this.videoCtx.seek(this.current)
 				}
+				
 			},
 			async pageHide() {
 				this.videoCtx.exitFullScreen()
@@ -752,10 +754,10 @@
 					//#ifndef H5
 					uni.setScreenBrightness({
 					    value: this.touchBright.toFixed(2),
-					    success: ()=> {
-							setTimeout(() => {
-								if(this.play) this.videoCtx.play();
-							}, 100);
+					    success: async()=> {
+							await this.promise(100)
+							//this.videoCtx.requestFullScreen({direction: this.direction})
+							if(this.play) this.videoCtx.play();
 							
 					    }
 					});
@@ -899,6 +901,7 @@
 						this.src = newVal[0].src
 						this.srcTitle = newVal[0].title
 					}
+					
 					if(this.playFirst&&this.autoplay) await this.changSrc()
 				}
 			},
@@ -911,7 +914,7 @@
 						this.getLevel()
 						await this.promise()
 						this.animateControls(0,this.$refs.controlsTop)
-						this.animateControls(0,this.$refs.controlsBtm)
+						this.animateControls(1,this.$refs.controlsBtm)
 					}
 				}
 			},
@@ -1259,7 +1262,7 @@
 	}
 	.fullCurrent-progress{
 		position: absolute;
-		right:0;
+		right:-1px;
 		background-color: rgba(0,0,0,1);
 		height: 5px;
 	}

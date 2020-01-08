@@ -157,7 +157,7 @@
 	justify-content: center;
 }
 .android-title{
-	font-size: 12px;
+	font-size: 24px;
 }
 .img{
 	width: 30px;

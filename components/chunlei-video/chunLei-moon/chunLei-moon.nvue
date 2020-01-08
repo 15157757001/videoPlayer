@@ -122,9 +122,9 @@
 		border-radius: 0.8px;
 		height: 3px;
 		width: 2px;
-		top: 4px;
-		left: 18px;
-		transform-origin:0px 7.5px;
+		top: 4.75px;
+		left: 16.75px;
+		transform-origin:0px 13px;
 		background-color: #FFFFFF;
 	}
 	.light2{
