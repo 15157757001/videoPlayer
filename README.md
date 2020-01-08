@@ -5,6 +5,7 @@ uniapp自定义播放器
 
 app同时加载两个video时，通过this.videoCtx.requestFullScreen全屏会导致app崩溃 [bug](https://ask.dcloud.net.cn/question/82635)。（pages.json切换首页查看示例）
 
+ios可能进度获取不到的问题  [bug](https://ask.dcloud.net.cn/question/86341)
 
 ## 说明
 
