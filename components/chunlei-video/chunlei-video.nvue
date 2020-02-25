@@ -24,6 +24,18 @@
 					<!-- #endif -->
 					<div @click="tapFullScreen" class="btnBox" v-if="showFullscreenBtn"><text class="ios-icon">&#xe60d;</text></div>
 				</div>
+				<div class="remember-view" v-if="initialTime!=0&&remeber&&play" @click.stop="">
+					<div @click="remeber=!remeber" class="btnbox">
+						<text class="ios-icon marginright">&#xe607;</text>
+					</div>
+					<text class="sm-title marginright">跳转至播放记忆</text>
+					<div class="btnbox" @click="tapRemeber">
+						<text class="sm-title" :style="{color}">{{rememberCurrent}}</text>
+					</div>
+		
+					
+					
+				</div>
 				<!-- 滑动video时显示 -->
 				<div class="current-view flex" v-if="touchType=='current'">
 					<div class="current-top"><text class="ios-title">{{touchCurrentDuration}}/{{lastDuration}}</text></div>
@@ -235,7 +247,17 @@
 				<text :class="`${platform}-icon`" v-if="!lock">&#xe8dd;</text>
 				<text :class="`${platform}-icon`" v-if="lock">&#xe61d;</text>
 			</cover-view>
+			<cover-view class="fullControls-remember" @click.stop="clickLock" v-if="fullScreen&&initialTime!=0&&remeber&&play">
 			
+				<div @click="remeber=!remeber" class="btnbox">
+					<text class="marginright" :class="`${platform}-icon`">&#xe607;</text>
+				</div>
+				<text class="marginright" :class="`${platform}-title`">跳转至播放记忆</text>
+				<div @click="tapRemeber" class="btnbox">
+					<text  :class="`${platform}-title`" :style="{color}">{{rememberCurrent}}</text>
+				</div>
+			
+			</cover-view>
 			<!-- #endif -->
 		</video>
 	</view>
@@ -341,6 +363,7 @@
 				current: 0, //video进度
 				play: false,//播放状态
 				loop: false,//循环
+				remeber: false,//播放记忆
 				fullScreen: false,//全屏状态
 				direction: -90,//全屏方向
 				objectFit:'contain',
@@ -406,13 +429,14 @@
 				})
 			},
 			async changSrc(){
+				this.playFirst = true
 				await this.promise(100)
 				this.playFirst = false
 				this.videoCtx.play();
 				this.play = true
 				
-				if(this.platform=='ios') await this.promise(1500)
-				this.videoCtx.seek(this.initialTime)
+				//if(this.platform=='ios') await this.promise(1500)
+				this.videoCtx.seek(0)
 
 				this.videoCtx.playbackRate(this.rate*1)
 				if(typeof this.$refs.danmu != 'undefined') this.$refs.danmu.cleanDanmu()
@@ -445,9 +469,9 @@
 				await this.promise()
 				if(this.play){
 					this.videoCtx.play()
-					if(this.platform=='ios') await this.promise(1000)
+					// await this.promise(1000)
 					
-					this.videoCtx.seek(this.current)
+					//this.videoCtx.seek(this.current)
 				}
 				
 			},
@@ -550,6 +574,11 @@
 					this.rateView = !this.rateView
 				}
 			},
+			//跳转记忆
+			tapRemeber(e){
+				e.stopPropagation();
+				this.videoCtx.seek(this.initialTime)
+			},
 			//切换高清
 			async tapSrc(e,item){
 				e.stopPropagation();
@@ -559,14 +588,15 @@
 				}else{
 					this.src = item.src
 					this.srcTitle = item.title
+					
 					await this.promise()
 					this.videoCtx = uni.createVideoContext(`chunleiVideo`,this)
 					
 					// await this.promise()
 					this.play = true
 					this.videoCtx.play();
-					if(this.platform=='ios') await this.promise(1000)
-					this.videoCtx.seek(this.current)
+					// if(this.platform=='ios') await this.promise(1000)
+					// this.videoCtx.seek(this.current)
 					this.videoCtx.playbackRate(this.rate*1)
 				}
 				this.clickSrcView()
@@ -582,9 +612,9 @@
 					this.videoCtx.play();
 					
 					if(this.playFirst){
-						if(this.platform=='ios') await this.promise(1000)
+						//if(this.platform=='ios') await this.promise(1000)
 						
-						this.videoCtx.seek(this.initialTime)
+						//this.videoCtx.seek(this.initialTime)
 						this.playFirst = false
 					}
 					if(this.current>=this.duration) this.current=0
@@ -862,6 +892,16 @@
 			}
 		},
 		watch:{
+			playFirst:{
+				handler:async function(newVal,oldVal){
+					if(oldVal){
+						this.remeber = true
+						await this.promise(5000)
+						this.remeber = false
+					}
+					
+				}
+			},
 			gDuration:{
 				immediate:true,
 				handler(newVal,oldVal){
@@ -928,6 +968,9 @@
 			
 		},
 		computed:{
+			rememberCurrent(){
+				return this.formatSeconds(this.initialTime)
+			},
 			lastDuration(){
 				return this.formatSeconds(this.duration)
 			},
@@ -973,8 +1016,14 @@
 	.marginRight{
 		margin-right: 10px;
 	}
+	.marginright{
+		margin-right: 5px;
+	}
 	.btnBox{
 		padding: 10px;
+	}
+	.btnbox{
+		padding: 5px;
 		
 	}
 	.video{
@@ -1308,6 +1357,26 @@
 		align-items: center;
 		padding: 0 10px;
 		
+	}
+	.remember-view{
+		position: absolute;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		bottom: 50px;
+		left: 10px;
+		padding-right: 5px;
+		background-color: rgba(0,0,0,0.6);
+	}
+	.fullControls-remember{
+		position: absolute;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		bottom: 130px;
+		left: 35px;
+		padding-right: 5px;
+		background-color: rgba(0,0,0,0.6);
 	}
 	.controls-view-top{
 		/* #ifndef APP-PLUS-NVUE */
