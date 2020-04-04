@@ -23,6 +23,15 @@ ios原生音量，亮度控制位置错乱，拖动条位置错乱  [bug](https:
 
 8.[后台音频配置](https://ask.dcloud.net.cn/article/35241)
 
+9.字体路径问题，字体路径和引入文件有关，请修改路径
+~~~
+var domModule = weex.requireModule('dom');
+ domModule.addRule('fontFace', {
+  'fontFamily': "texticons",
+  'src': "url('../../static/chunlei-video/text-icon.ttf')"
+});
+~~~
+
 ## 使用方式
 
 **在index.js中**  
