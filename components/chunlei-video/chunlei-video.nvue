@@ -476,7 +476,7 @@
 				
 			},
 			async pageHide() {
-				this.videoCtx.exitFullScreen()
+				if(this.fullScreen) this.videoCtx.exitFullScreen()
 				this.videoCtx.pause()
 				await this.promise()
 				//显示播放
