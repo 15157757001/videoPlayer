@@ -112,6 +112,7 @@
 		onHide() {
 			//隐藏暂停播放
 			this.$refs.video.pageHide()
+			
 		},
 		methods: {
 			fullscreenchange(e){
