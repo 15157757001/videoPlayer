@@ -157,5 +157,7 @@ components:{chunleiVideo}
 | pageHide | 页面隐藏后暂停 |
 | getCurrent | 获取视频进度用于续播 |
 
+# 插件交流群 689566471
+
 ## 如果觉得插件不错，麻烦给个好评
 
